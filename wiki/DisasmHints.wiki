@@ -1,0 +1,9 @@
+#summary Quirks of PSP CPU disassembly.
+#labels Allegrex,custominstructions
+
+= Introduction =
+
+PSP has custom CPU named Allegrex. It has additional MIPS instructions + VFPU (vector FPU) coprocessor. Ah shit better on russian.
+
+На этой страничке я перечислю все особенные инструкции, которые встречаются по ходу разбора кода.
+
