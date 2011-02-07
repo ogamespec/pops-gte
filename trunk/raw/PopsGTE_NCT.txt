@@ -1,0 +1,92 @@
+NCT:
+
+	0x0000DD94: 0xDB860010 '....' - lv.q       C120, 16($gp)
+	0x0000DD98: 0xDB8800A0 '....' - lv.q       C200, 160($gp)
+	0x0000DD9C: 0xDB8900B0 '....' - lv.q       C210, 176($gp)
+	0x0000DDA0: 0xDB8A0000 '....' - lv.q       C220, 0($gp)
+	0x0000DDA4: 0xD03B0880 '..;.' - vs2i.p     C000, C200
+	0x0000DDA8: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
+	0x0000DDAC: 0xD03B0A84 '..;.' - vs2i.p     C100, C220
+	0x0000DDB0: 0xD29C8080 '....' - vi2f.q     C000, C000, 28
+	0x0000DDB4: 0xD29C8181 '....' - vi2f.q     C010, C010, 28
+	0x0000DDB8: 0xD28C0942 'B...' - vi2f.s     S022, S210, 12
+	0x0000DDBC: 0xD29C8404 '....' - vi2f.t     C100, C100, 28
+	0x0000DDC0: 0xD0004182 '.A..' - vmov.p     C020, C012
+	0x0000DDC4: 0xD0002141 'A!..' - vmov.s     S012, S011
+	0x0000DDC8: 0xD0000121 '!...' - vmov.s     S011, S010
+	0x0000DDCC: 0xD0006001 '.`..' - vmov.s     S010, S003
+	0x0000DDD0: 0xD03B4A85 '.J;.' - vs2i.p     C110, C222
+	0x0000DDD4: 0xD03B0686 '..;.' - vs2i.p     C120, C120
+	0x0000DDD8: 0xD29C8505 '....' - vi2f.t     C110, C110, 28
+	0x0000DDDC: 0xD29C8606 '....' - vi2f.t     C120, C120, 28
+	0x0000DDE0: 0xF0048018 '....' - vmmul.t    M600, E000, M100
+	0x0000DDE4: 0xD006800F '....' - vzero.t    C330
+	0x0000DDE8: 0xDB8800C0 '....' - lv.q       C200, 192($gp)
+	0x0000DDEC: 0xDB8B00D0 '....' - lv.q       C230, 208($gp)
+	0x0000DDF0: 0xD03B0880 '..;.' - vs2i.p     C000, C200
+	0x0000DDF4: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
+	0x0000DDF8: 0xD29C8080 '....' - vi2f.q     C000, C000, 28
+	0x0000DDFC: 0xD29C8181 '....' - vi2f.q     C010, C010, 28
+	0x0000DE00: 0xD28C0B42 'B...' - vi2f.s     S022, S230, 12
+	0x0000DE04: 0xD0004182 '.A..' - vmov.p     C020, C012
+	0x0000DE08: 0xD0002141 'A!..' - vmov.s     S012, S011
+	0x0000DE0C: 0xD0000121 '!...' - vmov.s     S011, S010
+	0x0000DE10: 0xD0006001 '.`..' - vmov.s     S010, S003
+	0x0000DE14: 0xD28CC923 '#...' - vi2f.t     R003, C211, 12
+	0x0000DE18: 0x6DB39814 '...m' - vmax.t     C500, C600, R403
+	0x0000DE1C: 0x6DB39915 '...m' - vmax.t     C510, C610, R403
+	0x0000DE20: 0x6DB39A16 '...m' - vmax.t     C520, C620, R403
+	0x0000DE24: 0x6D139414 '...m' - vmin.t     C500, C500, C430
+	0x0000DE28: 0x6D139515 '...m' - vmin.t     C510, C510, C430
+	0x0000DE2C: 0x6D139616 '...m' - vmin.t     C520, C520, C430
+	0x0000DE30: 0x6C189405 '...l' - vcmp.t     NE, C500, C600
+	0x0000DE34: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+	0x0000DE38: 0x6C199505 '...l' - vcmp.t     NE, C510, C610
+	0x0000DE3C: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+	0x0000DE40: 0x6C1A9605 '...l' - vcmp.t     NE, C520, C620
+	0x0000DE44: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+	0x0000DE48: 0xD0078037 '7...' - vone.t     R503
+	0x0000DE4C: 0xF0148088 '....' - vmmul.q    M200, E000, M500
+	0x0000DE50: 0x8F840018 '....' - lw         $a0, 24($gp)
+	0x0000DE54: 0xBFEA0040 '@...' - cache      0xA, 64($ra)
+	0x0000DE58: 0x00042042 'B ..' - srl        $a0, $a0, 1
+	0x0000DE5C: 0x48E40060 '`..H' - mtv        $a0, S003
+	0x0000DE60: 0x48E40061 'a..H' - mtv        $a0, S013
+	0x0000DE64: 0x48E40062 'b..H' - mtv        $a0, S023
+	0x0000DE68: 0xD20C8A19 '....' - vf2in.t    C610, C220, 12
+	0x0000DE6C: 0x6DB38800 '...m' - vmax.t     C000, C200, R403
+	0x0000DE70: 0x6DB38901 '...m' - vmax.t     C010, C210, R403
+	0x0000DE74: 0x6DB38A02 '...m' - vmax.t     C020, C220, R403
+	0x0000DE78: 0x6D138004 '...m' - vmin.t     C100, C000, C430
+	0x0000DE7C: 0x6D138105 '...m' - vmin.t     C110, C010, C430
+	0x0000DE80: 0xF7990066 'f...' - svr.q      C610, 100($gp)
+	0x0000DE84: 0x6C048805 '...l' - vcmp.t     NE, C200, C100
+	0x0000DE88: 0x6D138206 '...m' - vmin.t     C120, C020, C430
+	0x0000DE8C: 0xD0048800 '....' - vsat0.t    C000, C200
+	0x0000DE90: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+	0x0000DE94: 0x6C058905 '...l' - vcmp.t     NE, C210, C110
+	0x0000DE98: 0xD0048901 '....' - vsat0.t    C010, C210
+	0x0000DE9C: 0xD0048A02 '....' - vsat0.t    C020, C220
+	0x0000DEA0: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+	0x0000DEA4: 0xD20C8604 '....' - vf2in.t    C100, C120, 12
+	0x0000DEA8: 0x6C068A05 '...l' - vcmp.t     NE, C220, C120
+	0x0000DEAC: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+	0x0000DEB0: 0xF7840026 '&...' - svr.q      C100, 36($gp)
+	0x0000DEB4: 0xD0468F6F 'o.F.' - vfad.t     R313, C330
+	0x0000DEB8: 0x6C008805 '...l' - vcmp.t     NE, C200, C000
+	0x0000DEBC: 0xD21F8000 '....' - vf2in.t    C000, C000, 31
+	0x0000DEC0: 0xD006800F '....' - vzero.t    C330
+	0x0000DEC4: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
+	0x0000DEC8: 0x6C018905 '...l' - vcmp.t     NE, C210, C010
+	0x0000DECC: 0xD21F8101 '....' - vf2in.t    C010, C010, 31
+	0x0000DED0: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
+	0x0000DED4: 0x6C028A05 '...l' - vcmp.t     NE, C220, C020
+	0x0000DED8: 0xD21F8202 '....' - vf2in.t    C020, C020, 31
+	0x0000DEDC: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
+	0x0000DEE0: 0xD03C80BE '..<.' - vi2uc.q    R702, C000
+	0x0000DEE4: 0xD03C81DE '..<.' - vi2uc.q    C720, C010
+	0x0000DEE8: 0xD03C82FE '..<.' - vi2uc.q    R702, C020
+	0x0000DEEC: 0xD0468F8F '..F.' - vfad.q     C330, C330
+	0x0000DEF0: 0xF79E0058 'X...' - svl.q      C720, 88($gp)
+	0x0000DEF4: 0x03E00008 '....' - jr         $ra
+	0x0000DEF8: 0xD2700F0F '..p.' - vf2id.s    S330, S330, 16
