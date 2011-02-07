@@ -3,7 +3,7 @@ This is code flow of GTE init procedure, called from Pops module_start.
 
 The purpose of GTE init:
 
-- Generate quotient table for RTPS/RTPT
+- Generate reciprocal table for RTPS/RTPT
 
 - Load some constants to VFPU registers (used later in FLAG calculations)
 
