@@ -1,0 +1,419 @@
+MVMVA:
+
+     -----------------------------------------------------------------------------------------------
+    |31|30|29|28|27|26|25|24|23|22|21|20|19|18|17|16|15|14|13|12|11|10|09|08|07|06|05|04|03|02|01|00|
+    |-----------------------------------------------------------------------------------------------|
+    | 0  1  0  0  1  0|       OP2       |SF| MX  |  V  | CV  |  LM    | 0  0  0  0|      OP1        |
+     -----------------------------------------------------------------------------------------------
+
+
+	v0 = MX
+	v1 = V
+	t6 = CV
+	t1 = 0x2CE94
+	t4 = MX << 2
+	t3 = V << 2
+	t5 = CV << 2
+	t0 = 0x2CE94 + CV << 2
+	a3 = 0x2CE94 + V << 2
+	t2 = 0x2CE94 + MX << 2
+
+	a2 = v_tab
+	a1 = mx_tab
+	a3 = cv_tab
+
+----
+
+
+	0x00000F00: 0x27BDFFF0 '...'' - addiu      $sp, $sp, -16
+	0x00000F04: 0xAFBF0000 '....' - sw         $ra, 0($sp)
+	0x00000F08: 0x7C820C40 '@..|' - ext        $v0, $a0, 17, 2
+	0x00000F0C: 0x7C830BC0 '...|' - ext        $v1, $a0, 15, 2
+	0x00000F10: 0x7C8E0B40 '@..|' - ext        $t6, $a0, 13, 2
+	0x00000F14: 0x3C050003 '...<' - lui        $a1, 0x3
+	0x00000F18: 0x24A9CE94 '...$' - addiu      $t1, $a1, -12652
+	0x00000F1C: 0x00026080 '.`..' - sll        $t4, $v0, 2
+	0x00000F20: 0x00035880 '.X..' - sll        $t3, $v1, 2
+	0x00000F24: 0x000E6880 '.h..' - sll        $t5, $t6, 2
+	0x00000F28: 0x01A94021 '!@..' - addu       $t0, $t5, $t1
+	0x00000F2C: 0x01693821 '!8i.' - addu       $a3, $t3, $t1
+	0x00000F30: 0x01895021 '!P..' - addu       $t2, $t4, $t1
+	0x00000F34: 0x8CE60010 '....' - lw         $a2, 16($a3)
+	0x00000F38: 0x8D450000 '..E.' - lw         $a1, 0($t2)
+	0x00000F3C: 0x8D070020 ' ...' - lw         $a3, 32($t0)
+
+	t1 = LM & 1
+	t0 = -32768
+	if t1 != 0 t0 = 0
+	//MOVN RD, RS, RT -  IF RT != 0, RD = RS
+	t0 = (LM & 1) ? 0 : -32768	
+	a0 = SF
+	sub_0000EC00()
+
+	0x00000F40: 0x7C890280 '...|' - ext        $t1, $a0, 10, 1
+	0x00000F44: 0x24088000 '...$' - li         $t0, -32768
+	0x00000F48: 0x0009400B '.@..' - movn       $t0, $zr, $t1
+	0x00000F4C: 0x0C003B00 '.;..' - jal        sub_0000EC00
+	0x00000F50: 0x7C8404C0 '...|' - ext        $a0, $a0, 19, 1
+	0x00000F54: 0x8FBF0000 '....' - lw         $ra, 0($sp)
+	0x00000F58: 0x03E00008 '....' - jr         $ra
+	0x00000F5C: 0x27BD0010 '...'' - addiu      $sp, $sp, 16
+
+	Выбор регистров для инструкции.
+
+	0x0002CE94: 
+		0x00010080		// mx  Rotation
+		0x000100A0		// Light
+		0x000100C0		// Light color
+		0x00000000		--
+
+		0x0000FFE0		// v V0
+		0x0000FFE8		// V1
+		0x0000FFF0		// V2
+		0x00010000		// IR
+
+		0x00010094		// cv  Translation
+		0x000100B4		// Background color
+		0x000100D4		// Far color
+		0x00000000		--
+
+-----
+
+	a0 = SF
+	a1 = mx_tab
+	a2 = v_tab
+	a3 = cv_tab
+	t0 = minValue = (LM & 1) ? 0 : -32768
+
+
+sub_0000EC00:		; Refs: 0x00000F4C 
+	0x0000EC00: 0x84CB0024 '$...' - lh         $t3, 36($a2)		// v0 / gteIR1
+	0x0000EC04: 0x14DC0004 '....' - bne        $a2, $gp, loc_0000EC18		// v != IR
+	0x0000EC08: 0x84A20000 '....' - lh         $v0, 0($a1)
+	0x0000EC0C: 0x878C0028 '(...' - lh         $t4, 40($gp)		// gteIR2
+	0x0000EC10: 0x08003B08 '.;..' - j          loc_0000EC20
+	0x0000EC14: 0x878D002C ',...' - lh         $t5, 44($gp)		// gteIR3
+
+loc_0000EC18:		; Refs: 0x0000EC04 
+	0x0000EC18: 0x84CC0026 '&...' - lh         $t4, 38($a2)		// v1
+	0x0000EC1C: 0x84CD0028 '(...' - lh         $t5, 40($a2)		// v2
+
+	v0 = mx11
+	t3 = v0
+	t4 = v1
+	t5 = v2
+
+loc_0000EC20:		; Refs: 0x0000EC10 
+	v1 = 32767
+
+	Acc = mx11 * v0
+	Acc = mx11 * v0 + mx12 * v1
+	Acc = mx11 * v0 + mx12 * v1 + mx13 * v2
+	if ( cv_tab ) { v0 = Lo; jmp ED04; }
+
+	v0 = Lo
+	if ( SF )
+		v0 = v0 >> 12
+		v0 = (v0 & 0xfffff) | ((Hi & 0xfff) << 20);	// верхняя часть (12 бит)
+
+
+	0x0000EC20: 0x004B0018 '..K.' - mult       $v0, $t3
+	0x0000EC24: 0x84A90002 '....' - lh         $t1, 2($a1)		// mx12
+	0x0000EC28: 0x84AA0004 '....' - lh         $t2, 4($a1)		// mx13
+	0x0000EC2C: 0x012C001C '..,.' - madd       $t1, $t4
+	0x0000EC30: 0x24037FFF '...$' - li         $v1, 32767		// v1 = 32767
+	0x0000EC34: 0x84B80006 '....' - lh         $t8, 6($a1)		// mx21
+	0x0000EC38: 0x14E00032 '2...' - bnez       $a3, loc_0000ED04
+	0x0000EC3C: 0x014D001C '..M.' - madd       $t2, $t5
+
+	0x0000EC40: 0x84AA000A '....' - lh         $t2, 10($a1)		// mx23
+	0x0000EC44: 0x10800004 '....' - beqz       $a0, loc_0000EC58
+	0x0000EC48: 0x00001012 '....' - mflo       $v0
+	0x0000EC4C: 0x00004810 '.H..' - mfhi       $t1
+	0x0000EC50: 0x00021303 '....' - sra        $v0, $v0, 12
+	0x0000EC54: 0x7D22FD04 '.."}' - ins        $v0, $t1, 20, 12
+
+	Acc = mx21 * v0
+	gteMAC1 = v0
+	t6 = max (gteMAC1, minValue)
+	t6 = min (32767, t6)
+	Acc = mx21 * v0 + mx23 * v2
+	v0 = gteMAC1 - t6
+	at = 0 < v0
+	at <<= 24
+	Acc = mx21 * v0 + mx23 * v2 + mx22 * v1
+	gteIR1 = t6
+	v0 = Lo
+	if (SF)
+		v0 = v0 >> 12
+		v0 = (v0 & 0xfffff) | ((Hi & 0xfff) << 20);
+		
+
+loc_0000EC58:		; Refs: 0x0000EC44 
+	0x0000EC58: 0x030B0018 '....' - mult       $t8, $t3
+	0x0000EC5C: 0xAF820064 'd...' - sw         $v0, 100($gp)	// gteMAC1
+	0x0000EC60: 0x0048702C ',pH.' - max        $t6, $v0, $t0
+	0x0000EC64: 0x006E702D '-pn.' - min        $t6, $v1, $t6
+	0x0000EC68: 0x014D001C '..M.' - madd       $t2, $t5
+	0x0000EC6C: 0x84A90008 '....' - lh         $t1, 8($a1)		// mx22
+	0x0000EC70: 0x004E1023 '#.N.' - subu       $v0, $v0, $t6
+	0x0000EC74: 0x0002082B '+...' - sltu       $at, $zr, $v0
+	0x0000EC78: 0x00010E00 '....' - sll        $at, $at, 24
+	0x0000EC7C: 0x012C001C '..,.' - madd       $t1, $t4
+	0x0000EC80: 0x84B8000E '....' - lh         $t8, 14($a1)		// mx32
+	0x0000EC84: 0x84AA0010 '....' - lh         $t2, 16($a1)		// mx33
+	0x0000EC88: 0xAF8E0024 '$...' - sw         $t6, 36($gp)		// gteIR1
+	0x0000EC8C: 0x10800004 '....' - beqz       $a0, loc_0000ECA0
+	0x0000EC90: 0x00001012 '....' - mflo       $v0
+	0x0000EC94: 0x00004810 '.H..' - mfhi       $t1
+	0x0000EC98: 0x00021303 '....' - sra        $v0, $v0, 12
+	0x0000EC9C: 0x7D22FD04 '.."}' - ins        $v0, $t1, 20, 12
+
+	Acc = mx32 * v1
+	gteMAC2 = v0
+	t6 = max (gteMAC2, minValue)
+	t6 = min (32767, t6)
+	Acc = mx32 * v1 + mx33 * v2
+	v0 = gteMAC2 - t6
+	v0 = 0 < v0
+	at |= v0 << 23
+	Acc = mx32 * v1 + mx33 * v2 + mx31 * v0
+	gteIR2 = t6
+
+	v0 = Lo
+	if (SF)
+		v0 = v0 >> 12
+		v0 = (v0 & 0xfffff) | ((Hi & 0xfff) << 20);
+
+loc_0000ECA0:		; Refs: 0x0000EC8C 
+	0x0000ECA0: 0x030C0018 '....' - mult       $t8, $t4
+	0x0000ECA4: 0xAF820068 'h...' - sw         $v0, 104($gp)	// gteMAC2
+	0x0000ECA8: 0x0048702C ',pH.' - max        $t6, $v0, $t0
+	0x0000ECAC: 0x006E702D '-pn.' - min        $t6, $v1, $t6
+	0x0000ECB0: 0x014D001C '..M.' - madd       $t2, $t5
+	0x0000ECB4: 0x004E1023 '#.N.' - subu       $v0, $v0, $t6
+	0x0000ECB8: 0x0002102B '+...' - sltu       $v0, $zr, $v0
+	0x0000ECBC: 0x7C41BDC4 '..A|' - ins        $at, $v0, 23, 1
+	0x0000ECC0: 0x84A2000C '....' - lh         $v0, 12($a1)		// mx31
+	0x0000ECC4: 0x004B001C '..K.' - madd       $v0, $t3
+	0x0000ECC8: 0xAF8E0028 '(...' - sw         $t6, 40($gp)		// gteIR2
+	0x0000ECCC: 0x10800004 '....' - beqz       $a0, loc_0000ECE0
+	0x0000ECD0: 0x00001012 '....' - mflo       $v0
+	0x0000ECD4: 0x00004810 '.H..' - mfhi       $t1
+	0x0000ECD8: 0x00021303 '....' - sra        $v0, $v0, 12
+	0x0000ECDC: 0x7D22FD04 '.."}' - ins        $v0, $t1, 20, 12
+
+	gteMAC3 = v0
+	t1 = max (gteMAC3, minvalue)
+	t1 = min (t1, 32767)
+	v0 = gteMAC3 - t1
+	v0 = 0 < 0
+	at |= v0 << 22
+	gteIR3 = t1
+	VFPU.S330 = at
+	return;
+
+loc_0000ECE0:		; Refs: 0x0000ECCC 
+	0x0000ECE0: 0xAF82006C 'l...' - sw         $v0, 108($gp)	// gteMAC3
+	0x0000ECE4: 0x0048482C ',HH.' - max        $t1, $v0, $t0
+	0x0000ECE8: 0x0123482D '-H#.' - min        $t1, $t1, $v1
+	0x0000ECEC: 0x00491023 '#.I.' - subu       $v0, $v0, $t1
+	0x0000ECF0: 0x0002102B '+...' - sltu       $v0, $zr, $v0
+	0x0000ECF4: 0x7C41B584 '..A|' - ins        $at, $v0, 22, 1
+	0x0000ECF8: 0xAF89002C ',...' - sw         $t1, 44($gp)		// gteIR3
+	0x0000ECFC: 0x03E00008 '....' - jr         $ra
+	0x0000ED00: 0x48E1000F '...H' - mtv        $at, S330
+
+---- Добавить color vector.
+
+	v0 = cv0
+	t7 = 4096
+	Acc = mx11 * v0 + mx12 * v1 + mx13 * v2 + cv0 * 4096
+	at = 0
+	v0 = Lo
+	t2 = Hi
+	if (SF)
+		v0 = v0 >> 12
+		v0 = (v0 & 0xfffff) | ((Hi & 0xfff) << 20);
+
+loc_0000ED04:		; Refs: 0x0000EC38 
+	0x0000ED04: 0x8CE20000 '....' - lw         $v0, 0($a3)		// cv0
+	0x0000ED08: 0x240F1000 '...$' - li         $t7, 4096
+	0x0000ED0C: 0x004F001C '..O.' - madd       $v0, $t7
+	0x0000ED10: 0x24010000 '...$' - li         $at, 0
+	0x0000ED14: 0x00005010 '.P..' - mfhi       $t2
+	0x0000ED18: 0x10800003 '....' - beqz       $a0, loc_0000ED28
+	0x0000ED1C: 0x00001012 '....' - mflo       $v0
+	0x0000ED20: 0x00021303 '....' - sra        $v0, $v0, 12
+	0x0000ED24: 0x7D42FD04 '..B}' - ins        $v0, $t2, 20, 12
+
+	a2 = 2047
+	t1 = 2047 < (s32)Hi
+	t2 = (s32)Hi < -2048
+	at |= t2 << 27
+	at |= t1 << 30
+	Acc = mx21 * v0
+	gteMAC1 = v0
+	t6 = max (gteMAC1, minvalue)
+	t6 = min (32767, t6)
+	Acc = mx21 * v0 + mx23 * v2
+	v0 = gteMAC1 - t6
+	v0 = 0 < v0
+	at |= v0 << 24
+	Acc = mx21 * v0 + mx23 * v2 + mx22 * v1
+	gteIR1 = t6
+	Acc = mx21 * v0 + mx23 * v2 + mx22 * v1 + cv1 * 4096
+	Hi = t1
+	if (SF)
+		v0 = v0 >> 12
+		v0 = (v0 & 0xfffff) | ((Hi & 0xfff) << 20);
+
+loc_0000ED28:		; Refs: 0x0000ED18 
+	0x0000ED28: 0x240607FF '...$' - li         $a2, 2047
+	0x0000ED2C: 0x00CA482A '*H..' - slt        $t1, $a2, $t2
+	0x0000ED30: 0x294AF800 '..J)' - slti       $t2, $t2, -2048
+	0x0000ED34: 0x7D41DEC4 '..A}' - ins        $at, $t2, 27, 1
+	0x0000ED38: 0x7D21F784 '..!}' - ins        $at, $t1, 30, 1
+	0x0000ED3C: 0x030B0018 '....' - mult       $t8, $t3
+	0x0000ED40: 0x84AA000A '....' - lh         $t2, 10($a1)		// mx23
+	0x0000ED44: 0xAF820064 'd...' - sw         $v0, 100($gp)	// gteMAC1
+	0x0000ED48: 0x0048702C ',pH.' - max        $t6, $v0, $t0
+	0x0000ED4C: 0x006E702D '-pn.' - min        $t6, $v1, $t6
+	0x0000ED50: 0x014D001C '..M.' - madd       $t2, $t5
+	0x0000ED54: 0x004E1023 '#.N.' - subu       $v0, $v0, $t6
+	0x0000ED58: 0x0002102B '+...' - sltu       $v0, $zr, $v0
+	0x0000ED5C: 0x7C41C604 '..A|' - ins        $at, $v0, 24, 1
+	0x0000ED60: 0x84A90008 '....' - lh         $t1, 8($a1)		// mx22
+	0x0000ED64: 0x012C001C '..,.' - madd       $t1, $t4
+	0x0000ED68: 0x8CE20004 '....' - lw         $v0, 4($a3)		// cv1
+	0x0000ED6C: 0x84B8000E '....' - lh         $t8, 14($a1)		// mx32
+	0x0000ED70: 0xAF8E0024 '$...' - sw         $t6, 36($gp)		// gteIR1
+	0x0000ED74: 0x004F001C '..O.' - madd       $v0, $t7
+	0x0000ED78: 0x00004810 '.H..' - mfhi       $t1
+	0x0000ED7C: 0x10800003 '....' - beqz       $a0, loc_0000ED8C
+	0x0000ED80: 0x00001012 '....' - mflo       $v0
+	0x0000ED84: 0x00021303 '....' - sra        $v0, $v0, 12
+	0x0000ED88: 0x7D22FD04 '.."}' - ins        $v0, $t1, 20, 12
+
+	t2 = 2047 < (s32)Hi
+	t1 = (s32)Hi < -2048
+	at |= t1 << 26
+	at |= t2 << 29
+	Acc = mx32 * v1
+	gteMAC2 = v0
+	t6 = max (gteMAC2, minvalue)
+	t6 = min (32767, t6)
+	Acc = mx32 * v1 + * mx33 * v2
+	v0 = gteMAC2 - t6
+	v0 = 0 < v0
+	at |= v0 << 23
+	Acc = mx32 * v1 + * mx33 * v2 + mx31 * v0
+	gteIR2 = t6
+	Acc = mx32 * v1 + * mx33 * v2 + mx31 * v0 + cv3 * 4096
+	t1 = Hi
+	if (SF)
+		v0 = v0 >> 12
+		v0 = (v0 & 0xfffff) | ((Hi & 0xfff) << 20);
+
+loc_0000ED8C:		; Refs: 0x0000ED7C 
+	0x0000ED8C: 0x00C9502A '*P..' - slt        $t2, $a2, $t1
+	0x0000ED90: 0x2929F800 '..))' - slti       $t1, $t1, -2048
+	0x0000ED94: 0x7D21D684 '..!}' - ins        $at, $t1, 26, 1
+	0x0000ED98: 0x7D41EF44 'D.A}' - ins        $at, $t2, 29, 1
+	0x0000ED9C: 0x030C0018 '....' - mult       $t8, $t4
+	0x0000EDA0: 0x84AA0010 '....' - lh         $t2, 16($a1)		// mx33
+	0x0000EDA4: 0xAF820068 'h...' - sw         $v0, 104($gp)	// gteMAC2
+	0x0000EDA8: 0x0048702C ',pH.' - max        $t6, $v0, $t0
+	0x0000EDAC: 0x006E702D '-pn.' - min        $t6, $v1, $t6
+	0x0000EDB0: 0x014D001C '..M.' - madd       $t2, $t5
+	0x0000EDB4: 0x004E1023 '#.N.' - subu       $v0, $v0, $t6
+	0x0000EDB8: 0x0002102B '+...' - sltu       $v0, $zr, $v0
+	0x0000EDBC: 0x7C41BDC4 '..A|' - ins        $at, $v0, 23, 1
+	0x0000EDC0: 0x84A2000C '....' - lh         $v0, 12($a1)		// mx31
+	0x0000EDC4: 0x004B001C '..K.' - madd       $v0, $t3
+	0x0000EDC8: 0x8CE20008 '....' - lw         $v0, 8($a3)		// cv2
+	0x0000EDCC: 0xAF8E0028 '(...' - sw         $t6, 40($gp)		// gteIR2
+	0x0000EDD0: 0x004F001C '..O.' - madd       $v0, $t7
+	0x0000EDD4: 0x00004810 '.H..' - mfhi       $t1
+	0x0000EDD8: 0x10800003 '....' - beqz       $a0, loc_0000EDE8
+	0x0000EDDC: 0x00001012 '....' - mflo       $v0
+	0x0000EDE0: 0x00021303 '....' - sra        $v0, $v0, 12
+	0x0000EDE4: 0x7D22FD04 '.."}' - ins        $v0, $t1, 20, 12
+
+	t2 = 2047 < (s32)Hi
+	t1 = (s32)Hi < -2048
+	at |= t1 << 25
+	at |= t2 << 28
+	gteMAC3 = v0
+	t1 = max (gteMAC3, minvalue)
+	t1 = min (t1, 32767)
+	v0 = gteMAC3 - t1
+	v0 = 0 < v0
+	at = v0 << 22
+	gteIR3 = t1
+	VFPU.S330 = at
+
+loc_0000EDE8:		; Refs: 0x0000EDD8 
+	0x0000EDE8: 0x00C9502A '*P..' - slt        $t2, $a2, $t1
+	0x0000EDEC: 0x2929F800 '..))' - slti       $t1, $t1, -2048
+	0x0000EDF0: 0x7D21CE44 'D.!}' - ins        $at, $t1, 25, 1
+	0x0000EDF4: 0x7D41E704 '..A}' - ins        $at, $t2, 28, 1
+	0x0000EDF8: 0xAF82006C 'l...' - sw         $v0, 108($gp)	// gteMAC3
+	0x0000EDFC: 0x0048482C ',HH.' - max        $t1, $v0, $t0
+	0x0000EE00: 0x0123482D '-H#.' - min        $t1, $t1, $v1
+	0x0000EE04: 0x00491023 '#.I.' - subu       $v0, $v0, $t1
+	0x0000EE08: 0x0002102B '+...' - sltu       $v0, $zr, $v0
+	0x0000EE0C: 0x7C41B584 '..A|' - ins        $at, $v0, 22, 1
+	0x0000EE10: 0xAF89002C ',...' - sw         $t1, 44($gp)		// gteIR3
+	0x0000EE14: 0x03E00008 '....' - jr         $ra
+	0x0000EE18: 0x48E1000F '...H' - mtv        $at, S330
+
+
+Сборка:
+
+MVMVA:
+{
+	s64 mac[4];
+	s32 limit = ((psxRegs.code >> 10) & 1) ? 0 : -32768;
+	int shift = ((psxRegs.code >> 19) & 1) * 12;
+	gteFLAG = 0;
+
+	if (cv == 3) {
+		mac[1] = mx11 * v0 + mx12 * v1 + mx13 * v2;
+		mac[2] = mx21 * v0 + mx22 * v1 + mx23 * v2;
+		mac[3] = mx31 * v0 + mx32 * v1 + mx33 * v2;
+
+		gteMAC1 = mac[1] >> shift;
+		gteMAC2 = mac[2] >> shift;
+		gteMAC3 = mac[3] >> shift;
+
+		gteIR1 = min (32767, max (gteMAC1, limit) );
+		gteIR2 = min (32767, max (gteMAC2, limit) );
+		gteIR3 = min (32767, max (gteMAC3, limit) );
+
+		gteFLAG |= ((gteMAC1 - gteIR1) != 0) << 24;
+		gteFLAG |= ((gteMAC2 - gteIR2) != 0) << 23;
+		gteFLAG |= ((gteMAC3 - gteIR3) != 0) << 22;
+	}
+	else {
+		mac[1] = mx11 * v0 + mx12 * v1 + mx13 * v2 + cv0 << 12;
+		mac[2] = mx21 * v0 + mx22 * v1 + mx23 * v2 + cv1 << 12;
+		mac[3] = mx31 * v0 + mx32 * v1 + mx33 * v2 + cv2 << 12;
+
+		gteMAC1 = mac[1] >> shift;
+		gteMAC2 = mac[2] >> shift;
+		gteMAC3 = mac[3] >> shift;
+
+		gteIR1 = min (32767, max (gteMAC1, limit) );
+		gteIR2 = min (32767, max (gteMAC2, limit) );
+		gteIR3 = min (32767, max (gteMAC3, limit) );
+
+		gteFLAG |= (((mac[1] >> 32) > 2047) << 30) | (((mac[1] >> 32) < -2048) << 27);
+		gteFLAG |= (((mac[2] >> 32) > 2047) << 29) | (((mac[2] >> 32) < -2048) << 26);
+		gteFLAG |= (((mac[3] >> 32) > 2047) << 28) | (((mac[3] >> 32) < -2048) << 25);
+
+		gteFLAG |= ((gteMAC1 - gteIR1) != 0) << 24;
+		gteFLAG |= ((gteMAC2 - gteIR2) != 0) << 23;
+		gteFLAG |= ((gteMAC3 - gteIR3) != 0) << 22;
+	}
+}

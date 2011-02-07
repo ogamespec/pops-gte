@@ -1,0 +1,247 @@
+INTPL:
+
+Pcsx:
+	gteMAC1 = gteIR1 + ((gteIR0*(signed short)FlimA1S(gteRFC-gteIR1))>>12);
+	gteMAC2 = gteIR2 + ((gteIR0*(signed short)FlimA2S(gteGFC-gteIR2))>>12);
+	gteMAC3 = gteIR3 + ((gteIR0*(signed short)FlimA3S(gteBFC-gteIR3))>>12);
+	gteFLAG = 0;
+
+	MAC2IR();
+	gteRGB0 = gteRGB1;
+	gteRGB1 = gteRGB2;
+
+	gteR2 = FlimB1(gteMAC1 >> 4);
+	gteG2 = FlimB2(gteMAC2 >> 4);
+	gteB2 = FlimB3(gteMAC3 >> 4); gteCODE2 = gteCODE;
+
+	SUM_FLAG
+
+Pops:
+	C700 = [gteRGB0] [gteRGB1] [gteRGB2] [xxx]
+
+	t6 = gteIR0
+	t0 = gteIR1
+	t3 = gteRFC
+
+	v0 = -32768
+	v1 = 32767
+	t6 = gteIR0 << 12
+	t3 = gteRFC - gteIR1
+	t2 = max (t3, -32768)
+	t2 = min (t2, 32767)
+	t3 = t3 - t2
+	at = 0 < t3
+	at |= at << 24
+	t2 = t2 << 8
+	Acc = t2 * (gteIR0 << 12)
+
+	0x0000E7FC: 0xDB9C0050 'P...' - lv.q       C700, 80($gp)
+	0x0000E800: 0x8F8E0020 ' ...' - lw         $t6, 32($gp)		// gteIR0
+	0x0000E804: 0x8F880024 '$...' - lw         $t0, 36($gp)		// gteIR1
+	0x0000E808: 0x8F8B00D4 '....' - lw         $t3, 212($gp)	// gteRFC
+	0x0000E80C: 0x24028000 '...$' - li         $v0, -32768
+	0x0000E810: 0x24037FFF '...$' - li         $v1, 32767
+	0x0000E814: 0x000E7300 '.s..' - sll        $t6, $t6, 12
+	0x0000E818: 0x01685823 '#Xh.' - subu       $t3, $t3, $t0
+	0x0000E81C: 0x0162502C ',Pb.' - max        $t2, $t3, $v0
+	0x0000E820: 0x0143502D '-PC.' - min        $t2, $t2, $v1
+	0x0000E824: 0x016A5823 '#Xj.' - subu       $t3, $t3, $t2
+	0x0000E828: 0x000B082B '+...' - sltu       $at, $zr, $t3
+	0x0000E82C: 0x00010E00 '....' - sll        $at, $at, 24
+	0x0000E830: 0x000A5200 '.R..' - sll        $t2, $t2, 8
+	0x0000E834: 0x014E0018 '..N.' - mult       $t2, $t6
+
+	a1 = 255
+	t1 = gteRGB
+	a3 = gteGFC
+	t2 = Hi
+	t2 = t2 + gteIR1
+	gteMAC1 = t2
+	t3 = max (gteMAC1, -32768)
+	t3 = min (t3, 32767)
+	t2 = gteMAC1 - t3
+	t4 = 0 < t2
+	t4 <<= 24
+	t0 = gteIR2
+	gteIR1 = t3
+	t3 = gteIR1 >> 4
+	a3 = gteGFC - gteIR2
+	t2 = max (a3, -32768)
+	t2 = min (t2, 32767)
+	a3 = a3 - t2
+	a3 = 0 < a3
+	at |= (a3 << 23)
+	t2 = t2 << 8
+	Acc = t2 * (gteIR0 << 12)
+	t2 = 255 < (gteIR1 >> 4)
+	t3 = max (0, (gteIR1 >> 4))
+	t3 = min (255, t3)
+	at |= (t2 << 21)
+	t1 = (t1 & ~0xff) | (t3 & 0xff)		// Red
+
+	0x0000E838: 0x240500FF '...$' - li         $a1, 255
+	0x0000E83C: 0x8F890018 '....' - lw         $t1, 24($gp)		// gteRGB
+	0x0000E840: 0x8F8700D8 '....' - lw         $a3, 216($gp)	// gteGFC
+	0x0000E844: 0x00005010 '.P..' - mfhi       $t2
+	0x0000E848: 0x01485021 '!PH.' - addu       $t2, $t2, $t0
+	0x0000E84C: 0xAF8A0064 'd...' - sw         $t2, 100($gp)	// gteMAC1
+	0x0000E850: 0x0142582C ',XB.' - max        $t3, $t2, $v0
+	0x0000E854: 0x0163582D '-Xc.' - min        $t3, $t3, $v1
+	0x0000E858: 0x014B5023 '#PK.' - subu       $t2, $t2, $t3
+	0x0000E85C: 0x000A602B '+`..' - sltu       $t4, $zr, $t2
+	0x0000E860: 0x000C6600 '.f..' - sll        $t4, $t4, 24
+	0x0000E864: 0x8F880028 '(...' - lw         $t0, 40($gp)		// gteIR2
+	0x0000E868: 0xAF8B0024 '$...' - sw         $t3, 36($gp)		// gteIR1
+	0x0000E86C: 0x000B5903 '.Y..' - sra        $t3, $t3, 4
+	0x0000E870: 0x00E83823 '#8..' - subu       $a3, $a3, $t0
+	0x0000E874: 0x00E2502C ',P..' - max        $t2, $a3, $v0
+	0x0000E878: 0x0143502D '-PC.' - min        $t2, $t2, $v1
+	0x0000E87C: 0x00EA3823 '#8..' - subu       $a3, $a3, $t2
+	0x0000E880: 0x0007382B '+8..' - sltu       $a3, $zr, $a3
+	0x0000E884: 0x7CE1BDC4 '...|' - ins        $at, $a3, 23, 1
+	0x0000E888: 0x000A5200 '.R..' - sll        $t2, $t2, 8
+	0x0000E88C: 0x014E0018 '..N.' - mult       $t2, $t6
+	0x0000E890: 0x00AB502B '+P..' - sltu       $t2, $a1, $t3
+	0x0000E894: 0x000B582C ',X..' - max        $t3, $zr, $t3
+	0x0000E898: 0x00AB582D '-X..' - min        $t3, $a1, $t3
+	0x0000E89C: 0x7D41AD44 'D.A}' - ins        $at, $t2, 21, 1
+	0x0000E8A0: 0x7D693804 '.8i}' - ins        $t1, $t3, 0, 8
+
+	a3 = gteBFC
+	t2 = Hi
+	t2 = Hi + gteIR2
+	gteMAC2 = t2
+	t3 = max (gteMAC2, -32768)
+	t3 = min (t3, 32767)
+	t2 = gteMAC2 - t3
+	t2 = 0 < t2
+	t4 |= (t2 << 23)
+	t0 = gteIR3
+	gteIR2 = t3
+	t3 = gteIR2 >> 4
+	a3 = gteBFC - gteIR3
+	t2 = max (a3, -32768)
+	t2 = min (t2, 32767)
+	a3 = a3 - t2
+	a3 = 0 < a3
+	at |= a3 << 22
+	t2 = t2 << 8
+	Acc = t2 * (gteIR0 << 12)
+	t2 = 255 < t3
+	t3 = max (0, t3)
+	t3=  min (255, t3)
+	at |= (t2 << 20)
+	t1 = (t1 & ~0xff00) | ((t3 & 0xff) << 8)	// Green
+
+
+	0x0000E8A4: 0x8F8700DC '....' - lw         $a3, 220($gp)	// gteBFC
+	0x0000E8A8: 0x00005010 '.P..' - mfhi       $t2
+	0x0000E8AC: 0x01485021 '!PH.' - addu       $t2, $t2, $t0
+	0x0000E8B0: 0xAF8A0068 'h...' - sw         $t2, 104($gp)	// gteMAC2
+	0x0000E8B4: 0x0142582C ',XB.' - max        $t3, $t2, $v0
+	0x0000E8B8: 0x0163582D '-Xc.' - min        $t3, $t3, $v1
+	0x0000E8BC: 0x014B5023 '#PK.' - subu       $t2, $t2, $t3
+	0x0000E8C0: 0x000A502B '+P..' - sltu       $t2, $zr, $t2
+	0x0000E8C4: 0x7D4CBDC4 '..L}' - ins        $t4, $t2, 23, 1
+	0x0000E8C8: 0x8F88002C ',...' - lw         $t0, 44($gp)		// gteIR3
+	0x0000E8CC: 0xAF8B0028 '(...' - sw         $t3, 40($gp)		// gteIR2
+	0x0000E8D0: 0x000B5903 '.Y..' - sra        $t3, $t3, 4
+	0x0000E8D4: 0x00E83823 '#8..' - subu       $a3, $a3, $t0
+	0x0000E8D8: 0x00E2502C ',P..' - max        $t2, $a3, $v0
+	0x0000E8DC: 0x0143502D '-PC.' - min        $t2, $t2, $v1
+	0x0000E8E0: 0x00EA3823 '#8..' - subu       $a3, $a3, $t2
+	0x0000E8E4: 0x0007382B '+8..' - sltu       $a3, $zr, $a3
+	0x0000E8E8: 0x7CE1B584 '...|' - ins        $at, $a3, 22, 1
+	0x0000E8EC: 0x000A5200 '.R..' - sll        $t2, $t2, 8
+	0x0000E8F0: 0x014E0018 '..N.' - mult       $t2, $t6
+	0x0000E8F4: 0x00AB502B '+P..' - sltu       $t2, $a1, $t3
+	0x0000E8F8: 0x000B582C ',X..' - max        $t3, $zr, $t3
+	0x0000E8FC: 0x00AB582D '-X..' - min        $t3, $a1, $t3
+	0x0000E900: 0x7D41A504 '..A}' - ins        $at, $t2, 20, 1
+	0x0000E904: 0x7D697A04 '.zi}' - ins        $t1, $t3, 8, 8
+
+	t2 = Hi
+	t2 = Hi + gteIR3
+	gteMAC3 = t2
+	t3 = max(gteMAC3, -32768)
+	t3 = min(t3, 32767)
+	t2 = gteMAC3 - t3
+	t2 = 0 < t2
+	t4 |= t2 << 22
+	gteIR3 = t3
+	t2 = gteIR3 >> 4
+	t3 = 255 < t2
+	t2 = max (0, t2)
+	t2 = min (255, t2)
+	at |= t3 << 19
+	t1 = (t1 & ~0xff0000) | ((t2 & 0xff) << 16)	// Blue
+
+	[RGB0] [RGB1] [RGB2] [xxx] <= [RGB1] [RGB2] [t1] [xxx]
+	at |= t4
+	FLAG = at
+
+
+	0x0000E908: 0x00005010 '.P..' - mfhi       $t2
+	0x0000E90C: 0x01485021 '!PH.' - addu       $t2, $t2, $t0
+	0x0000E910: 0xAF8A006C 'l...' - sw         $t2, 108($gp)	// gteMAC3
+	0x0000E914: 0x0142582C ',XB.' - max        $t3, $t2, $v0
+	0x0000E918: 0x0163582D '-Xc.' - min        $t3, $t3, $v1
+	0x0000E91C: 0x014B5023 '#PK.' - subu       $t2, $t2, $t3
+	0x0000E920: 0x000A502B '+P..' - sltu       $t2, $zr, $t2
+	0x0000E924: 0x7D4CB584 '..L}' - ins        $t4, $t2, 22, 1
+	0x0000E928: 0xAF8B002C ',...' - sw         $t3, 44($gp)		// gteIR3
+	0x0000E92C: 0x000B5103 '.Q..' - sra        $t2, $t3, 4
+	0x0000E930: 0x00AA582B '+X..' - sltu       $t3, $a1, $t2
+	0x0000E934: 0x000A502C ',P..' - max        $t2, $zr, $t2
+	0x0000E938: 0x00AA502D '-P..' - min        $t2, $a1, $t2
+	0x0000E93C: 0x7D619CC4 '..a}' - ins        $at, $t3, 19, 1
+	0x0000E940: 0x7D49BC04 '..I}' - ins        $t1, $t2, 16, 8
+	0x0000E944: 0x48E9007C '|..H' - mtv        $t1, S703
+	0x0000E948: 0x002C0825 '%.,.' - or         $at, $at, $t4
+	0x0000E94C: 0xF79C0058 'X...' - svl.q      C700, 88($gp)
+	0x0000E950: 0x03E00008 '....' - jr         $ra
+	0x0000E954: 0x48E1000F '...H' - mtv        $at, S330
+
+
+—борка:
+
+{
+	u32 rgb = gteRGB;
+	int color;
+
+	gteFLAG = 0;
+
+	gteMAC1 = min ( max(gteRFC-gteIR1, -32768), 32767);
+	gteFLAG |=  (  ((gteRFC-gteIR1) - gteMAC1) != 0 ) << 24;
+	gteMAC1	= (( gteIR0 * gteMAC1) >> 12) + gteIR1;
+	gteMAC2 = min ( max(gteGFC-gteIR2, -32768), 32767);
+	gteFLAG |=  (  ((gteGFC-gteIR2) - gteMAC2) != 0 ) << 23;
+	gteMAC2	= (( gteIR0 * gteMAC2) >> 12) + gteIR2;
+	gteMAC3 = min ( max(gteBFC-gteIR3, -32768), 32767);
+	gteFLAG |=  (  ((gteBFC-gteIR3) - gteMAC1) != 0 ) << 22;
+	gteMAC3	= (( gteIR0 * gteMAC3) >> 12) + gteIR3;
+
+	gteFLAG |= ((u32)(gteIR1 >> 4) > 255) << 21;
+	color = min ( 255, max (0, gteIR1 >> 4) );
+	rgb = (rgb & ~0xff) | (color & 0xff);		// Red
+	gteFLAG |= ((u32)(gteIR2 >> 4) > 255) << 20;
+	color = min ( 255, max (0, gteIR2 >> 4) );
+	rgb = (rgb & ~0xff00) | ((color & 0xff) << 8);	// Green
+	gteFLAG |= ((u32)(gteIR3 >> 4) > 255) << 19;
+	color = min ( 255, max (0, gteIR3 >> 4) );
+	rgb = (rgb & ~0xff0000) | ((color & 0xff) << 16);	// Blue
+
+	gteIR1 = min (max (gteMAC1, -32768), 32767);
+	gteFLAG |= ( (gteMAC1 - gteIR1) != 0 ) << 24;
+	gteIR2 = min (max (gteMAC2, -32768), 32767);
+	gteFLAG |= ( (gteMAC2 - gteIR2) != 0 ) << 23;
+	gteIR3 = min (max (gteMAC3, -32768), 32767);
+	gteFLAG |= ( (gteMAC3 - gteIR3) != 0 ) << 22;
+
+	gteRGB0 = gteRGB1;
+	gteRGB1 = gteRGB2;
+	gteRGB2 = rgb;
+}
+
+вообще MAC вычисл€етс€ так:
+s64 mac = gteIR1 + ( ( (LIM(gteRFC - gteIR1) << 8) * (gteIR0 << 12) ) >> 32);
