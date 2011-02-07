@@ -1,0 +1,55 @@
+
+module_start ()
+{
+    SysMemUserForUser_7591C7DB ( 0x03050210 );
+    SysMemUserForUser_F77D77CB ( 0x00030306 );
+
+    thread = sceKernelCreateThread ( "popsmain", PopsMain, 17, 0x40000, 0x80004000, 0 );
+    sceKernelStartThread (thread, 0, 0);
+    return 0; 
+}
+
+sub_0068
+void PopsMain ()
+{
+    static char popsversion[64] = "branches/pops-352/src(r5285)";
+
+    strncpy ( 0x00013FC0, popsversion, 64 );
+
+    *(u8 *)(0x13F00) = 0xff;
+
+    cb = sceKernelCreateCallback ( "exitCB", PopsExitCallback, 0, 0 );
+    sceKernelRegisterExitCallback ( cb );
+
+    cb = sceKernelCreateCallback ( "powerCB", sub_2308C, 0, 0 );
+    scePowerRegisterCallback ( "powerCB", cb );
+
+    // Initialize Pops subsystems
+    
+    if ( AllocPSXMemory ( -1 ) < 0 ) scePopsMan_0090B2C8 ( 0x80000004 );
+
+    if ( sub_000135D0 () < 0 ) scePopsMan_0090B2C8 ( 0x80000004 );
+
+    if (sub_0001E520 ()) scePopsMan_0090B2C8 ( 0x80000004 );
+
+    if ( sub_00012AE8 () ) scePopsMan_0090B2C8 ( 0x80000004 );
+
+    if ( sub_00015010 () < 0 ) scePopsMan_0090B2C8 ( 0x80000004 );
+
+    if ( sub_00014C1C () < 0 ) scePopsMan_0090B2C8 ( 0x80000004 );
+
+    PSXInit ();
+    sub_0002137C (0);
+    CpuMainLoop ();
+
+    sceImpose_A9884B00 (0);
+    sceKernelExitGame ();
+}
+
+sub_01CC:
+PopsExitCallback ()
+{
+    sceImpose_A9884B00 (0);
+    sceKernelExitGame ();
+    return 0
+}
