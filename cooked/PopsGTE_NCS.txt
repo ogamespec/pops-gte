@@ -1,0 +1,321 @@
+NCS: Normal Color Single
+
+Pcsx:
+
+#define GTE_NCS(vn)  \
+        gte_LL1 = F12limA1U((gteL11*gteVX##vn + gteL12*gteVY##vn + gteL13*gteVZ##vn) >> 12); \
+        gte_LL2 = F12limA2U((gteL21*gteVX##vn + gteL22*gteVY##vn + gteL23*gteVZ##vn) >> 12); \
+        gte_LL3 = F12limA3U((gteL31*gteVX##vn + gteL32*gteVY##vn + gteL33*gteVZ##vn) >> 12); \
+        gteMAC1 = F12limA1U(gteRBK + ((gteLR1*gte_LL1 + gteLR2*gte_LL2 + gteLR3*gte_LL3) >> 12)); \
+        gteMAC2 = F12limA2U(gteGBK + ((gteLG1*gte_LL1 + gteLG2*gte_LL2 + gteLG3*gte_LL3) >> 12)); \
+        gteMAC3 = F12limA3U(gteBBK + ((gteLB1*gte_LL1 + gteLB2*gte_LL2 + gteLB3*gte_LL3) >> 12));
+
+void gteNCS() {
+        s32 gte_LL1,gte_LL2,gte_LL3;
+
+        gteFLAG = 0;
+
+        GTE_NCS(0);
+
+        gteRGB0 = gteRGB1;
+        gteRGB1 = gteRGB2;
+        gteR2 = FlimB1(gteMAC1 >> 4);
+        gteG2 = FlimB2(gteMAC2 >> 4);
+        gteB2 = FlimB3(gteMAC3 >> 4); gteCODE2 = gteCODE;
+
+        MAC2IR1();
+
+        SUM_FLAG
+}
+
+Pops:
+
+svr.q : 
+        Mem = 1234.  Reg = abcd
+
+        aligned on 16-byte boundary
+        +0   abcd
+        +4   1abc
+        +8   12ab
+        +12  123a
+
+------------------------------------------------------------------------------------------------
+
+VFPU 4:
+        [256f] [32f] [-8f] [7.999756f]
+        [128f] [16f] [-8f] [7.999756f]
+        [64f]  [8f]  [-8f] [7.999756f]
+        [0]    [0]   [0]   [0]
+
+2:
+        [L11L12] [L33] [VXY0] []
+        [L13L21] [RBK] [VZ0]  []
+        [L22L23] [GBK] [VXY1] []
+        [L31L32] [BBK] [VZ1]  []
+
+        0x0000DCB0: 0xDB8800A0 '....' - lv.q       C200, 160($gp)       // L11L12
+        0x0000DCB4: 0xDB8900B0 '....' - lv.q       C210, 176($gp)       // L33
+        0x0000DCB8: 0xDB8A0000 '....' - lv.q       C220, 0($gp)
+
+0:
+        [F L11 >> 12] [F L21 >> 12] [F L31 >> 12] []
+        [F L12 >> 12] [F L22 >> 12] [F L32 >> 12] []
+        [F L13 >> 12] [F L23 >> 12] [F L33 >> 12] []
+        [F L21 >> 12] [F L32 >> 12] []            []
+
+1:
+        [F VX0 >> 12] [] [] []
+        [F VY0 >> 12] [] [] []
+        [F VZ0 >> 12] [] [] []
+        []            [] [] []
+
+        0x0000DCBC: 0xD03B0880 '..;.' - vs2i.p     C000, C200
+        0x0000DCC0: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
+        0x0000DCC4: 0xD03B0A84 '..;.' - vs2i.p     C100, C220
+        0x0000DCC8: 0xD29C8080 '....' - vi2f.q     C000, C000, 28
+        0x0000DCCC: 0xD29C8181 '....' - vi2f.q     C010, C010, 28
+        0x0000DCD0: 0xD28C0942 'B...' - vi2f.s     S022, S210, 12
+        0x0000DCD4: 0xD29C8404 '....' - vi2f.t     C100, C100, 28
+        0x0000DCD8: 0xD0004182 '.A..' - vmov.p     C020, C012
+        0x0000DCDC: 0xD0002141 'A!..' - vmov.s     S012, S011
+        0x0000DCE0: 0xD0000121 '!...' - vmov.s     S011, S010
+        0x0000DCE4: 0xD0006001 '.`..' - vmov.s     S010, S003
+
+6:
+        [F LL1 = F L11 >> 12 * F VX0 >> 12 + F L12 >> 12 * F VY0 >> 12 + F L13 >> 12 * F VZ0 >> 12] [] [] []
+        [F LL2 = F L21 >> 12 * F VX0 >> 12 + F L22 >> 12 * F VY0 >> 12 + F L23 >> 12 * F VZ0 >> 12] [] [] []
+        [F LL3 = F L31 >> 12 * F VX0 >> 12 + F L32 >> 12 * F VY0 >> 12 + F L33 >> 12 * F VZ0 >> 12] [] [] []
+        [] [] [] []
+
+        0x0000DCE8: 0xF1048018 '....' - vtfm3.t    C600, M000, C100
+
+3:
+        [] [] [] [0]
+        [] [] [] [0]
+        [] [] [] [0]
+        [] [] [] []
+
+5:
+        [F C_LL1 = min(max(LL1,0), 7.999756f)] [] [] []
+        [F C_LL2 = min(max(LL2,0), 7.999756f)] [] [] []
+        [F C_LL3 = min(max(LL3,0), 7.999756f)] [] [] []
+        []                                     [] [] []
+
+        CC[0] = C_LL1 != LL1
+        CC[1] = C_LL2 != LL2
+        CC[2] = C_LL3 != LL3
+
+3:
+        [] [] [] [F LL1CHECK = C_LL1 != LL1 ? 0x100f : 0]
+        [] [] [] [F LL2CHECK = C_LL2 != LL2 ? 0x80f : 0]
+        [] [] [] [F LL3CHECK = C_LL3 != LL3 ? 0x40f : 0]
+        [] [] [] []
+
+        0x0000DCEC: 0xD006800F '....' - vzero.t    C330
+        0x0000DCF0: 0x6DB39814 '...m' - vmax.t     C500, C600, R403
+        0x0000DCF4: 0x6D139414 '...m' - vmin.t     C500, C500, C430
+        0x0000DCF8: 0x6C189405 '...l' - vcmp.t     NE, C500, C600
+        0x0000DCFC: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+
+2:
+        [LR1LR2] [L33] [VXY0] [LB3]
+        [LR3LG1] [RBK] [VZ0]  [RFC]
+        [LG2LG3] [GBK] [VXY1] [GFC]
+        [LB1LB2] [BBK] [VZ1]  [BFC]
+
+        0x0000DD00: 0xDB8800C0 '....' - lv.q       C200, 192($gp)       // LR1LR2
+        0x0000DD04: 0xDB8B00D0 '....' - lv.q       C230, 208($gp)       // LB3, RFC
+
+0:
+        [F LR1 >> 12] [F LG1 >> 12] [F LB1 >> 12] []
+        [F LR2 >> 12] [F LG2 >> 12] [F LB2 >> 12] []
+        [F LR3 >> 12] [F LG3 >> 12] [F LB3 >> 12] []
+        [F RBK >> 12] [F GBK >> 12] [F BBK >> 12] []
+
+        0x0000DD08: 0xD03B0880 '..;.' - vs2i.p     C000, C200
+        0x0000DD0C: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
+        0x0000DD10: 0xD29C8080 '....' - vi2f.q     C000, C000, 28
+        0x0000DD14: 0xD29C8181 '....' - vi2f.q     C010, C010, 28
+        0x0000DD18: 0xD28C0B42 'B...' - vi2f.s     S022, S230, 12
+        0x0000DD1C: 0xD0004182 '.A..' - vmov.p     C020, C012
+        0x0000DD20: 0xD0002141 'A!..' - vmov.s     S012, S011
+        0x0000DD24: 0xD0000121 '!...' - vmov.s     S011, S010
+        0x0000DD28: 0xD0006001 '.`..' - vmov.s     S010, S003
+        0x0000DD2C: 0xD28CC923 '#...' - vi2f.t     R003, C211, 12
+
+2:
+        [F MAC1 = LR1 >> 12 * C_LL1 + F LR2 >> 12 * C_LL2 + F LR3 >> 12 * C_LL3 + F RBK >> 12] [L33] [VXY0] [LB3]
+        [F MAC2 = LG1 >> 12 * C_LL1 + F LG2 >> 12 * C_LL2 + F LG3 >> 12 * C_LL3 + F GBK >> 12] [RBK] [VZ0]  [RFC]
+        [F MAC3 = LB1 >> 12 * C_LL1 + F LB2 >> 12 * C_LL2 + F LB3 >> 12 * C_LL3 + F BBK >> 12] [GBK] [VXY1] [GFC]
+        [мусор] [BBK] [VZ1]  [BFC]
+
+        0x0000DD30: 0xF1948008 '....' - vhtfm4.q   C200, M000, C500
+
+0:
+        [F LR1 >> 12] [F LG1 >> 12] [F LB1 >> 12] []
+        [F LR2 >> 12] [F LG2 >> 12] [F LB2 >> 12] []
+        [F LR3 >> 12] [F LG3 >> 12] [F LB3 >> 12] []
+        [F RBK >> 12] [F GBK >> 12] [F BBK >> 12] [RGB >> 1]
+
+        0x0000DD34: 0x8F840018 '....' - lw         $a0, 24($gp)         // RGB
+        0x0000DD38: 0xBFEA0040 '@...' - cache      0xA, 64($ra)         // SCE_ALLEGREX_CACHEOP_FILL_I 0x0A /* Fill (I) 
+        0x0000DD3C: 0x00042042 'B ..' - srl        $a0, $a0, 1
+        0x0000DD40: 0x48E40063 'c..H' - mtv        $a0, S033
+
+7:
+        [] [] [RGB0] []
+        [] [] [RGB1] []
+        [] [] [RGB2] []
+        [] [] [RES1] []
+
+0:
+        [F CLMAC1 = CLAMP(MAC1, 0.0f, 1.0f)] [I MAC1 * 2^12] [F C_MAC1 = min (max(MAC1,0), 7.999756f)] []
+        [F CLMAC2 = CLAMP(MAC2, 0.0f, 1.0f)] [I MAC2 * 2^12] [F C_MAC2 = min (max(MAC2,0), 7.999756f)] []
+        [F CLMAC3 = CLAMP(MAC3, 0.0f, 1.0f)] [I MAC3 * 2^12] [F C_MAC3 = min (max(MAC3,0), 7.999756f)] []
+        [F RBK / 2^12]              [F GBK / 2^12]  [F BBK / 2^12]                            [RGB >> 1]
+
+        0x0000DD44: 0xDB9E0050 'P...' - lv.q       C720, 80($gp)        // RGB0
+        0x0000DD48: 0x6DB38802 '...m' - vmax.t     C020, C200, R403
+        0x0000DD4C: 0xD20C8801 '....' - vf2in.t    C010, C200, 12
+        0x0000DD50: 0xD0048800 '....' - vsat0.t    C000, C200
+        0x0000DD54: 0x6D138202 '...m' - vmin.t     C020, C020, C430
+
+        gteMAC1 = I MAC1 * 2^12
+        gteMAC2 = I MAC2 * 2^12
+        gteMAC3 = I MAC3 * 2^12
+
+        0x0000DD58: 0xF7810066 'f...' - svr.q      C010, 100($gp)       // MAC1 +4
+
+        CC[0] = MAC1 != C_MAC1
+        CC[1] = MAC2 != C_MAC2
+        CC[2] = MAC3 != C_MAC3
+
+0:
+        [F CLMAC1 = CLAMP(MAC1, 0.0f, 1.0f)] [I MAC1 * 2^12] [I C_MAC1 * 2^12] [I MAC1 * 2^31]
+        [F CLMAC2 = CLAMP(MAC2, 0.0f, 1.0f)] [I MAC2 * 2^12] [I C_MAC2 * 2^12] [I MAC2 * 2^31]
+        [F CLMAC3 = CLAMP(MAC3, 0.0f, 1.0f)] [I MAC3 * 2^12] [I C_MAC3 * 2^12] [I MAC3 * 2^31]
+        [F RBK / 2^12]              [F GBK / 2^12]  [F BBK / 2^12]             [RGB >> 1]
+
+3:
+        [] [] [] [F A1U = MAC1 != C_MAC1 ? 0x100f : LL1CHECK]
+        [] [] [] [F A2U = MAC2 != C_MAC2 ? 0x80f : LL2CHECK]
+        [] [] [] [F A3U = MAC3 != C_MAC3 ? 0x40f : LL3CHECK]
+        [] [F A1U + A2U + A3U] [F A1U + A2U + A3U] [F A1U + A2U + A3U]
+
+        CC[0] = MAC1 != CLMAC1
+        CC[1] = MAC2 != CLMAC2
+        CC[2] = MAC3 != CLMAC3
+
+        0x0000DD5C: 0x6C028805 '...l' - vcmp.t     NE, C200, C020
+        0x0000DD60: 0xD20C8202 '....' - vf2in.t    C020, C020, 12
+        0x0000DD64: 0xD21F8803 '....' - vf2in.t    C030, C200, 31
+        0x0000DD68: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+        0x0000DD6C: 0x6C008805 '...l' - vcmp.t     NE, C200, C000
+        0x0000DD70: 0xD0468F6F 'o.F.' - vfad.t     R313, C330
+
+        gteIR1 = I C_MAC1 * 2^12
+        gteIR2 = I C_MAC2 * 2^12
+        gteIR3 = I C_MAC3 * 2^12
+
+        0x0000DD74: 0xF7820026 '&...' - svr.q      C020, 36($gp)        // IR1 +4
+
+3:
+        [] [] [] [F B1 = MAC1 != CLMAC1 ? 0x20f : 0]
+        [] [] [] [F B2 = MAC2 != CLMAC2 ? 0x10f : 0]
+        [] [] [] [F B3 = MAC3 != CLMAC3 ? 0x08f : 0]
+        [] [F A1U + A2U + A3U] [F A1U + A2U + A3U] [F A1U + A2U + A3U]
+
+        0x0000DD78: 0xD006800F '....' - vzero.t    C330
+        0x0000DD7C: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
+
+3:
+        [] [] [] [F B1 + B2 + B3 + A1U + A2U + A3U]
+        [] [] [] [F B1 + B2 + B3 + A1U + A2U + A3U]
+        [] [] [] [F B1 + B2 + B3 + A1U + A2U + A3U]
+        [] [F A1U + A2U + A3U] [F A1U + A2U + A3U] [F B1 + B2 + B3 + A1U + A2U + A3U]
+
+        0x0000DD80: 0xD0468F8F '..F.' - vfad.q     C330, C330
+
+        u32 rgb = ( ([RGB >> 1] >> 23) << 24 ) |
+                  ( ([I MAC3 * 2^31] >> 23) << 16) |
+                  ( ([I MAC2 * 2^31] >> 23) << 8 ) |
+                  (  [I MAC1 * 2^31] >> 23 );
+
+7:
+        [] [] [RGB0] []
+        [] [] [RGB1] []
+        [rgb] [rgb] [rgb] [rgb]
+        [] [] [RES1] []
+
+        0x0000DD84: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
+
+        gteRGB0 = gteRGB1
+        gteRGB1 = gteRGB2
+        gteRGB2 = ( ([RGB >> 1] >> 23) << 24 ) |
+                  ( ([I MAC3 * 2^31] >> 23) << 16) |
+                  ( ([I MAC2 * 2^31] >> 23) << 8 ) |
+                  (  [I MAC1 * 2^31] >> 23 );
+
+        0x0000DD88: 0xF79E0058 'X...' - svl.q      C720, 88($gp)        // RGB2 +8
+        0x0000DD8C: 0x03E00008 '....' - jr         $ra
+
+        S330 = I floor( (F B1 + B2 + B3 + A1U + A2U + A3U) * 2^16 )
+
+        0x0000DD90: 0xD2700F0F '..p.' - vf2id.s    S330, S330, 16
+
+------------------------------------------------------------------------------------------------------------
+
+—борка:
+
+        F LL1 = F L11 >> 12 * F VX0 >> 12 + F L12 >> 12 * F VY0 >> 12 + F L13 >> 12 * F VZ0 >> 12
+        F LL2 = F L21 >> 12 * F VX0 >> 12 + F L22 >> 12 * F VY0 >> 12 + F L23 >> 12 * F VZ0 >> 12
+        F LL3 = F L31 >> 12 * F VX0 >> 12 + F L32 >> 12 * F VY0 >> 12 + F L33 >> 12 * F VZ0 >> 12
+
+        F C_LL1 = min(max(LL1,0), 7.999756f)
+        F C_LL2 = min(max(LL2,0), 7.999756f)
+        F C_LL3 = min(max(LL3,0), 7.999756f)
+
+        F LL1CHECK = C_LL1 != LL1 ? 0x100f : 0
+        F LL2CHECK = C_LL2 != LL2 ? 0x80f : 0
+        F LL3CHECK = C_LL3 != LL3 ? 0x40f : 0
+
+--------------
+
+        F MAC1 = LR1 / 2^28 * C_LL1 + F LR2 / 2^28 * C_LL2 + F LR3 / 2^28 * C_LL3 + F RBK / 2^12
+        F MAC2 = LG1 / 2^28 * C_LL1 + F LG2 / 2^28 * C_LL2 + F LG3 / 2^28 * C_LL3 + F GBK / 2^12
+        F MAC3 = LB1 / 2^28 * C_LL1 + F LB2 / 2^28 * C_LL2 + F LB3 / 2^12 * C_LL3 + F BBK / 2^12
+
+        F CLMAC1 = CLAMP(MAC1, 0.0f, 1.0f)
+        F CLMAC2 = CLAMP(MAC2, 0.0f, 1.0f)
+        F CLMAC3 = CLAMP(MAC3, 0.0f, 1.0f)
+
+        F C_MAC1 = min (max(MAC1,0), 7.999756f)
+        F C_MAC2 = min (max(MAC2,0), 7.999756f)
+        F C_MAC3 = min (max(MAC3,0), 7.999756f)
+
+        gteMAC1 = I MAC1 * 2^12
+        gteMAC2 = I MAC2 * 2^12
+        gteMAC3 = I MAC3 * 2^12
+
+        F A1U = MAC1 != C_MAC1 ? 0x100f : LL1CHECK
+        F A2U = MAC2 != C_MAC2 ? 0x80f : LL2CHECK
+        F A3U = MAC3 != C_MAC3 ? 0x40f : LL3CHECK
+
+        gteIR1 = I C_MAC1 * 2^12
+        gteIR2 = I C_MAC2 * 2^12
+        gteIR3 = I C_MAC3 * 2^12
+
+        F B1 = MAC1 != CLMAC1 ? 0x20f : 0
+        F B2 = MAC2 != CLMAC2 ? 0x10f : 0
+        F B3 = MAC3 != CLMAC3 ? 0x08f : 0
+
+-----------------
+
+        gteRGB0 = gteRGB1
+        gteRGB1 = gteRGB2
+        gteRGB2 = ( ([RGB >> 1] >> 23) << 24 ) |
+                  ( ([I MAC3 * 2^31] >> 23) << 16) |
+                  ( ([I MAC2 * 2^31] >> 23) << 8 ) |
+                  (  [I MAC1 * 2^31] >> 23 );
+
+        S330 = I floor( (F B1 + B2 + B3 + A1U + A2U + A3U) * 2^16 )
