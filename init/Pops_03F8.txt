@@ -1,0 +1,20 @@
+// Refs: 0x000004F4 0x000007DC 
+
+Called 2 times: from CpuMainLoop and from main Init sub_00000494
+
+// sub_000003F8:
+
+    sub_00000A84 ();
+    CpuReset ();
+    sub_0000B3F4 ();
+    sub_0000C360 ();    // Ge
+    sub_0000EFB4 ();
+    sub_00026BD0 ();    // Audio
+    sub_0000BEA8 ();
+    sub_0000ADE4 ();
+    sub_00010934 ();
+    sub_0000C594 ();
+    sub_0000A4D0 ();
+
+    memclr ( 0x09800000 ... 0x09A00000 );
+    memclr ( 0x00013000 ... 0x00013400 );

@@ -1,0 +1,22 @@
+
+Called once from module_start
+
+// sub_00000494
+void PSXInit (void)
+    
+    GteInit ();
+    InitHardwareHooks ();
+
+    // Install PSX register read/write hooks 
+    sub_0000ADF8 ();            // INTC
+    sub_0000BF00 ();            // ROOT COUNTERS
+    sub_0000B474 ();            // DMA INTC
+    sub_0000C3A4 ();            // GPU
+    sub_0000F00C ();            // MDEC
+    sub_00026C2C ();            // SPU
+    sub_00010A1C ();            // CDROM
+    sub_0000C600 ();            // SIO
+
+    sub_0000A4EC ();            // Something related to Pops JITC
+
+    sub_000003F8 ();            // Second huge initialization (seems to be PSX "reset")
