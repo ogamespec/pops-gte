@@ -3,7 +3,27 @@
 
 = Introduction =
 
-PSP has custom CPU named Allegrex. It has additional MIPS instructions + VFPU (vector FPU) coprocessor. Ah shit better on russian.
+PSP has custom CPU named Allegrex. It has additional MIPS instructions + VFPU (vector FPU) coprocessor.
 
-На этой страничке я перечислю все особенные инструкции, которые встречаются по ходу разбора кода.
+On this page you can find quick description of these weird instructions, which can be found in disassembly.
 
+=MIPS Extension=
+
+
+=VFPU=
+
+==lvl.q: Load Quad Word Left to VFPU==
+
+||offset % 16||memory||vfpu||
+||+0||`[1]` `[2]` `[3]` `[4]`||`[-]` `[-]` `[-]` `[1]`||
+||+4||`[1]` `[2]` `[3]` `[4]`||`[-]` `[-]` `[1]` `[2]`||
+||+8||`[1]` `[2]` `[3]` `[4]`||`[-]` `[1]` `[2]` `[3]`||
+||+12||`[1]` `[2]` `[3]` `[4]`||`[1]` `[2]` `[3]` `[4]`||
+
+`[-]` mean keep unchanged
+
+==lvr.q==
+
+==svl.q==
+
+==svr.q==
