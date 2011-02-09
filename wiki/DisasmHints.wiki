@@ -1,5 +1,5 @@
 #summary Quirks of PSP CPU disassembly.
-#labels Allegrex,custominstructions
+#labels Allegrex,instructions
 
 = Introduction =
 
