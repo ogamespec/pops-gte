@@ -7,7 +7,7 @@ Pops use static address assignment to major emu variables, such as registers, me
 
 = Details =
 
-Some big structure related to PSX CPU registers is resided at address 0x00010000:<br>
+Some big structure related to PSX CPU registers is resided at address *0x00010000*:<br>
 Size of this structure is 0x22C bytes.
 ||*offset*||*description*||
 ||+0x0000||GTE Control Registers||
