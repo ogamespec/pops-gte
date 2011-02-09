@@ -33,26 +33,28 @@ Corresponding GTE instructions:
     ||psxNULL || psxNULL || psxNULL || psxNULL|| psxNULL|| gteGPF  || gteGPL  || gteNCCT ||
 
 Result table:
-||instruction||clocks||
-||RTPS ||15||
-||NCLIP||8||
-||OP  ||6||
-||DPCS ||8||
-||INTPL||8||
-||MVMVA||8||
-||NCDS||19||
-||CDP||8||
-||NCDT ||44||
-||NCCS||17||
-||CC||11||
-||NCS||14||
-||NCT||31||
-||SQR||5||
-||DCPL||13||
-||DPCT||17||
-||AVSZ3||5||
-||AVSZ4||6||
-||RTPT||23||
-||GPF||5||
-||GPL||5||
-||NCCT||39||
+||instruction||clocks (Pops)||Doomed/Padua gte.txt||
+||RTPS ||15||15||
+||NCLIP||8||8||
+||OP  ||6||6||
+||DPCS ||8||8||
+||INTPL||8||8||
+||MVMVA||8||8||
+||NCDS||19||19||
+||CDP||8||13 *||
+||NCDT ||44||44||
+||NCCS||17||17||
+||CC||11||11||
+||NCS||14||14||
+||NCT||31||30 *||
+||SQR||5||5||
+||DCPL||13||8 *||
+||DPCT||17||17||
+||AVSZ3||5||5||
+||AVSZ4||6||6||
+||RTPT||23||23||
+||GPF||5||5||
+||GPL||5||5||
+||NCCT||39||39||
+
+* - GTE timing specified in gte.txt by Doomed/Padua differs from Pops timing.
