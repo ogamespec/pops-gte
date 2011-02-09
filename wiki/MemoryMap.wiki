@@ -1,0 +1,15 @@
+#summary Memory map of Pops important variables
+
+= Introduction =
+
+Pops use static address assignment to major emu variables, such as registers, memory buffers and tables.
+
+
+= Details =
+
+Some big structure related to PSX CPU is resided at address 0x00010000:
+||*offset*||*description*||
+||+0x0000||GTE Control Registers||
+||+0x0080||GTE Status Registers||
+||+0x0100||COP0 Registers||
+||+0x0208||Program Counter||
