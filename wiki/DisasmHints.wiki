@@ -133,7 +133,7 @@ Example:
 
 *!* _Dont forget to shift >> 16 all result values before use_
 
-Used to unpack such GTE registers as:
+Used to unpack GTE registers, such as:
 {{{
  8  L11L12  |L12 1, 3,12|L11 1, 3,12| Light source matrix elements 11, 12
  9  L13L21  |L21 1, 3,12|L13 1, 3,12| Light source matrix elements 13, 21
