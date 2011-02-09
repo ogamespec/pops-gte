@@ -10,11 +10,11 @@ On this page you can find quick description of these weird instructions, which c
 =MIPS Extension=
 
 
-=VFPU=
+=VFPU Load/Store=
 
 ==lvl.q: Load Quad Word Left to VFPU==
 
-||offset % 16||memory||vfpu||
+||offset % 16||address & ~0xf||vfpu||
 ||+0||`[1]` `[2]` `[3]` `[4]`||`[-]` `[-]` `[-]` `[1]`||
 ||+4||`[1]` `[2]` `[3]` `[4]`||`[-]` `[-]` `[1]` `[2]`||
 ||+8||`[1]` `[2]` `[3]` `[4]`||`[-]` `[1]` `[2]` `[3]`||
@@ -22,8 +22,54 @@ On this page you can find quick description of these weird instructions, which c
 
 `[-]` mean keep unchanged
 
-==lvr.q==
+==lvr.q: Load Quad Word Right to VFPU==
 
-==svl.q==
+||offset % 16||address & ~0xf||vfpu||
+||+0||`[1]` `[2]` `[3]` `[4]`||`[1]` `[2]` `[3]` `[4]`||
+||+4||`[1]` `[2]` `[3]` `[4]`||`[2]` `[3]` `[4]` `[-]`||
+||+8||`[1]` `[2]` `[3]` `[4]`||`[3]` `[4]` `[-]` `[-]`||
+||+12||`[1]` `[2]` `[3]` `[4]`||`[4]` `[-]` `[-]` `[-]`||
 
-==svr.q==
+`[-]` mean keep unchanged
+
+==svl.q: Store Quad Word Left from VFPU==
+
+||offset % 16||vfpu||address & ~0xf||
+||+0||`[1]` `[2]` `[3]` `[4]`||`[4]` `[-]` `[-]` `[-]`||
+||+4||`[1]` `[2]` `[3]` `[4]`||`[3]` `[4]` `[-]` `[-]`||
+||+8||`[1]` `[2]` `[3]` `[4]`||`[2]` `[3]` `[4]` `[-]`||
+||+12||`[1]` `[2]` `[3]` `[4]`||`[1]` `[2]` `[3]` `[4]`||
+
+`[-]` mean keep unchanged
+
+==svr.q: Store Quad Word Right from VFPU==
+
+||offset % 16||vfpu||address & ~0xf||
+||+0||`[1]` `[2]` `[3]` `[4]`||`[1]` `[2]` `[3]` `[4]`||
+||+4||`[1]` `[2]` `[3]` `[4]`||`[-]` `[1]` `[2]` `[3]`||
+||+8||`[1]` `[2]` `[3]` `[4]`||`[-]` `[-]` `[1]` `[2]`||
+||+12||`[1]` `[2]` `[3]` `[4]`||`[-]` `[-]` `[-]` `[1]`||
+
+`[-]` mean keep unchanged
+
+Example of use:<br>
+Some piece of GTE calculations require to "push" FIFO registers:<br>
+{{{
+RGB0 = RGB1
+RGB1 = RGB2
+RGB2 = RGB
+}}}
+
+So we do:
+{{{
+lv.q      C000, &gteData[20]
+.... do some calculations of RGB value, so C000 would be:
+[RGB0] [RGB1] [RGB2] [RGB]
+svl.q     C000, &gteData[22]
+It writes to memory:
+[RGB0] [RGB1] [RGB2] [RES1] <= [RGB1] [RGB2] [RGB] [unchanged]
+}}}
+
+=VFPU Simple=
+
+=VFPU Not Simple :)=
