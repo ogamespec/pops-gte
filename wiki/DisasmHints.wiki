@@ -43,6 +43,8 @@ It is very convenient to represent VFPU disassembly by steps, as content of its 
 
 This writings represent final result of block #2 after three subsequent lv.q instructions.
 
+For more details on VFPU registers look here: <a href="http://wiki.fx-world.org/doku.php?id=general:vfpu_registers">VFPU Register Mapping</a>
+
 =VFPU Load/Store with 'shuffle'=
 
 ==lvl.q: Load Quad Word Left to VFPU==
