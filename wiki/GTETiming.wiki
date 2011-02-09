@@ -34,25 +34,25 @@ Corresponding GTE instructions:
 
 Result table:
 ||instruction||clocks||
-||RTPS ||xx||
-||NCLIP||xx||
-||OP  ||xx||
-||DPCS ||xx||
-||INTPL||xx||
-||MVMVA||xx||
-||NCDS||xx||
-||CDP||xx||
-||NCDT ||xx||
-||NCCS||xx||
-||CC||xx||
-||NCS||xx||
-||NCT||xx||
-||SQR||xx||
-||DCPL||xx||
-||DPCT||xx||
-||AVSZ3||xx||
-||AVSZ4||xx||
-||RTPT||xx||
-||GPF||xx||
-||GPL||xx||
-||NCCT||xx||
+||RTPS ||15||
+||NCLIP||8||
+||OP  ||6||
+||DPCS ||8||
+||INTPL||8||
+||MVMVA||8||
+||NCDS||19||
+||CDP||8||
+||NCDT ||44||
+||NCCS||17||
+||CC||11||
+||NCS||14||
+||NCT||31||
+||SQR||5||
+||DCPL||13||
+||DPCT||17||
+||AVSZ3||5||
+||AVSZ4||6||
+||RTPT||23||
+||GPF||5||
+||GPL||5||
+||NCCT||39||
