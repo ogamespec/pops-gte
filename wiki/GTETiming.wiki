@@ -57,4 +57,4 @@ Result table:
 ||GPL||5||5||
 ||NCCT||39||39||
 
-* - GTE timing specified in gte.txt by Doomed/Padua differs from Pops timing.
+`*` - GTE timing specified in gte.txt by Doomed/Padua differs from Pops timing.
