@@ -45,6 +45,20 @@ This writings represent final result of block #2 after three subsequent lv.q ins
 
 For more details on VFPU registers look here: <a href="http://wiki.fx-world.org/doku.php?id=general:vfpu_registers">VFPU Register Mapping</a>
 
+When I write:
+{{{
+[F 10] [F 20] [F 40] [F 80]
+}}}
+this mean VFPU registers contain *floats*
+
+When I write:
+{{{
+[I 10] [I 20] [I 40] [I 80]
+}}}
+this mean VFPU registers contain *integers*
+
+If I/F of register is not specified, it supposed to be *integer*
+
 =VFPU Load/Store with 'shuffle'=
 
 ==lvl.q: Load Quad Word Left to VFPU==
