@@ -121,6 +121,24 @@ It writes to memory:
 
 =VFPU Simple=
 
+|| *instruction* || *description* || *operation* ||
+||vmax.s|| Maximum Single Word|| `[d0]` <= max(`[s0]`,`[t0]`) ||
+||vmax.p|| Maximum Pair Word|| `[d0]` <= max(`[s0]`,`[t0]`)<br>`[d1]` <= max(`[s1]`,`[t1]`) ||
+||vmax.t|| Maximum Triple Word|| `[d0]` <= max(`[s0]`,`[t0]`)<br>`[d1]` <= max(`[s1]`,`[t1]`)<br>`[d2]` <= max(`[s2]`,`[t2]`) ||
+||vmax.q|| Maximum Quad Word|| `[d0]` <= max(`[s0]`,`[t0]`)<br> `[d1]` <= max(`[s1]`,`[t1]`)<br>`[d2]` <= max(`[s2]`,`[t2]`)<br>`[d3]` <= max(`[s3]`,`[t3]`)||
+||vmin.s|| Minimum Single Word|| `[d0]` <= min(`[s0]`,`[t0]`) ||
+||vmin.p|| Minimum Pair Word|| `[d0]` <= min(`[s0]`,`[t0]`)<br>`[d1]` <= min(`[s1]`,`[t1]`) ||
+||vmin.t|| Minimum Triple Word|| `[d0]` <= min(`[s0]`,`[t0]`)<br>`[d1]` <= min(`[s1]`,`[t1]`)<br>`[d2]` <= min(`[s2]`,`[t2]`) ||
+||vmin.q|| Minimum Quad Word|| `[d0]` <= min(`[s0]`,`[t0]`)<br> `[d1]` <= min(`[s1]`,`[t1]`)<br>`[d2]` <= min(`[s2]`,`[t2]`)<br>`[d3]` <= min(`[s3]`,`[t3]`)||
+||vmov.s|| Move Single Word|| `[d0]` <= `[s0]` ||
+||vmov.p|| Move Pair Word|| `[d0]` `[d1]` <= `[s0]` `[s1]`||
+||vmov.t|| Move Triple Word|| `[d0]` `[d1]` `[d2]` <= `[s0]` `[s1]` `[s2]`||
+||vmov.q|| Move Quad Word|| `[d0]` `[d1]` `[d2]` `[d3]` <= `[s0]` `[s1]` `[s2]` `[s3]`||
+||vzero.s|| Set Zero Single Word|| `[d0]` <= 0 ||
+||vzero.p|| Set Zero Pair Word|| `[d0]` `[d1]` <= 0 0||
+||vzero.t|| Set Zero Triple Word|| `[d0]` `[d1]` `[d2]` <= 0 0 0||
+||vzero.q|| Set Zero Quad Word|| `[d0]` `[d1]` `[d2]` `[d3]` <= 0 0 0 0||
+
 =VFPU Not Simple :)=
 
 ==vs2i.p: Convert signed short to integer Pair Word==
