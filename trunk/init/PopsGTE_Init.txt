@@ -30,7 +30,7 @@ void GteInit (void)
     GteLoadVFPUConstants ();
 
     v1 = 0x0002CD90     // source data
-    t0 = 0x000F198C     // generated table (0x8000 words)
+    t0 = 0x000F198C     // generated table (0x8000 32-bit words)
 
     a3 = 0x8000
 
@@ -62,10 +62,10 @@ loc_00000EA4:
 void GteLoadVFPUConstants (void)
 
 VFPU 4:
-        [256f] [32f] [-8f] [7.999756f]
-        [128f] [16f] [-8f] [7.999756f]
-        [64f]  [8f]  [-8f] [7.999756f]
-        [0]    [0]   [0]   [0]
+        [0x100f] [0x20f] [-8f] [7.999756f]
+        [0x80f]  [0x10f] [-8f] [7.999756f]
+        [0x40f]  [0x08f] [-8f] [7.999756f]
+        [0]      [0]     [0]   [0]
 
         S330 = GTE FLAG
 
@@ -84,3 +84,8 @@ sub_0000D348:       ; Refs: 0x00000E7C
     0x0000D370: 0xDD00C004 '....' - vpfxt      [x, y, 0, 0]
     0x0000D374: 0x03E00008 '....' - jr         $ra
     0x0000D378: 0x6031B1B0 '..1`' - vadd.q     R400, R401, R401
+
+
+// C400 & C401 are used for FLAG calculations
+// C402 & C403 are used for LIMIT calculations
+// R430 = zero vector [ 0 0 0 0 ]
