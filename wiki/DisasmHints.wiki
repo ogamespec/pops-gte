@@ -9,8 +9,41 @@ On this page you can find quick description of these weird instructions, which c
 
 =MIPS Extension=
 
+=Small note on VFPU disassembly=
 
-=VFPU Load/Store=
+When I write:
+{{{
+[x] [y] [z] [w]
+}}}
+this mean single VFPU quad vector
+
+When I write:
+{{{
+block number:
+   [0] [1] [2] [3]
+   [4] [5] [6] [7]
+   [8] [9] [A] [B]
+   [C] [D] [E] [F]
+}}}
+this mean contents of whole VFPU 'block'
+
+It is very convenient to represent VFPU disassembly by steps, as content of its registers, for example:
+
+{{{
+2:
+        [L11L12] [L33] [VXY0] []
+        [L13L21] [RBK] [VZ0]  []
+        [L22L23] [GBK] [VXY1] []
+        [L31L32] [BBK] [VZ1]  []
+
+        0x0000DCB0: 0xDB8800A0 '....' - lv.q       C200, 160($gp)       // L11L12
+        0x0000DCB4: 0xDB8900B0 '....' - lv.q       C210, 176($gp)       // L33
+        0x0000DCB8: 0xDB8A0000 '....' - lv.q       C220, 0($gp)
+}}}
+
+This writings represent final result of block #2 after three subsequent lv.q instructions.
+
+=VFPU Load/Store with 'shuffle'=
 
 ==lvl.q: Load Quad Word Left to VFPU==
 
