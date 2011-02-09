@@ -7,7 +7,7 @@ During reversing of Pops CpuException call, I found reference to GTE timing tabl
 
 = Details =
 
-My Pops version: branches/pops-352/src(r5285)
+My Pops version: `branches/pops-352/src(r5285)`
 
 Table resided at 0x0002CCD8 in PRX:
 
