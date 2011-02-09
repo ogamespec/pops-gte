@@ -2,7 +2,7 @@
 
 = Introduction =
 
-During reversing of Pops CpuException call, I found reference to GTE timing table :)
+During reversing of Pops `CpuException()` call, I found reference to GTE timing table :)
 
 
 = Details =
@@ -11,7 +11,7 @@ My Pops version: `branches/pops-352/src(r5285)`
 
 Table resided at 0x0002CCD8 in PRX:
 
-static u8 gteTiming[[32]] = {
+static u8 gteTiming`[32]` = {
     ||0x01 ||0x0F ||0x01 ||0x01 ||0x01 ||0x01 ||0x08 ||0x01 ||
     ||0x01 ||0x01 ||0x01 ||0x01 ||0x06 ||0x01 ||0x01 ||0x01 ||
     ||0x08 ||0x08 ||0x08 ||0x13 ||0x08 ||0x01 ||0x2C ||0x01 ||
