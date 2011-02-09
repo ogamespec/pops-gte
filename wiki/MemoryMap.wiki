@@ -13,3 +13,5 @@ Some big structure related to PSX CPU is resided at address 0x00010000:
 ||+0x0080||GTE Status Registers||
 ||+0x0100||COP0 Registers||
 ||+0x0208||Program Counter||
+
+RTPS/RTPT generated reciprocal table is located at *0x000F198C*, 0x8000 32-bit words.
