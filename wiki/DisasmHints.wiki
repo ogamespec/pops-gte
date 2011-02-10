@@ -10,7 +10,7 @@ On this page you can find quick description of these weird instructions, which c
 =MIPS Extension=
 
 ==Extract bits==
-ext rd, rs, p, s: Extract *s* bits from position *p*<br>
+ext rd, rs, p, s: Extract *s* bits from *rs* from position *p* and put into *rd*<br>
 Example:
 {{{
 rs = 0x11223344
@@ -30,7 +30,34 @@ rd = 0x11AA3344
 
 Widely used for RGB calculations.
 
-Good stuff: <a href="http://www.mips.com/media/files/MD00565-2B-MIPS32-QRC-01.01.pdf">MIPS32 Quick Reference</a>
+==Conditional Move==
+
+movn rd, rs, rt: if (rt != 0) rd = rs<br>
+movz rd, rs, rt: if (rt == 0) rd = rs<br>
+
+==Advanced Multiply==
+
+madd rs, rt: Acc += rs `*` rt<br>
+msub rs, rt: Acc -= rs `*` rt<br>
+maddu rs, rt: Acc += (unsigned)rs `*` (unsigned)rt<br>
+msubu rs, rt: Acc -= (unsigned)rs `*` (unsigned)rt<br>
+
+==Count leading bits==
+
+clo rd: rs: rd = Count leading ones of rs<br>
+clz rd: rs: rd = Count leading zeroes of rs<br>
+
+Based on nice pdf: <a href="http://www.mips.com/media/files/MD00565-2B-MIPS32-QRC-01.01.pdf">MIPS32 Quick Reference</a>
+
+=MIPS Delay Slot Instructions=
+
+On the MIPS architecture, jump and branch instructions have a "delay slot". This means that the instruction after the jump or branch instruction is executed before the jump or branch is executed. 
+
+In addition, there is a group of "branch likely" conditional branch instructions in which the instruction in the delay slot is executed only if the branch is taken.
+
+*!* So please remember, that *BEQ* is not the same as *BEQL*: BEQ delay slot is always executed, but BEQL delay slot executed only if branch taken. This may ruin whole disassembly logic.
+
+Borrowed here: http://public.lanl.gov/totalview/online-4.1.0-4/user_guide/appc28.html
 
 =Small note on VFPU disassembly=
 
