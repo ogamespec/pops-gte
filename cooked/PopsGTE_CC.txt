@@ -48,10 +48,10 @@ CC:
         0x0000D5B0: 0xDB8B00D0 '....' - lv.q       C230, 208($gp)       // LB3 RFC GFC BFC
 
 0:
-        [F LR1 >> 12] [F LG1 >> 12] [F LB1 >> 12] []
-        [F LR2 >> 12] [F LG2 >> 12] [F LB2 >> 12] []
-        [F LR3 >> 12] [F LG3 >> 12] [F LB3 >> 12] []
-        [F RBK >> 12] [F GBK >> 12] [F BBK >> 12] []
+        [F LR1 / 2^12] [F LG1 / 2^12] [F LB1 / 2^12] []
+        [F LR2 / 2^12] [F LG2 / 2^12] [F LB2 / 2^12] []
+        [F LR3 / 2^12] [F LG3 / 2^12] [F LB3 / 2^12] []
+        [F RBK / 2^12] [F GBK / 2^12] [F BBK / 2^12] []
 
         0x0000D5B4: 0xD03B0880 '..;.' - vs2i.p     C000, C200
         0x0000D5B8: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
@@ -64,15 +64,69 @@ CC:
         0x0000D5D4: 0xD0006001 '.`..' - vmov.s     S010, S003
         0x0000D5D8: 0xD28CC923 '#...' - vi2f.t     R003, C211, 12
 
+2:
+        [F IR1 / 2^12] [L33] [] [LB3]
+        [F IR2 / 2^12] [RBK] [] [RFC]
+        [F IR3 / 2^12] [GBK] [] [GFC]
+        [LB1LB2] [BBK] [] [BFC]
+
+3:
+        [] [] [] [F 0]
+        [] [] [] [F 0]
+        [] [] [] [F 0]
+        [] [] [] []
+
+1:
+        [] [F RR = F LR1 / 2^12 * F IR1 / 2^12 + F LR2 / 2^12 * F IR2 / 2^12 + F LR3 / 2^12 * F IR3 / 2^12 + F RBK / 2^12] [] []
+        [] [F GG = F LG1 / 2^12 * F IR1 / 2^12 + F LG2 / 2^12 * F IR2 / 2^12 + F LG3 / 2^12 * F IR3 / 2^12 + F GBK / 2^12] [] []
+        [] [F BB = F LB1 / 2^12 * F IR1 / 2^12 + F LB2 / 2^12 * F IR2 / 2^12 + F LB3 / 2^12 * F IR3 / 2^12 + F BBK / 2^12] [] []
+        [] [x] [] []
+
         0x0000D5DC: 0xD28CDC08 '....' - vi2f.t     C200, C701, 12
         0x0000D5E0: 0xD006800F '....' - vzero.t    C330
         0x0000D5E4: 0xF1888005 '....' - vhtfm4.q   C110, M000, C200
+
+        a0 = gteRGB
+
+1:
+        [F C_RR = min ( max(RR,0), 7.999756f)] [F RR = F LR1 / 2^12 * F IR1 / 2^12 + F LR2 / 2^12 * F IR2 / 2^12 + F LR3 / 2^12 * F IR3 / 2^12 + F RBK / 2^12] [] []
+        [F C_GG = min ( max(GG,0), 7.999756f)] [F GG = F LG1 / 2^12 * F IR1 / 2^12 + F LG2 / 2^12 * F IR2 / 2^12 + F LG3 / 2^12 * F IR3 / 2^12 + F GBK / 2^12] [] []
+        [F C_BB = min ( max(BB,0), 7.999756f)] [F BB = F LB1 / 2^12 * F IR1 / 2^12 + F LB2 / 2^12 * F IR2 / 2^12 + F LB3 / 2^12 * F IR3 / 2^12 + F BBK / 2^12] [] []
+        [] [x] [] []
+
+        CC[0] = C_RR != RR
+        CC[1] = C_GG != GG
+        CC[2] = C_BB != BB
+
+3:
+        [] [] [] [F RRCHECK = C_RR != RR ? 0x100f : 0]
+        [] [] [] [F GGCHECK = C_GG != GG ? 0x80f : 0]
+        [] [] [] [F BBCHECK = C_BB != BB ? 0x40f : 0]
+        [] [] [] []
+
         0x0000D5E8: 0x8F840018 '....' - lw         $a0, 24($gp)         // RGB
         0x0000D5EC: 0xBFEA0040 '@...' - cache      0xA, 64($ra)
         0x0000D5F0: 0x6DB38504 '...m' - vmax.t     C100, C110, R403
         0x0000D5F4: 0x6D138404 '...m' - vmin.t     C100, C100, C430
         0x0000D5F8: 0x6C058405 '...l' - vcmp.t     NE, C100, C110
         0x0000D5FC: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+
+        v0 = gteR
+        a1 = gteG
+        a2 = gteB
+
+0:
+        [F LR1 / 2^12] [F gteR / 2^8] [F LB1 / 2^12] []
+        [F LR2 / 2^12] [F gteG / 2^8] [F LB2 / 2^12] []
+        [F LR3 / 2^12] [F gteB / 2^8] [F LB3 / 2^12] []
+        [F RBK / 2^12] [F GBK / 2^12] [F BBK / 2^12] [I RGB >> 1]
+
+2:
+        [F MAC1 = F gteR / 2^8 * F C_RR] [L33] [] [LB3]
+        [F MAC2 = F gteG / 2^8 * F C_GG] [RBK] [] [RFC]
+        [F MAC3 = F gteB / 2^8 * F C_BB] [GBK] [] [GFC]
+        [LB1LB2] [BBK] [] [BFC]
+
         0x0000D600: 0x7C823800 '.8.|' - ext        $v0, $a0, 0, 8
         0x0000D604: 0x7C853A00 '.:.|' - ext        $a1, $a0, 8, 8
         0x0000D608: 0x7C863C00 '.<.|' - ext        $a2, $a0, 16, 8
@@ -83,23 +137,101 @@ CC:
         0x0000D61C: 0x64048108 '...d' - vmul.t     C200, C010, C100
         0x0000D620: 0x00042042 'B ..' - srl        $a0, $a0, 1
         0x0000D624: 0x48E40063 'c..H' - mtv        $a0, S033
+
+7:
+        [IR0] [] [RGB0] []
+        [IR1] [] [RGB1] []
+        [IR2] [] [RGB2] []
+        [IR3] [] [RES1] []
+
         0x0000D628: 0xDB9E0050 'P...' - lv.q       C720, 80($gp)        // RGB0
+
+0:
+        [F CL_MAC1 = CLAMP(MAC1,0,1)] [I MAC1 * 2^12] [F C_MAC1 = min(max(MAC1,0), 7.999756f)] []
+        [F CL_MAC2 = CLAMP(MAC2,0,1)] [I MAC2 * 2^12] [F C_MAC2 = min(max(MAC2,0), 7.999756f)] []
+        [F CL_MAC3 = CLAMP(MAC3,0,1)] [I MAC3 * 2^12] [F C_MAC3 = min(max(MAC3,0), 7.999756f)] []
+        [F RBK / 2^12] [F GBK / 2^12] [F BBK / 2^12] [I RGB >> 1]
+
         0x0000D62C: 0x6DB38802 '...m' - vmax.t     C020, C200, R403
         0x0000D630: 0xD20C8801 '....' - vf2in.t    C010, C200, 12
         0x0000D634: 0xD0048800 '....' - vsat0.t    C000, C200
         0x0000D638: 0x6D138202 '...m' - vmin.t     C020, C020, C430
+
+        gteMAC1 = I MAC1 * 2^12
+        gteMAC2 = I MAC2 * 2^12
+        gteMAC3 = I MAC3 * 2^12
+
         0x0000D63C: 0xF7810066 'f...' - svr.q      C010, 100($gp)       // MAC1
+
+0:
+        [F CL_MAC1 = CLAMP(MAC1,0,1)] [I MAC1 * 2^12] [I C_MAC1 * 2^12] [I MAC1 * 2^31]
+        [F CL_MAC2 = CLAMP(MAC2,0,1)] [I MAC2 * 2^12] [I C_MAC2 * 2^12] [I MAC2 * 2^31]
+        [F CL_MAC3 = CLAMP(MAC3,0,1)] [I MAC3 * 2^12] [I C_MAC3 * 2^12] [I MAC3 * 2^31]
+        [F RBK / 2^12] [F GBK / 2^12] [F BBK / 2^12] [I RGB >> 1]
+
+3:
+        [] [] [] [F A1U = MAC1 != C_MAC1 ? RRCHECK : 0]
+        [] [] [] [F A2U = MAC2 != C_MAC2 ? GGCHECK : 0]
+        [] [] [] [F A3U = MAC3 != C_MAC3 ? BBCHECK : 0]
+        [] [F A1U + A2U + A3U] [F A1U + A2U + A3U] [F A1U + A2U + A3U]
+
+        CC[0] = MAC1 != CL_MAC1
+        CC[1] = MAC2 != CL_MAC2
+        CC[2] = MAC3 != CL_MAC3
+
         0x0000D640: 0x6C028805 '...l' - vcmp.t     NE, C200, C020
         0x0000D644: 0xD20C8202 '....' - vf2in.t    C020, C020, 12
         0x0000D648: 0xD21F8803 '....' - vf2in.t    C030, C200, 31
         0x0000D64C: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
         0x0000D650: 0x6C008805 '...l' - vcmp.t     NE, C200, C000
         0x0000D654: 0xD0468F6F 'o.F.' - vfad.t     R313, C330
+
+        gteIR1 = I C_MAC1 * 2^12
+        gteIR2 = I C_MAC2 * 2^12
+        gteIR3 = I C_MAC3 * 2^12
+
         0x0000D658: 0xF7820026 '&...' - svr.q      C020, 36($gp)        // IR1
+
+3:
+        [] [] [] [F B1 = MAC1 != CL_MAC1 ? 0x20f : 0]
+        [] [] [] [F B2 = MAC2 != CL_MAC2 ? 0x10f : 0]
+        [] [] [] [F B3 = MAC3 != CL_MAC3 ? 0x08f : 0]
+        [] [F A1U + A2U + A3U] [F A1U + A2U + A3U] [F A1U + A2U + A3U]
+
         0x0000D65C: 0xD006800F '....' - vzero.t    C330
         0x0000D660: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
+
+3:
+        [] [] [] [F B1 + B2 + B3 + A1U + A2U + A3U]
+        [] [] [] [F B1 + B2 + B3 + A1U + A2U + A3U]
+        [] [] [] [F B1 + B2 + B3 + A1U + A2U + A3U]
+        [] [F A1U + A2U + A3U] [F A1U + A2U + A3U] [F B1 + B2 + B3 + A1U + A2U + A3U]
+
         0x0000D664: 0xD0468F8F '..F.' - vfad.q     C330, C330
+
+        u32 rgb = ( ([RGB >> 1] >> 23) << 24 ) |
+                  ( ([I MAC3 * 2^31] >> 23) << 16) |
+                  ( ([I MAC2 * 2^31] >> 23) << 8 ) |
+                  (  [I MAC1 * 2^31] >> 23 );
+
+7:
+        [IR0] [] [RGB0] []
+        [IR1] [] [RGB1] []
+        [rgb] [rgb] [rgb] [rgb]
+        [IR3] [] [RES1] []
+
         0x0000D668: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
+
+        gteRGB0 = gteRGB1
+        gteRGB1 = gteRGB2
+        gteRGB2 = ( ([RGB >> 1] >> 23) << 24 ) |
+                  ( ([I MAC3 * 2^31] >> 23) << 16) |
+                  ( ([I MAC2 * 2^31] >> 23) << 8 ) |
+                  (  [I MAC1 * 2^31] >> 23 );
+
         0x0000D66C: 0xF79E0058 'X...' - svl.q      C720, 88($gp)        // RGB2
         0x0000D670: 0x03E00008 '....' - jr         $ra
+
+        S330 = I floor( (F B1 + B2 + B3 + A1U + A2U + A3U) * 2^16 )     // FLAG
+
         0x0000D674: 0xD2700F0F '..p.' - vf2id.s    S330, S330, 16
