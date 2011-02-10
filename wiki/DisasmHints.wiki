@@ -9,6 +9,29 @@ On this page you can find quick description of these weird instructions, which c
 
 =MIPS Extension=
 
+==Extract bits==
+ext rd, rs, p, s: Extract *s* bits from position *p*<br>
+Example:
+{{{
+rs = 0x11223344
+ext   rd, rs, 8, 8
+rd = 0x33
+}}}
+
+==Insert bits==
+ins rd, rs, p, s: Insert first *s* bits of *rs* into *rd*, from position *p*<br>
+Example:
+{{{
+rs = 0xAA
+rd = 0x11223344
+ins   rs, rs, 16, 8
+rd = 0x11AA3344
+}}}
+
+Widely used for RGB calculations.
+
+Good stuff: <a href="http://www.mips.com/media/files/MD00565-2B-MIPS32-QRC-01.01.pdf">MIPS32 Quick Reference</a>
+
 =Small note on VFPU disassembly=
 
 When I write:
@@ -122,14 +145,18 @@ It writes to memory:
 =VFPU Simple=
 
 || *instruction* || *description* || *operation* ||
+||vi2f.s|| Convert integer to float with Scaling Single Word|| `[d0]` <= float (`[s0]`) / (1 << imm) ||
+||vi2f.p|| Convert integer to float with Scaling Pair Word|| same for pair ||
+||vi2f.t|| Convert integer to float with Scaling Triple Word|| same for triple ||
+||vi2f.q|| Convert integer to float with Scaling Quad Word|| same for quad ||
 ||vmax.s|| Maximum Single Word|| `[d0]` <= max(`[s0]`,`[t0]`) ||
-||vmax.p|| Maximum Pair Word|| `[d0]` <= max(`[s0]`,`[t0]`)<br>`[d1]` <= max(`[s1]`,`[t1]`) ||
-||vmax.t|| Maximum Triple Word|| `[d0]` <= max(`[s0]`,`[t0]`)<br>`[d1]` <= max(`[s1]`,`[t1]`)<br>`[d2]` <= max(`[s2]`,`[t2]`) ||
-||vmax.q|| Maximum Quad Word|| `[d0]` <= max(`[s0]`,`[t0]`)<br> `[d1]` <= max(`[s1]`,`[t1]`)<br>`[d2]` <= max(`[s2]`,`[t2]`)<br>`[d3]` <= max(`[s3]`,`[t3]`)||
+||vmax.p|| Maximum Pair Word|| same for pair ||
+||vmax.t|| Maximum Triple Word|| same for triple ||
+||vmax.q|| Maximum Quad Word|| same for quad||
 ||vmin.s|| Minimum Single Word|| `[d0]` <= min(`[s0]`,`[t0]`) ||
-||vmin.p|| Minimum Pair Word|| `[d0]` <= min(`[s0]`,`[t0]`)<br>`[d1]` <= min(`[s1]`,`[t1]`) ||
-||vmin.t|| Minimum Triple Word|| `[d0]` <= min(`[s0]`,`[t0]`)<br>`[d1]` <= min(`[s1]`,`[t1]`)<br>`[d2]` <= min(`[s2]`,`[t2]`) ||
-||vmin.q|| Minimum Quad Word|| `[d0]` <= min(`[s0]`,`[t0]`)<br> `[d1]` <= min(`[s1]`,`[t1]`)<br>`[d2]` <= min(`[s2]`,`[t2]`)<br>`[d3]` <= min(`[s3]`,`[t3]`)||
+||vmin.p|| Minimum Pair Word|| same for pair||
+||vmin.t|| Minimum Triple Word|| same for triple ||
+||vmin.q|| Minimum Quad Word|| same for quad ||
 ||vmov.s|| Move Single Word|| `[d0]` <= `[s0]` ||
 ||vmov.p|| Move Pair Word|| `[d0]` `[d1]` <= `[s0]` `[s1]`||
 ||vmov.t|| Move Triple Word|| `[d0]` `[d1]` `[d2]` <= `[s0]` `[s1]` `[s2]`||
