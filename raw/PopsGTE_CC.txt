@@ -1,55 +1,9 @@
-Pcsx:
-        gteFLAG = 0;
-        
-        s32 RR0 = FNC_OVERFLOW1(gteRBK + ((gteLR1*gteIR1 + gteLR2*gteIR2 + gteLR3*gteIR3) >> 12));
-        s32 GG0 = FNC_OVERFLOW2(gteGBK + ((gteLG1*gteIR1 + gteLG2*gteIR2 + gteLG3*gteIR3) >> 12));
-        s32 BB0 = FNC_OVERFLOW3(gteBBK + ((gteLB1*gteIR1 + gteLB2*gteIR2 + gteLB3*gteIR3) >> 12));
-
-        gteMAC1 = (gteR * RR0) >> 8;
-        gteMAC2 = (gteG * GG0) >> 8;
-        gteMAC3 = (gteB * BB0) >> 8;
-        
-        MAC2IR1();
-        
-        gteRGB0 = gteRGB1;
-        gteRGB1 = gteRGB2;
-
-        gteR2 = FlimB1(gteMAC1 >> 4);
-        gteG2 = FlimB2(gteMAC2 >> 4);
-        gteB2 = FlimB3(gteMAC3 >> 4); gteCODE2 = gteCODE;
-
-        SUM_FLAG
-
-Pops:
-
 CC:
 
-4:
-        [0x100f] [0x20f] [-8f] [7.999756f]
-        [0x80f]  [0x10f] [-8f] [7.999756f]
-        [0x40f]  [0x08f] [-8f] [7.999756f]
-        [0]      [0]     [0]   [0]
-
-7:
-        [IR0] [] [] []
-        [IR1] [] [] []
-        [IR2] [] [] []
-        [IR3] [] [] []
-
-2:
-        [LR1LR2] [L33] [] [LB3]
-        [LR3LG1] [RBK] [] [RFC]
-        [LG2LG3] [GBK] [] [GFC]
-        [LB1LB2] [BBK] [] [BFC]
-
-        0x0000D5A4: 0xDB9C0020 ' ...' - lv.q       C700, 32($gp)        // IR0
-        0x0000D5A8: 0xDB8900B0 '....' - lv.q       C210, 176($gp)       // L33 RBK GBK BBK
-        0x0000D5AC: 0xDB8800C0 '....' - lv.q       C200, 192($gp)       // LR1LR2
-        0x0000D5B0: 0xDB8B00D0 '....' - lv.q       C230, 208($gp)       // LB3 RFC GFC BFC
-
-0:
-
-
+        0x0000D5A4: 0xDB9C0020 ' ...' - lv.q       C700, 32($gp) 
+        0x0000D5A8: 0xDB8900B0 '....' - lv.q       C210, 176($gp)
+        0x0000D5AC: 0xDB8800C0 '....' - lv.q       C200, 192($gp)
+        0x0000D5B0: 0xDB8B00D0 '....' - lv.q       C230, 208($gp)
         0x0000D5B4: 0xD03B0880 '..;.' - vs2i.p     C000, C200
         0x0000D5B8: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
         0x0000D5BC: 0xD29C8080 '....' - vi2f.q     C000, C000, 28
@@ -59,12 +13,11 @@ CC:
         0x0000D5CC: 0xD0002141 'A!..' - vmov.s     S012, S011
         0x0000D5D0: 0xD0000121 '!...' - vmov.s     S011, S010
         0x0000D5D4: 0xD0006001 '.`..' - vmov.s     S010, S003
-
         0x0000D5D8: 0xD28CC923 '#...' - vi2f.t     R003, C211, 12
         0x0000D5DC: 0xD28CDC08 '....' - vi2f.t     C200, C701, 12
         0x0000D5E0: 0xD006800F '....' - vzero.t    C330
         0x0000D5E4: 0xF1888005 '....' - vhtfm4.q   C110, M000, C200
-        0x0000D5E8: 0x8F840018 '....' - lw         $a0, 24($gp)         // RGB
+        0x0000D5E8: 0x8F840018 '....' - lw         $a0, 24($gp)    
         0x0000D5EC: 0xBFEA0040 '@...' - cache      0xA, 64($ra)
         0x0000D5F0: 0x6DB38504 '...m' - vmax.t     C100, C110, R403
         0x0000D5F4: 0x6D138404 '...m' - vmin.t     C100, C100, C430
@@ -80,23 +33,23 @@ CC:
         0x0000D61C: 0x64048108 '...d' - vmul.t     C200, C010, C100
         0x0000D620: 0x00042042 'B ..' - srl        $a0, $a0, 1
         0x0000D624: 0x48E40063 'c..H' - mtv        $a0, S033
-        0x0000D628: 0xDB9E0050 'P...' - lv.q       C720, 80($gp)        // RGB0
+        0x0000D628: 0xDB9E0050 'P...' - lv.q       C720, 80($gp)    
         0x0000D62C: 0x6DB38802 '...m' - vmax.t     C020, C200, R403
         0x0000D630: 0xD20C8801 '....' - vf2in.t    C010, C200, 12
         0x0000D634: 0xD0048800 '....' - vsat0.t    C000, C200
         0x0000D638: 0x6D138202 '...m' - vmin.t     C020, C020, C430
-        0x0000D63C: 0xF7810066 'f...' - svr.q      C010, 100($gp)       // MAC1
+        0x0000D63C: 0xF7810066 'f...' - svr.q      C010, 100($gp)   
         0x0000D640: 0x6C028805 '...l' - vcmp.t     NE, C200, C020
         0x0000D644: 0xD20C8202 '....' - vf2in.t    C020, C020, 12
         0x0000D648: 0xD21F8803 '....' - vf2in.t    C030, C200, 31
         0x0000D64C: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
         0x0000D650: 0x6C008805 '...l' - vcmp.t     NE, C200, C000
         0x0000D654: 0xD0468F6F 'o.F.' - vfad.t     R313, C330
-        0x0000D658: 0xF7820026 '&...' - svr.q      C020, 36($gp)        // IR1
+        0x0000D658: 0xF7820026 '&...' - svr.q      C020, 36($gp)    
         0x0000D65C: 0xD006800F '....' - vzero.t    C330
         0x0000D660: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
         0x0000D664: 0xD0468F8F '..F.' - vfad.q     C330, C330
         0x0000D668: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
-        0x0000D66C: 0xF79E0058 'X...' - svl.q      C720, 88($gp)        // RGB2
+        0x0000D66C: 0xF79E0058 'X...' - svl.q      C720, 88($gp)    
         0x0000D670: 0x03E00008 '....' - jr         $ra
         0x0000D674: 0xD2700F0F '..p.' - vf2id.s    S330, S330, 16
