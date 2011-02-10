@@ -45,7 +45,7 @@ msubu rs, rt: Acc -= (unsigned)rs `*` (unsigned)rt<br>
 ==Count leading bits==
 
 clo rd: rs: rd = Count leading ones of rs<br>
-clz rd: rs: rd = Count leading zeroes of rs<br>
+clz rd: rs: rd = Count leading zeros of rs<br>
 
 Based on nice pdf: <a href="http://www.mips.com/media/files/MD00565-2B-MIPS32-QRC-01.01.pdf">MIPS32 Quick Reference</a>
 
