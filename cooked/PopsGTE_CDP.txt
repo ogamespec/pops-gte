@@ -1,4 +1,4 @@
-CDP:
+CDP: Color Depth Que
 
 Pcsx:
     double RR0,GG0,BB0;
@@ -25,6 +25,19 @@ Pcsx:
 Pops:
 
     C700: [RGB0] [RGB1] [RGB2] [RES1]
+    t6 = IR0 << 12
+    t4 = gteR
+    Acc = gteR * IR1
+    t0 = Lo >> 8
+    t8 = RFC - Lo >> 8
+    t2 = min ( max (t8, -32768), 32767)
+    at = (t2 != t8) << 24
+    t2 = t2 << 8
+    Acc = t2 * (IR0 << 12)
+    t8 = Hi
+    t8 = MAC1 = Hi + Lo >> 8
+    t2 = C_MAC1 = min (max(MAC1,-32768), 32767)
+    at |= (MAC1 != C_MAC1) << 24
 
     0x0000E668: 0xDB9C0050 'P...' - lv.q       C700, 80($gp)        // RGB0
     0x0000E66C: 0x8F8E0020 ' ...' - lw         $t6, 32($gp)         // IR0
@@ -56,6 +69,25 @@ Pops:
     0x0000E6D4: 0x0018C02B '+...' - sltu       $t8, $zr, $t8
     0x0000E6D8: 0x0018C600 '....' - sll        $t8, $t8, 24
     0x0000E6DC: 0x00380825 '%.8.' - or         $at, $at, $t8
+
+    t4 = gteG
+    Acc = gteG * IR2
+    IR1 = C_MAC1
+    t2 = t2 >> 4
+    t0 = Lo >> 8
+    t8 = GFC - Lo >> 8
+    t3 = min( max(t8,-32768), 32767)
+    at |= (t8 != t3) << 23
+    t3 = t3 << 8
+    Acc = t3 * (IR0 << 12)
+    t3 = (C_MAC1 >> 4) > 255
+    t2 = min ( 255, max (0, C_MAC1 >> 4))
+    at |= ( (C_MAC1 >> 4) > 255 ) << 21
+    Replace R component (t2) in RGB.
+    t8 = MAC2 = Hi + Lo >> 8
+    t2 = C_MAC2 = min (max (MAC2,-32768), 32767)
+    at |= (MAC2 != C_MAC2) << 23
+
     0x0000E6E0: 0x8F880028 '(...' - lw         $t0, 40($gp)         // IR2
     0x0000E6E4: 0x8F8B00D8 '....' - lw         $t3, 216($gp)        // GFC
     0x0000E6E8: 0x7D2C3A00 '.:,}' - ext        $t4, $t1, 8, 8
@@ -86,6 +118,31 @@ Pops:
     0x0000E74C: 0x0018C02B '+...' - sltu       $t8, $zr, $t8
     0x0000E750: 0x0018C5C0 '....' - sll        $t8, $t8, 23
     0x0000E754: 0x00380825 '%.8.' - or         $at, $at, $t8
+
+    t4 = gteB
+    Acc = gteB * IR3
+    IR2 = C_MAC2
+    t2 = t2 >> 4
+    t0 = Lo >> 8
+    t8 = BFC - Lo >> 8
+    t3 = min( max(t8,-32768), 32767)
+    at |= (t3 != t8) << 22
+    t3 = t3 << 8
+    Acc = t3 * (IR0 << 12)
+    at |= ( (C_MAC2 >> 4) > 255 ) << 20
+    t2 = min ( 255, max (0, C_MAC2 >> 4))
+    Replace G component (t2) in RGB.
+    t8 = MAC3 = Hi + Lo >> 8
+    t2 = C_MAC3 = min (max (MAC3,-32768), 32767)
+    at |= (MAC3 != C_MAC3) << 22
+    IR3 = C_MAC3
+    t3 = C_MAC3 >> 4
+    at |= ( (C_MAC3 >> 4) > 255 ) << 19
+    t3 = min ( 255, max (0, C_MAC3 >> 4))
+    Replace B component (t3) in RGB.
+
+    S330 = at
+
     0x0000E758: 0x8F88002C ',...' - lw         $t0, 44($gp)         // IR3
     0x0000E75C: 0x8F8B00DC '....' - lw         $t3, 220($gp)        // BFC
     0x0000E760: 0x7D2C3C00 '.<,}' - ext        $t4, $t1, 16, 8
@@ -124,6 +181,13 @@ Pops:
     0x0000E7E4: 0x7D419CC4 '..A}' - ins        $at, $t2, 19, 1
     0x0000E7E8: 0x7D69BC04 '..i}' - ins        $t1, $t3, 16, 8
     0x0000E7EC: 0x48E9007C '|..H' - mtv        $t1, S703
+
+    C700: [RGB0] [RGB1] [RGB2] [RGB]
+
+    RGB0 = RGB1
+    RGB1 = RGB2
+    RGB2 = RGB
+
     0x0000E7F0: 0x48E1000F '...H' - mtv        $at, S330
     0x0000E7F4: 0x03E00008 '....' - jr         $ra
     0x0000E7F8: 0xF79C0058 'X...' - svl.q      C700, 88($gp)        // RGB2 +8
@@ -131,4 +195,51 @@ Pops:
 ------------------
 
 Pseudocode:
+    RGB = gteRGB;
+    gteFLAG = 0;
 
+    RR0 = RFC - (gteR * IR1) >> 8
+    GG0 = GFC - (gteG * IR2) >> 8
+    BB0 = BFC - (gteB * IR3) >> 8
+
+    C_RR0 = min ( max (RR0, -32768), 32767)
+    C_GG0 = min ( max (GG0, -32768), 32767)
+    C_BB0 = min ( max (BB0, -32768), 32767)
+
+    FLAG |= (RR0 != C_RR0) << 24
+    FLAG |= (GG0 != C_GG0) << 23
+    FLAG |= (BB0 != C_BB0) << 22
+
+    Acc = (C_RR0 << 8) * (IR0 << 12)
+    MAC1 = Hi + Lo >> 8
+    Acc = (C_GG0 << 8) * (IR0 << 12)
+    MAC2 = Hi + Lo >> 8
+    Acc = (C_BB0 << 8) * (IR0 << 12)
+    MAC3 = Hi + Lo >> 8
+
+    C_MAC1 = min (max(MAC1,-32768), 32767)
+    C_MAC2 = min (max(MAC2,-32768), 32767)
+    C_MAC3 = min (max(MAC3,-32768), 32767)
+
+    FLAG |= (MAC1 != C_MAC1) << 24
+    FLAG |= (MAC2 != C_MAC2) << 24
+    FLAG |= (MAC3 != C_MAC3) << 24
+
+    IR1 = C_MAC1
+    IR2 = C_MAC2
+    IR3 = C_MAC3
+
+    FLAG |= ( (C_MAC1 >> 4) & 0xff ) << 21
+    FLAG |= ( (C_MAC2 >> 4) & 0xff ) << 20
+    FLAG |= ( (C_MAC3 >> 4) & 0xff ) << 19
+
+    R = min ( 255, max (0, C_MAC1 >> 4))
+    G = min ( 255, max (0, C_MAC2 >> 4))
+    B = min ( 255, max (0, C_MAC3 >> 4))
+    RGB <= R G B
+
+    RGB0 = RGB1
+    RGB1 = RGB2
+    RGB2 = RGB
+
+    SUM_FLAG
