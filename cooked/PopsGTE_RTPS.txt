@@ -54,8 +54,21 @@ Pops:
 
 
 
-0x0000DEFC:
+0x0000DEFC:     // RTPS
 
+7:
+        [SXY0] [SZ0] [] []
+        [SXY1] [SZ1] [] []
+        [SXY2] [SZ2] [] []
+        [SXYP] [SZ3] [] []
+
+        gteSXY0 = gteSXY1
+        gteSXY1 = gteSXY2
+        gteSXY2 = gteSXYP
+
+        gteSZ0 = gteSZ1
+        gteSZ1 = gteSZ2
+        gteSZ2 = gteSZ3
 
         0x0000DEFC: 0xDB9C0030 '0...' - lv.q       C700, 48($gp)    // SXY0
         0x0000DF00: 0xDB9D0040 '@...' - lv.q       C710, 64($gp)    // SZ0
@@ -64,14 +77,69 @@ Pops:
         0x0000DF0C: 0xF79D0048 'H...' - svl.q      C710, 72($gp)    // SZ2
 
 loc_0000DF10:           ; Refs: 0x0000E374 
+
+        FLAG = 0
+
         0x0000DF10: 0x24010000 '...$' - li         $at, 0
         0x0000DF14: 0x03803021 '!0..' - move       $a2, $gp
 
 loc_0000DF18:           ; Refs: 0x0000E0B4 
+
+        Acc = R11 * VX0
+        Acc += R12 * VY0
+        a2 += 8
+        v1 = 32767
+        Acc += R13 * VZ0
+        v0 = -32768
+        a0 = Lo
+        Acc = R21 * VX0
+        a0 = a0 >> 12
+        a0 = a0 + TRX
+->      MAC1 = ((R11 * VX0 + R12 * VY0 + R13 * VZ0) >> 12) + TRX
+        Acc += R22 * VY0
+        t0 = C_MAC1 = min ( max(MAC1,-32768), 32767)
+->      a0 = (t0 != MAC1) << 24
+        Acc += R23 * VZ0
+        t5 = Lo
+        Acc = R31 * VX0
+        t5 = t5 >> 12
+        t5 = t5 + TRY
+->      MAC2 = ((R21 * VX0 + R22 * VY0 + R23 * VZ0) >> 12) + TRY
+        t1 = C_MAC2 = min (max (MAC2,-32768), 32767) 
+        Acc += R32 * VY0
+        Acc += R33 * VZ0
+        t8 = 0xFFFF
+->      a0 |= (t1 != MAC2) << 23
+        t2 = Lo
+        t2 = t2 >> 12
+        t2 = t2 + TRZ
+->      MAC3 = ((R31 * VX0 + R32 * VY0 + R33 * VZ0) >> 12) + TRZ
+        a3 = 0xFFFF < t2
+        t5 = H < (MAC3 * 2)
+        a0 |= (MAC3 > 0xFFFF) << 18
+        if ((MAC3 * 2) > H) {
+                t3 = min (MAC3, 0xFFFF)
+                Acc = 0x80000000
+                a3 = CLZ (t3) - 14
+                SZ3 = t3
+                t4 = H << a3
+                Acc += (H << a3) * reciprocalTable[t3 << a3]
+                t5 = OFY
+                t7 = OFX >> 31
+                t3 = min (Hi, 0x1FFFF)
+        }
+        else {
+                t5 = OFY
+                SZ3 = max (MAC3, 0)
+                t7 = OFX >> 31
+                a0 |= (1 << 17)
+                t3 = 0x1FFFF
+        }
+
         0x0000DF18: 0x87880080 '....' - lh         $t0, 128($gp)        // R11
-        0x0000DF1C: 0x84CE0000 '....' - lh         $t6, 0($a2)          // VX0
-        0x0000DF20: 0x84CF0002 '....' - lh         $t7, 2($a2)          // VY0
-        0x0000DF24: 0x84D80004 '....' - lh         $t8, 4($a2)          // VZ0
+        0x0000DF1C: 0x84CE0000 '....' - lh         $t6, 0($a2)          // VX0   (VX0/VX1/VX2 for RTPT)
+        0x0000DF20: 0x84CF0002 '....' - lh         $t7, 2($a2)          // VY0   (VY0/VY1/VY2 for RTPT)
+        0x0000DF24: 0x84D80004 '....' - lh         $t8, 4($a2)          // VZ0   (VZ0/VZ1/VZ2 for RTPT)
         0x0000DF28: 0x010E0018 '....' - mult       $t0, $t6
         0x0000DF2C: 0x878C0082 '....' - lh         $t4, 130($gp)        // R12
         0x0000DF30: 0x878D0084 '....' - lh         $t5, 132($gp)        // R13
@@ -123,6 +191,18 @@ loc_0000DF18:           ; Refs: 0x0000E0B4
         0x0000DFE8: 0x018D682A '*h..' - slt        $t5, $t4, $t5
         0x0000DFEC: 0x11A00059 'Y...' - beqz       $t5, loc_0000E154
         0x0000DFF0: 0x7CE49484 '...|' - ins        $a0, $a3, 18, 1
+
+        t3 = min (MAC3, 0xFFFF)
+        Acc = 0x80000000
+        a3 = CLZ (t3) - 14
+        SZ3 = t3
+        t4 = H << a3
+        Acc += (H << a3) * reciprocalTable[t3 << a3]
+        t5 = OFY
+        t7 = OFX >> 31
+        t3 = min (Hi, 0x1FFFF)
+
+
         0x0000DFF4: 0x0158582D '-XX.' - min        $t3, $t2, $t8
         0x0000DFF8: 0x34078000 '...4' - li         $a3, 0x8000
         0x0000DFFC: 0x00FC0019 '....' - multu      $a3, $gp
@@ -131,9 +211,8 @@ loc_0000DF18:           ; Refs: 0x0000E0B4
         0x0000E008: 0x00EB6804 '.h..' - sllv       $t5, $t3, $a3
         0x0000E00C: 0x3C0F0000 '...<' - lui        $t7, 0x0
         0x0000E010: 0x01AF6821 '!h..' - addu       $t5, $t5, $t7
-; Data ref 0x000F198C ... 0x00000000 0x00000000 0x00000000 0x00000000 
         0x0000E014: 0x8DAD198C '....' - lw         $t5, 6540($t5)
-        0x0000E018: 0xA4AB0050 'P...' - sh         $t3, 80($a1)         // SZ3
+        0x0000E018: 0xA4AB0050 'P...' - sh         $t3, 80($a1)         // SZ3 for RTPS, SZ1/SZ2/SZ3 for RTPT
         0x0000E01C: 0x00EC6004 '.`..' - sllv       $t4, $t4, $a3
         0x0000E020: 0x018D001D '....' - maddu      $t4, $t5
         0x0000E024: 0x8F8C00E0 '....' - lw         $t4, 224($gp)        // OFX
@@ -144,6 +223,22 @@ loc_0000DF18:           ; Refs: 0x0000E0B4
         0x0000E038: 0x0167582D '-Xg.' - min        $t3, $t3, $a3
 
 loc_0000E03C:           ; Refs: 0x0000E16C 
+
+        a1 += 4
+
+        Acc = [OFX >> 31]:[OFX] + C_MAC1 * t3           // SX
+        t4 = (Hi << 16) | (Lo >> 16)
+        t5 = min (max(t4, -1024), 1023)
+        a0 |= (t5 != t4) << 14
+
+        Acc = [OFY >> 31]:[OFY] + C_MAC2 * t3           // SY
+        t4 = (Hi << 16) | (Lo >> 16)
+        a3 = min (max(t4, -1024), 1023)
+        a0 |= (t4 != a3) << 13
+        FLAG |= a0
+
+        gteSXY2 = (t5 & 0xFFFF) | (a3 << 16);
+
         0x0000E03C: 0x01800013 '....' - mtlo       $t4
         0x0000E040: 0x01E00011 '....' - mthi       $t7
         0x0000E044: 0x010B001C '....' - madd       $t0, $t3
@@ -175,7 +270,32 @@ loc_0000E03C:           ; Refs: 0x0000E16C
         0x0000E0AC: 0x00240825 '%.$.' - or         $at, $at, $a0
         0x0000E0B0: 0x7CEDFC04 '...|' - ins        $t5, $a3, 16, 16
         0x0000E0B4: 0x1785FF98 '....' - bne        $gp, $a1, loc_0000DF18
-        0x0000E0B8: 0xACAD0038 '8...' - sw         $t5, 56($a1)         // SXY1
+        0x0000E0B8: 0xACAD0038 '8...' - sw         $t5, 56($a1)         // SXY0/SXY1/SXY2 for RTPT, SXY2 for RTPS
+
+        gteMAC3 = MAC3
+        Acc = [DQB >> 31]:[DQB] + DQA * t3
+
+        t6 = C_MAC3 = min (max(MAC3, -32768), 32767)
+        at |= (MAC3 != C_MAC3) << 22
+
+        IR1 = C_MAC1
+        IR2 = C_MAC2
+        IR3 = C_MAC3
+
+        a0 = (Hi & 0x000fffff) | ( (Lo >> 12) << 20 );
+        MAC0 = Lo
+        if ( (Lo >> 12) < 4097 ) {
+                IR0 = a0
+                S330 = at
+        }
+        else {
+                at |= (a0 > 0x80000) << 15
+                at |= (a0 < ~0x80000) << 16
+                at |= 0x1000
+                IR0 = max (min (a0, 4096), 0)
+                S330 = at
+        }
+
         0x0000E0BC: 0xAF8A006C 'l...' - sw         $t2, 108($gp)        // MAC3
         0x0000E0C0: 0x8F9800F0 '....' - lw         $t8, 240($gp)        // DQB
         0x0000E0C4: 0x878500EC '....' - lh         $a1, 236($gp)        // DQA
@@ -203,6 +323,13 @@ loc_0000E03C:           ; Refs: 0x0000E16C
         0x0000E11C: 0xAF840020 ' ...' - sw         $a0, 32($gp)         // IR0
 
 loc_0000E120:           ; Refs: 0x0000E10C 
+
+        at |= (a0 > 0x80000) << 15
+        at |= (a0 < ~0x80000) << 16
+        at |= 0x1000
+        IR0 = max (min (a0, 4096), 0)
+        S330 = at
+
         0x0000E120: 0x24181000 '...$' - li         $t8, 4096
         0x0000E124: 0x3C0A0008 '...<' - lui        $t2, 0x8
         0x0000E128: 0x0144402A '*@D.' - slt        $t0, $t2, $a0
@@ -218,154 +345,130 @@ loc_0000E120:           ; Refs: 0x0000E10C
         0x0000E150: 0xAF840020 ' ...' - sw         $a0, 32($gp)         // IR0
 
 loc_0000E154:           ; Refs: 0x0000DFEC 
+        t5 = OFY
+        SZ3 = max (t2, 0)
+        t7 = OFX >> 31
+        a0 |= (1 << 17)
+        t3 = 0x1FFFF
+        goto loc_0000E03C
+
         0x0000E154: 0x8F8C00E0 '....' - lw         $t4, 224($gp)        // OFX
         0x0000E158: 0x8F8D00E4 '....' - lw         $t5, 228($gp)        // OFY
         0x0000E15C: 0x0140582C ',X@.' - max        $t3, $t2, $zr
-        0x0000E160: 0xA4AB0050 'P...' - sh         $t3, 80($a1)         // SZ3
+        0x0000E160: 0xA4AB0050 'P...' - sh         $t3, 80($a1)         // SZ3 for RTPS, SZ1/SZ2/SZ3 for RTPT
         0x0000E164: 0x378BFFFF '...7' - ori        $t3, $gp, 0xFFFF
         0x0000E168: 0x000C7FC3 '....' - sra        $t7, $t4, 31
         0x0000E16C: 0x0800380F '.8..' - j          loc_0000E03C
         0x0000E170: 0x7D648C44 'D.d}' - ins        $a0, $t3, 17, 1
-        0x0000E174: 0xDB9C0030 '0...' - lv.q       C700, 48($gp)        // SXY0
-        0x0000E178: 0xDB9D0040 '@...' - lv.q       C710, 64($gp)        // SZ0
-        0x0000E17C: 0x2785FFFC '...'' - addiu      $a1, $gp, -4
-        0x0000E180: 0xF79C0038 '8...' - svl.q      C700, 56($gp)        // SXY2
-        0x0000E184: 0xF79D0048 'H...' - svl.q      C710, 72($gp)        // SZ2
 
-loc_0000E188:           ; Refs: 0x0000E384 
-        0x0000E188: 0x03803021 '!0..' - move       $a2, $gp
-        0x0000E18C: 0x87810080 '....' - lh         $at, 128($gp)        // R11
+RTPT:
 
-loc_0000E190:           ; Refs: 0x0000E2F0 
-        0x0000E190: 0x84CE0000 '....' - lh         $t6, 0($a2)          // VX0
-        0x0000E194: 0x84CF0002 '....' - lh         $t7, 2($a2)          // VY0
-        0x0000E198: 0x84D80004 '....' - lh         $t8, 4($a2)          // VZ0
-        0x0000E19C: 0x002E0018 '....' - mult       $at, $t6
-        0x0000E1A0: 0x878C0082 '....' - lh         $t4, 130($gp)        // R12
-        0x0000E1A4: 0x878D0084 '....' - lh         $t5, 132($gp)        // R13
-        0x0000E1A8: 0x87880086 '....' - lh         $t0, 134($gp)        // R21
-        0x0000E1AC: 0x018F001C '....' - madd       $t4, $t7
-        0x0000E1B0: 0x878C0088 '....' - lh         $t4, 136($gp)        // R22
-        0x0000E1B4: 0x24C60008 '...$' - addiu      $a2, $a2, 8
-        0x0000E1B8: 0x8F870094 '....' - lw         $a3, 148($gp)        // TRX
-        0x0000E1BC: 0x24037FFF '...$' - li         $v1, 32767
-        0x0000E1C0: 0x01B8001C '....' - madd       $t5, $t8
-        0x0000E1C4: 0x878D008A '....' - lh         $t5, 138($gp)        // R23
-        0x0000E1C8: 0x878B008C '....' - lh         $t3, 140($gp)        // R31
-        0x0000E1CC: 0x24028000 '...$' - li         $v0, -32768
-        0x0000E1D0: 0x00002012 '. ..' - mflo       $a0
-        0x0000E1D4: 0x010E0018 '....' - mult       $t0, $t6
-        0x0000E1D8: 0x00042303 '.#..' - sra        $a0, $a0, 12
-        0x0000E1DC: 0x00872021 '! ..' - addu       $a0, $a0, $a3
-        0x0000E1E0: 0xAF840064 'd...' - sw         $a0, 100($gp)        // MAC1
-        0x0000E1E4: 0x018F001C '....' - madd       $t4, $t7
-        0x0000E1E8: 0x0082402C ',@..' - max        $t0, $a0, $v0
-        0x0000E1EC: 0x0103402D '-@..' - min        $t0, $t0, $v1
-        0x0000E1F0: 0x01B8001C '....' - madd       $t5, $t8
-        0x0000E1F4: 0x8F870098 '....' - lw         $a3, 152($gp)        // TRY
-        0x0000E1F8: 0x878C008E '....' - lh         $t4, 142($gp)        // R32
-        0x0000E1FC: 0x00006812 '.h..' - mflo       $t5
-        0x0000E200: 0x016E0018 '..n.' - mult       $t3, $t6
-        0x0000E204: 0x000D6B03 '.k..' - sra        $t5, $t5, 12
-        0x0000E208: 0x01A76821 '!h..' - addu       $t5, $t5, $a3
-        0x0000E20C: 0xAF8D0068 'h...' - sw         $t5, 104($gp)        // MAC2
-        0x0000E210: 0x01A2482C ',H..' - max        $t1, $t5, $v0
-        0x0000E214: 0x018F001C '....' - madd       $t4, $t7
-        0x0000E218: 0x878C0090 '....' - lh         $t4, 144($gp)        // R33
-        0x0000E21C: 0x0123482D '-H#.' - min        $t1, $t1, $v1
-        0x0000E220: 0x8F87009C '....' - lw         $a3, 156($gp)        // TRZ
-        0x0000E224: 0x0198001C '....' - madd       $t4, $t8
-        0x0000E228: 0x3418FFFF '...4' - li         $t8, 0xFFFF
-        0x0000E22C: 0x978C00E8 '....' - lhu        $t4, 232($gp)        // H
-        0x0000E230: 0x00005012 '.P..' - mflo       $t2
-        0x0000E234: 0x000A5303 '.S..' - sra        $t2, $t2, 12
-        0x0000E238: 0x01475021 '!PG.' - addu       $t2, $t2, $a3
-        0x0000E23C: 0x030A382B '+8..' - sltu       $a3, $t8, $t2
-        0x0000E240: 0x000A6840 '@h..' - sll        $t5, $t2, 1
-        0x0000E244: 0x018D682A '*h..' - slt        $t5, $t4, $t5
-        0x0000E248: 0x11A00041 'A...' - beqz       $t5, loc_0000E350
-        0x0000E24C: 0x0158582D '-XX.' - min        $t3, $t2, $t8
-        0x0000E250: 0x34078000 '...4' - li         $a3, 0x8000
-        0x0000E254: 0x00FC0019 '....' - multu      $a3, $gp
-        0x0000E258: 0x01603816 '.8`.' - clz        $a3, $t3
-        0x0000E25C: 0x24E7FFF2 '...$' - addiu      $a3, $a3, -14
-        0x0000E260: 0x00EB6804 '.h..' - sllv       $t5, $t3, $a3
-        0x0000E264: 0x3C0F0000 '...<' - lui        $t7, 0x0
-        0x0000E268: 0x01AF6821 '!h..' - addu       $t5, $t5, $t7
-; Data ref 0x000F198C ... 0x00000000 0x00000000 0x00000000 0x00000000 
-        0x0000E26C: 0x8DAD198C '....' - lw         $t5, 6540($t5)
-        0x0000E270: 0xA4AB0050 'P...' - sh         $t3, 80($a1)         // SZ3
-        0x0000E274: 0x00EC6004 '.`..' - sllv       $t4, $t4, $a3
-        0x0000E278: 0x018D001D '....' - maddu      $t4, $t5
-        0x0000E27C: 0x8F8C00E0 '....' - lw         $t4, 224($gp)        // OFX
-        0x0000E280: 0x8F8D00E4 '....' - lw         $t5, 228($gp)        // OFY
-        0x0000E284: 0x3787FFFF '...7' - ori        $a3, $gp, 0xFFFF
-        0x0000E288: 0x000C7FC3 '....' - sra        $t7, $t4, 31
-        0x0000E28C: 0x00005810 '.X..' - mfhi       $t3
-        0x0000E290: 0x0167582D '-Xg.' - min        $t3, $t3, $a3
-
-loc_0000E294:           ; Refs: 0x0000E364 
-        0x0000E294: 0x01800013 '....' - mtlo       $t4
-        0x0000E298: 0x01E00011 '....' - mthi       $t7
-        0x0000E29C: 0x010B001C '....' - madd       $t0, $t3
-        0x0000E2A0: 0x24A50004 '...$' - addiu      $a1, $a1, 4
-        0x0000E2A4: 0x240FFC00 '...$' - li         $t7, -1024
-        0x0000E2A8: 0x241803FF '...$' - li         $t8, 1023
-        0x0000E2AC: 0x000D3FC3 '.?..' - sra        $a3, $t5, 31
-        0x0000E2B0: 0x00006012 '.`..' - mflo       $t4
-        0x0000E2B4: 0x01A00013 '....' - mtlo       $t5
-        0x0000E2B8: 0x00006810 '.h..' - mfhi       $t5
-        0x0000E2BC: 0x00E00011 '....' - mthi       $a3
-        0x0000E2C0: 0x012B001C '..+.' - madd       $t1, $t3
-        0x0000E2C4: 0x000C6402 '.d..' - srl        $t4, $t4, 16
-        0x0000E2C8: 0x7DACFC04 '...}' - ins        $t4, $t5, 16, 16
-        0x0000E2CC: 0x018F682C ',h..' - max        $t5, $t4, $t7
-        0x0000E2D0: 0x01B8682D '-h..' - min        $t5, $t5, $t8
-        0x0000E2D4: 0x00006012 '.`..' - mflo       $t4
-        0x0000E2D8: 0x00003810 '.8..' - mfhi       $a3
-        0x0000E2DC: 0x000C6402 '.d..' - srl        $t4, $t4, 16
-        0x0000E2E0: 0x7CECFC04 '...|' - ins        $t4, $a3, 16, 16
-        0x0000E2E4: 0x018F382C ',8..' - max        $a3, $t4, $t7
-        0x0000E2E8: 0x00F8382D '-8..' - min        $a3, $a3, $t8
-        0x0000E2EC: 0x7CEDFC04 '...|' - ins        $t5, $a3, 16, 16
-        0x0000E2F0: 0x1785FFA7 '....' - bne        $gp, $a1, loc_0000E190
-        0x0000E2F4: 0xACAD0038 '8...' - sw         $t5, 56($a1)         // SXY1
-        0x0000E2F8: 0xAF8A006C 'l...' - sw         $t2, 108($gp)        // MAC3
-        0x0000E2FC: 0x8F9800F0 '....' - lw         $t8, 240($gp)        // DQB
-        0x0000E300: 0x878500EC '....' - lh         $a1, 236($gp)        // DQA
-        0x0000E304: 0x001827C3 '.'..' - sra        $a0, $t8, 31
-        0x0000E308: 0x03000013 '....' - mtlo       $t8
-        0x0000E30C: 0xAF880024 '$...' - sw         $t0, 36($gp)         // IR1
-        0x0000E310: 0x00800011 '....' - mthi       $a0
-        0x0000E314: 0x00AB001C '....' - madd       $a1, $t3
-        0x0000E318: 0xAF890028 '(...' - sw         $t1, 40($gp)         // IR2
-        0x0000E31C: 0x0142702C ',pB.' - max        $t6, $t2, $v0
-        0x0000E320: 0x01C3702D '-p..' - min        $t6, $t6, $v1
-        0x0000E324: 0xAF8E002C ',...' - sw         $t6, 44($gp)         // IR3
-        0x0000E328: 0x00005812 '.X..' - mflo       $t3
-        0x0000E32C: 0x00006010 '.`..' - mfhi       $t4
-        0x0000E330: 0xAF8B0060 '`...' - sw         $t3, 96($gp)         // MAC0
-        0x0000E334: 0x000B2303 '.#..' - sra        $a0, $t3, 12
-        0x0000E338: 0x7D84FD04 '...}' - ins        $a0, $t4, 20, 12
-        0x0000E33C: 0x24181000 '...$' - li         $t8, 4096
-        0x0000E340: 0x0098202D '- ..' - min        $a0, $a0, $t8
-        0x0000E344: 0x0080202C ', ..' - max        $a0, $a0, $zr
-        0x0000E348: 0x03E00008 '....' - jr         $ra
-        0x0000E34C: 0xAF840020 ' ...' - sw         $a0, 32($gp)         // IR0
-
-loc_0000E350:           ; Refs: 0x0000E248 
-        0x0000E350: 0x8F8C00E0 '....' - lw         $t4, 224($gp)        // OFX
-        0x0000E354: 0x8F8D00E4 '....' - lw         $t5, 228($gp)        // OFY
-        0x0000E358: 0x0140582C ',X@.' - max        $t3, $t2, $zr
-        0x0000E35C: 0xA4AB0050 'P...' - sh         $t3, 80($a1)         // SZ3
-        0x0000E360: 0x378BFFFF '...7' - ori        $t3, $gp, 0xFFFF
-        0x0000E364: 0x080038A5 '.8..' - j          loc_0000E294
-        0x0000E368: 0x000C7FC3 '....' - sra        $t7, $t4, 31
         0x0000E36C: 0x9788004C 'L...' - lhu        $t0, 76($gp)         // SZ3
         0x0000E370: 0x2785FFF4 '...'' - addiu      $a1, $gp, -12
         0x0000E374: 0x080037C4 '.7..' - j          loc_0000DF10
         0x0000E378: 0xA7880040 '@...' - sh         $t0, 64($gp)         // SZ0
-        0x0000E37C: 0x9788004C 'L...' - lhu        $t0, 76($gp)         // SZ3
-        0x0000E380: 0x2785FFF4 '...'' - addiu      $a1, $gp, -12
-        0x0000E384: 0x08003862 'b8..' - j          loc_0000E188
-        0x0000E388: 0xA7880040 '@...' - sh         $t0, 64($gp)         // SZ0
+
+-----------------------
+
+Pseudo-C:
+
+RTPS / RTPT:
+{
+    s64 FDSZ;
+
+    gteFLAG = 0;
+
+    if (RTPS) {
+        gteSXY0 = gteSXY1;
+        gteSXY1 = gteSXY2;
+        gteSXY2 = gteSXYP;
+
+        gteSZ0 = gteSZ1;
+        gteSZ1 = gteSZ2;
+        gteSZ2 = gteSZ3;
+    }
+    if (RTPT) {
+        gte SZ0 = gteSZ3;
+    }
+
+----
+
+    // RTPT Start
+    // For RTPT repeat these steps for VXYZ0 ... VXYZ2 / SZ1 ... SZ3 / SXY0 - SXY2
+    // For RTPS VXYZ0 / SZ3 / SXY2 are used only
+
+    gteMAC1 = ((gteR11 * gteVX0 + gteR12 * gteVY0 + gteR13 * gteVZ0) >> 12) + gteTRX;
+    gteMAC2 = ((gteR21 * gteVX0 + gteR22 * gteVY0 + gteR23 * gteVZ0) >> 12) + gteTRY;
+    gteMAC3 = ((gteR31 * gteVX0 + gteR32 * gteVY0 + gteR33 * gteVZ0) >> 12) + gteTRZ;
+
+    C_MAC1 = min ( max(gteMAC1, -32768), 32767);
+    C_MAC2 = min ( max(gteMAC2, -32768), 32767);
+    C_MAC3 = min ( max(gteMAC3, -32768), 32767);
+
+    gteFLAG |= (gteMAC1 != C_MAC1) << 24;
+    gteFLAG |= (gteMAC2 != C_MAC2) << 23;
+    gteFLAG |= (gteMAC3 != C_MAC3) << 22;
+
+----
+
+    gteFLAG |= (gteMAC3 > 0xFFFF) << 18;
+
+    if ((gteMAC3 * 2) > gteH) {
+        gteSZ3 = min (gteMAC3, 0xFFFF);
+        int zeros = CountLeadingZeros (gteSZ3) - 14;
+        FDSZ = 0x80000000 + (gteH << zeros) * reciprocalTable[gteSZ3 << zeros];
+        FDSZ = min ( (FDSZ >> 32), 0x1FFFF );
+    }
+    else {
+        gteSZ3 = max (gteMAC3, 0);
+        FDSZ = 0x1FFFF;
+        gteFLAG |= (1 << 17);
+    }
+
+----
+
+    s64 Acc = (s64)(OFX) + C_MAC1 * FDSZ;           // SX
+    SX = (Hi << 16) | (Lo >> 16);
+    C_SX = min (max(SX, -1024), 1023);
+    gteFLAG |= (SX != C_SX) << 14;
+
+    s64 Acc = (s64)(OFY) + C_MAC2 * FDSZ;           // SY
+    SY = (Hi << 16) | (Lo >> 16);
+    C_SY = min (max(SY, -1024), 1023);
+    gteFLAG |= (SY != C_SY) << 13;
+
+    gteSXY2 = (C_SX & 0xFFFF) | (C_SY << 16);
+
+    // RTPT End
+
+----
+
+    gteIR1 = C_MAC1;
+    gteIR2 = C_MAC2;
+    gteIR3 = C_MAC3;
+    
+    s64 Acc = (s64)(DQB) + DQA * FDSZ;
+
+    a0 = (Hi & 0x000fffff) | ( (Lo >> 12) << 20 );
+    gteMAC0 = Lo;
+    if ( (Lo >> 12) < 4097 ) {
+        gteIR0 = a0;
+    }
+    else {
+        gteFLAG |= (a0 > 524288) << 15;
+        gteFLAG |= (a0 < -524289) << 16;
+        gteFLAG |= 0x1000;
+        gteIR0 = max (min (a0, 4096), 0);
+    }
+
+    SUM_FLAG;
+}
+
+
+function CountLeadingZeros (const v: Longword): Longword;
+asm
+    MOV    EAX, v
+    MOV    EDX, 00000020h
+    BSF    EAX, EAX
+    CMOVZ  EAX, EDX
+end;
