@@ -1,4 +1,4 @@
-#summary Notes regardless GTE divider, used in RTPS/RTPT.
+#summary Notes about GTE divider, used in RTPS/RTPT.
 
 = Introduction =
 
