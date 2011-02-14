@@ -11,7 +11,7 @@ GTE has integrated divider, based on Unsigned Newton-Raphson (UNR) algorithm. If
 <a href="http://research.microsoft.com/apps/pubs/default.aspx?id=70645">Software Integer Division</a><br>
 I didn't managed to understand it :=)
 
-It seems GTE also has hardwared 256-entry UNR table on chip:<br>
+It seems GTE also has hardwired 256-entry UNR table on chip:<br>
 
 ||FF ||FD ||FB ||F9 ||F7 ||F5 ||F3 ||F1 ||EF ||EE ||EC ||EA ||E8 ||E6 ||E4 ||E3||
 ||E1 ||DF ||DD ||DC ||DA ||D8 ||D6 ||D5 ||D3 ||D1 ||D0 ||CE ||CD ||CB ||C9 ||C8||
