@@ -4,7 +4,7 @@
 
 ==Control Register Group==
 
-||Register number||Name ||Access ||Content||
+||Register<br>number||Name ||Access ||Content||
 || *0* || *R11R12* || *R/W* || Rotation matrix ||
 || *1* || *R13R21* || *R/W* || Rotation matrix ||
 || *2* || *R22R23* || *R/W* || Rotation matrix ||
@@ -40,7 +40,7 @@
 
 ==Data Register Group==
 
-||Register number ||Name ||Access ||Content||
+||Register<br>number ||Name ||Access ||Content||
 || *0* || *VXY0* || *R/W* || Vector #0 (X/Y) ||
 || *1* || *VZ0* || *R/W* || Vector #0 (Z) ||
 || *2* || *VXY1* || *R/W* || Vector #1 (X/Y) ||
