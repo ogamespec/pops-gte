@@ -283,3 +283,306 @@ Matrix = |(2,X),(2,Y),(2,Z)|
          |(3,X),(3,Y),(3,Z)|
           -               -
 }}}
+
+<b>Register number: Control #13</b>
+
+Register name: RBK<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |RBK                                                              |
+     -----------------------------------------------------------------
+Fields:
+RBK     (1.19.12)        Background color R-component
+}}}
+
+<b>Register number: Control #14</b>
+
+Register name: GBK<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |GBK                                                              |
+     -----------------------------------------------------------------
+Fields:
+GBK     (1.19.12)        Background color G-component
+}}}
+
+<b>Register number: Control #15</b>
+
+Register name: BBK<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |BBK                                                              |
+     -----------------------------------------------------------------
+Fields:
+BBK     (1.19.12)        Background color B-component
+}}}
+
+<b>Register number: Control #16</b>
+
+Register name: LR1LR2<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |LR2                              |LR1                            |
+     -----------------------------------------------------------------
+Fields:
+LR1     (1.3.12)        Light source color #1 R-component
+LR2     (1.3.12)        Light source color #2 R-component
+}}}
+
+<b>Register number: Control #17</b>
+
+Register name: LR3LG1<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |LG1                              |LR3                            |
+     -----------------------------------------------------------------
+Fields:
+LR3     (1.3.12)        Light source color #3 R-component
+LG1     (1.3.12)        Light source color #1 G-component
+}}}
+
+<b>Register number: Control #18</b>
+
+Register name: LG2LG3<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |LG3                              |LG2                            |
+     -----------------------------------------------------------------
+Fields:
+LG2     (1.3.12)        Light source color #2 G-component
+LG3     (1.3.12)        Light source color #3 G-component
+}}}
+
+<b>Register number: Control #19</b>
+
+Register name: LB1LB2<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |LB2                              |LB1                            |
+     -----------------------------------------------------------------
+Fields:
+LB1     (1.3.12)        Light source color #1 B-component
+LB2     (1.3.12)        Light source color #2 B-component
+}}}
+
+<b>Register number: Control #20</b>
+
+Register name: LB3<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |Not used                         |LB3                            |
+     -----------------------------------------------------------------
+Fields:
+LB3     (1.3.12)        Light source color #3 B-component
+}}}
+
+Matrix expression:<br>
+"Light source color X 3" is a matrix combining three light source RGB expression color data values. The allocation of the
+elements is as follows.
+{{{
+          -               -
+         |(R,1),(R,2),(R,3)|
+Matrix = |(G,1),(G,2),(G,3)|
+         |(B,1),(B,2),(B,3)|
+          -               -
+}}}
+
+<b>Register number: Control #21</b>
+
+Register name: RFC<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |RFC                                                              |
+     -----------------------------------------------------------------
+Fields:
+RFC     (1.27.4)        Far color R-component
+}}}
+
+<b>Register number: Control #22</b>
+
+Register name: GFC<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |GFC                                                              |
+     -----------------------------------------------------------------
+Fields:
+GFC     (1.27.4)        Far color G-component
+}}}
+
+<b>Register number: Control #23</b>
+
+Register name: BFC<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |BFC                                                              |
+     -----------------------------------------------------------------
+Fields:
+BFC     (1.27.4)        Far color B-component
+}}}
+
+<b>Register number: Control #24</b>
+
+Register name: OFX<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |OFX                                                              |
+     -----------------------------------------------------------------
+Fields:
+OFX     (1.15.16)        Screen offset X-component
+}}}
+
+<b>Register number: Control #25</b>
+
+Register name: OFY<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |OFY                                                              |
+     -----------------------------------------------------------------
+Fields:
+OFY     (1.15.16)        Screen offset Y-component
+}}}
+
+<b>Register number: Control #26</b>
+
+Register name: H<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |Not used                         |H                              |
+     -----------------------------------------------------------------
+Fields:
+LB3     (0.16.0)        Screen position
+}}}
+
+<b>Register number: Control #27</b>
+
+Register name: DQA<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |Not used                         |DQA                            |
+     -----------------------------------------------------------------
+Fields:
+DQA     (1.7.8)        Depth parameter A (coefficient)
+}}}
+
+<b>Register number: Control #28</b>
+
+Register name: DQB<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |DQB                                                              |
+     -----------------------------------------------------------------
+Fields:
+OFX     (1.7.24)        Depth parameter B (offset)
+}}}
+
+<b>Register number: Control #29</b>
+
+Register name: ZSF3<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |Not used                         |ZSF3                           |
+     -----------------------------------------------------------------
+Fields:
+ZSF3     (1.3.12)        Z-averaging scale factor (normally set to 1/3)
+}}}
+
+<b>Register number: Control #30</b>
+
+Register name: ZSF4<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |Not used                         |ZSF4                           |
+     -----------------------------------------------------------------
+Fields:
+ZSF4     (1.3.12)        Z-averaging scale factor (normally set to 1/4)
+}}}
+
+<b>Register number: Control #31</b>
+
+Register name: FLAG<br>
+Access: R/W _(?) must be typo, should be read-only, see table "Control Registers Group"_<br>
+Bit pattern:<br>
+{{{
+Bit  31                                    12 11                     0
+     -----------------------------------------------------------------
+    |FLAG                                    |Not used                |
+     -----------------------------------------------------------------
+Fields:
+FLAG    As indicated in table below
+}}}
+
+||Bit<br>number||Content||
+|| *31* || Logical sum of bits 30 - 23 and bits 18 - 13 ||
+|| *30* || 1: Calculation test result #1 overflow generated (2`^`43 or more) ||
+|| *29* || 1: Calculation test result #2 overflow generated (2`^`43 or more)||
+|| *28* || 1: Calculation test result #3 overflow generated (2`^`43 or more)||
+|| *27* || 1: Calculation test result #1 underflow generated (less than -2`^`43)||
+|| *26* || 1: Calculation test result #2 underflow generated (less than -2`^`43)||
+|| *25* || 1: Calculation test result #3 underflow generated (less than -2`^`43)||
+|| *24* || 1: Limiter A1 out of range detected (less than 0 or less than -2`^`15, or 2`^`15 or more)||
+|| *23* || 1: Limiter A2 out of range detected (less than 0 or less than -2`^`15, or 2`^`15 or more)||
+|| *22* || 1: Limiter A3 out of range detected (less than -0 or less than -2`^`15, or 2`^`15 or more)||
+|| *21* || 1: Limiter B1 out of range detected (less than 0, or 2`^`8 or more)||
+|| *20* || 1: Limiter B2 out of range detected (less than 0, or 2`^`8 or more)||
+|| *19* || 1: Limiter B3 out of range detected (less than 0, or 2`^`8 or more)||
+|| *18* || 1: Limiter C out of range detected (less than 0, or 2`^`16 or more)||
+|| *17* || 1: Divide overflow generated (quotient of 2.0 or more)||
+|| *16* || 1: Calculation test result #4 overflow generated (2`^`31 or more)||
+|| *15* || 1: Calculation test result #4 underflow generated (less than -2`^`31)||
+|| *14* || 1: Limiter D1 out of range detected (less than -2`^`10, or 2`^`10 or more)||
+|| *13* || 1: Limiter D2 out of range detected (less than -2`^`10, or 2`^`10 or more)||
+|| *12* || 1: Limiter E out of range detected (less than 0, or 2`^`12 or more)||
