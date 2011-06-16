@@ -46,38 +46,38 @@ The macro definition of GTE register names can be found in the include header fi
 of the PlayStation library. The names of the macros are formed by adding the prefix "C2`_`" to the register
 names used in the "GTE Register Specification".
 ||Register number||Data register||Control register||
-||0||C2_VXY0||C2_R11R12||
-||1||C2_VZ0||C2_R13R21||
-||2||C2_VXY1||C2_R22R23||
-||3||C2_VZ1||C2_R31R32||
-||4||C2_VXY2||C2_R33||
-||5||C2_VZ2||C2_TRX||
-||6||C2_RGB||C2_TRY||
-||7||C2_OTZ||C2_TRZ||
-||8||C2_IR0||C2_L11L12||
-||9||C2_IR1||C2_L13L21||
-||10||C2_IR2||C2_L22L23||
-||11||C2_IR3||C2_L31L32||
-||12||C2_SXY0||C2_L33||
-||13||C2_SXY1||C2_RBK||
-||14||C2_SXY2||C2_GBK||
-||15||C2_SXYP||C2_BBK||
-||16||C2_SZ0||C2_LR1LR2||
-||17||C2_SZ1||C2_LR3LG1||
-||18||C2_SZ2||C2_LG2LG3||
-||19||C2_SZ3||C2_LB1LB2||
-||20||C2_RGB0||C2_LB3||
-||21||C2_RGB1||C2_RFC||
-||22||C2_RGB2||C2_GFC||
-||23|| _Undefined_ ||C2_BFC||
-||24||C2_MAC0||C2_OFX||
-||25||C2_MAC1||C2_OFY||
-||26||C2_MAC2||C2_H||
-||27||C2_MAC3||C2_DQA||
-||28||C2_IRGB||C2_DQB||
-||29||C2_ORGB||C2_ZSF3||
-||30||C2_LZCS||C2_ZSF4||
-||31||C2_LZCR||C2_FLAG||
+||0||`C2_VXY0`||`C2_R11R12`||
+||1||`C2_VZ0`||`C2_R13R21`||
+||2||`C2_VXY1`||`C2_R22R23`||
+||3||`C2_VZ1`||`C2_R31R32`||
+||4||`C2_VXY2`||`C2_R33`||
+||5||`C2_VZ2`||`C2_TRX`||
+||6||`C2_RGB`||`C2_TRY`||
+||7||`C2_OTZ`||`C2_TRZ`||
+||8||`C2_IR0`||`C2_L11L12`||
+||9||`C2_IR1`||`C2_L13L21`||
+||10||`C2_IR2`||`C2_L22L23`||
+||11||`C2_IR3`||`C2_L31L32`||
+||12||`C2_SXY0`||`C2_L33`||
+||13||`C2_SXY1`||`C2_RBK`||
+||14||`C2_SXY2`||`C2_GBK`||
+||15||`C2_SXYP`||`C2_BBK`||
+||16||`C2_SZ0`||`C2_LR1LR2`||
+||17||`C2_SZ1`||`C2_LR3LG1`||
+||18||`C2_SZ2`||`C2_LG2LG3`||
+||19||`C2_SZ3`||`C2_LB1LB2`||
+||20||`C2_RGB0`||`C2_LB3`||
+||21||`C2_RGB1`||`C2_RFC`||
+||22||`C2_RGB2`||`C2_GFC`||
+||23|| _Undefined_ ||`C2_BFC`||
+||24||`C2_MAC0`||`C2_OFX`||
+||25||`C2_MAC1`||`C2_OFY`||
+||26||`C2_MAC2`||`C2_H`||
+||27||`C2_MAC3`||`C2_DQA`||
+||28||`C2_IRGB`||`C2_DQB`||
+||29||`C2_ORGB`||`C2_ZSF3`||
+||30||`C2_LZCS`||`C2_ZSF4`||
+||31||`C2_LZCR`||`C2_FLAG`||
 
 ==Commands==
 GTE can perform an entire series of calculations essential for graphics programming (such as coordinate
