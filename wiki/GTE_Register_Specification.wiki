@@ -148,7 +148,7 @@ Fields:
 R33     (1.3.12)        Element (3,3) of rotation matrix
 }}}
 
-Matrix expression of Control registers #1-#4:
+Matrix expression of Control registers 1-4:
 {{{
             -               -
            |(1,1),(1,2),(1,3)|
@@ -273,7 +273,7 @@ Fields:
 L33     (1.3.12)        Light source direction vector #3 Z-component
 }}}
 
-Matrix expression  of Control registers #8-#12:<br>
+Matrix expression  of Control registers 8-12:<br>
 "Light source direction vector X 3" is a matrix combining three light source direction vectors. The allocation of the elements is as
 follows.
 {{{
