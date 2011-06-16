@@ -1,0 +1,75 @@
+#summary Official information from devkit. Part II.
+
+=GTE Register Specification=
+
+==Control Register Group==
+
+||Register number||Name ||Access ||Content||
+|| *0* || *R11R12* || *R/W* || Rotation matrix ||
+|| *1* || *R13R21* || *R/W* || Rotation matrix ||
+|| *2* || *R22R23* || *R/W* || Rotation matrix ||
+|| *3* || *R31R32* || *R/W* || Rotation matrix ||
+|| *4* || *R33* || *R/W* || Rotation matrix ||
+|| *5* || *TRX* || *R/W* || Translation vector (X) ||
+|| *6* || *TRY* || *R/W* || Translation vector (Y) ||
+|| *7* || *TRZ* || *R/W* || Translation vector (Z) ||
+|| *8* || *L11L12* || *R/W* || Light source direction vector X 3 ||
+|| *9* || *L13L21* || *R/W* || Light source direction vector X 3 ||
+|| *10* || *L22L23* || *R/W* || Light source direction vector X 3 ||
+|| *11* || *L31L32* || *R/W* || Light source direction vector X 3 ||
+|| *12* || *L33* || *R/W* || Light source direction vector X 3 ||
+|| *13* || *RBK* || *R/W* || Peripheral color (background color) (R) ||
+|| *14* || *GBK* || *R/W* || Peripheral color (background color) (B) ||
+|| *15* || *BBK* || *R/W* || Peripheral color (background color) (G) ||
+|| *16* || *LR1LR2* || *R/W* || Light source color X 3 ||
+|| *17* || *LR3LG1* || *R/W* || Light source color X 3 ||
+|| *18* || *LG2LG3* || *R/W* || Light source color X 3 ||
+|| *19* || *LB1LB2* || *R/W* || Light source color X 3 ||
+|| *20* || *LB3* || *R/W* || Light source color X 3 ||
+|| *21* || *RFC* || *R/W* || Far color (R) ||
+|| *22* || *GFC* || *R/W* || Far color (G) ||
+|| *23* || *BFC* || *R/W* || Far color (B) ||
+|| *24* || *OFX* || *R/W* || Screen offset (X) ||
+|| *25* || *OFY* || *R/W* || Screen offset (Y) ||
+|| *26* || *H* || *R/W* || Screen position ||
+|| *27* || *DQA* || *R/W* || Depth parameter A (coefficient) ||
+|| *28* || *DQB* || *R/W* || Depth parameter B (offset) ||
+|| *29* || *ZSF3* || *R/W* || Z-averaging scale factor ||
+|| *30* || *ZSF4* || *R/W* || Z-averaging scale factor ||
+|| *31* || *FLAG* || *R* || Flag ||
+
+==Data Register Group==
+
+||Register number ||Name ||Access ||Content||
+|| *0* || *VXY0* || *R/W* || Vector #0 (X/Y) ||
+|| *1* || *VZ0* || *R/W* || Vector #0 (Z) ||
+|| *2* || *VXY1* || *R/W* || Vector #1 (X/Y) ||
+|| *3* || *VZ1* || *R/W* || Vector #1 (Z) ||
+|| *4* || *VXY2* || *R/W* || Vector #2 (X/Y) ||
+|| *5* || *VZ2* || *R/W* || Vector #2 (Z) ||
+|| *6* || *RGB* || *R/W* || Color data + GTE instruction ||
+|| *7* || *OTZ* || *R* || Z-component average value ||
+|| *8* || *IR0* || *R/W* || Intermediate value #0 ||
+|| *9* || *IR1* || *R/W* || Intermediate value #1 ||
+|| *10* || *IR2* || *R/W* || Intermediate value #2 ||
+|| *11* || *IR3* || *R/W* || Intermediate value #3 ||
+|| *12* || *SXY0* || *R/W* || Calculation result record (XY) ||
+|| *13* || *SXY1* || *R/W* || Calculation result record (XY) ||
+|| *14* || *SXY2* || *R/W* || Calculation result record (XY) ||
+|| *15* || *SXYP* || *W* || Calculation result setting register ||
+|| *16* || *SZ0* || *R/W* || Calculation result record (Z) ||
+|| *17* || *SZ1* || *R/W* || Calculation result record (Z) ||
+|| *18* || *SZ2* || *R/W* || Calculation result record (Z) ||
+|| *19* || *SZ3* || *R/W* || Calculation result record (Z) ||
+|| *20* || *RGB0* || *R/W* || Calculation result record (color data) ||
+|| *21* || *RGB1* || *R/W* || Calculation result record (color data) ||
+|| *22* || *RGB2* || *R/W* || Calculation result record (color data) ||
+|| *23* || *RES1* || *n/a* || Reserved by system (access prohibited) ||
+|| *24* || *MAC0* || *R* || Sum of products #0 ||
+|| *25* || *MAC1* || *R/W* || Sum of products #1 ||
+|| *26* || *MAC2* || *R/W* || Sum of products #2 ||
+|| *27* || *MAC3* || *R/W* || Sum of products #3 ||
+|| *28* || *IRGB* || *W* || Color data input register ||
+|| *29* || *ORGB* || *R* || Color data output register ||
+|| *30* || *LZCS* || *W* || Leading zero/one count source data ||
+|| *31* || *LZCR* || *R* || Leading zero/one count processing result ||
