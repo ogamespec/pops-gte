@@ -673,3 +673,293 @@ Bit  31                            16 15                             0
 Fields:
 VZ2     (1.15.0) or (1.3.12)        Vector #2 Z-element
 }}}
+
+<b>Register number: Data #6</b>
+
+Register name: RGB<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                             16 15                              0
+     -------------------------------------------------------------------
+    |CODE            |B               |G               |R               |
+     -------------------------------------------------------------------
+
+Fields:
+R       (0.8.0)     Characteristic color R-element
+G       (0.8.0)     Characteristic color G-element
+B       (0.8.0)     Characteristic color B-element
+CODE    (-.8.-)     Arbitrary 8-bit data (normally specified by GPU draw command)
+}}}
+
+<b>Register number: Data #7</b>
+
+Register name: OTZ<br>
+Access: R<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |0                                |OTZ                            |
+     -----------------------------------------------------------------
+Fields:
+OTZ     (0.15.0)        Z-element average value
+}}}
+
+<b>Register number: Data #8</b>
+
+Register name: IR0<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |sign                             |IR0                            |
+     -----------------------------------------------------------------
+Fields:
+IR0     (1.3.12) or the like Intermediate value #0
+sign    All bits 0 or 1
+}}}
+
+<b>Register number: Data #9</b>
+
+Register name: IR1<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |sign                             |IR1                            |
+     -----------------------------------------------------------------
+Fields:
+IR1     (1.3.12) or the like Intermediate value #1
+sign    All bits 0 or 1
+}}}
+
+<b>Register number: Data #10</b>
+
+Register name: IR2<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |sign                             |IR2                            |
+     -----------------------------------------------------------------
+Fields:
+IR2     (1.3.12) or the like Intermediate value #2
+sign    All bits 0 or 1
+}}}
+
+<b>Register number: Data #11</b>
+
+Register name: IR3<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |sign                             |IR3                            |
+     -----------------------------------------------------------------
+Fields:
+IR3     (1.3.12) or the like Intermediate value #3
+sign    All bits 0 or 1
+}}}
+
+<b>Register number: Data #12</b>
+
+Register name: SXY0<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |SY0                              |SX0                            |
+     -----------------------------------------------------------------
+Fields:
+SX0     (1.15.0)    X-element of 2-dimensional screen coordinates or 2-dimensional coordinates following
+                    perspective transformation. Note that this value was obtained in the calculation three times
+                    previous.
+SY0     (1.15.0)    Y-element of 2-dimensional screen coordinates or 2-dimensional coordinates following
+                    perspective transformation. Note that this value was obtained in the calculation three times
+                    previous.
+}}}
+Internal operations:<br>
+See Data #14: SXY2 and Data #15: SXYP.
+
+<b>Register number: Data #13</b>
+
+Register name: SXY1<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |SY1                              |SX1                            |
+     -----------------------------------------------------------------
+Fields:
+SX1     (1.15.0)    X-element of 2-dimensional screen coordinates or 2-dimensional coordinates following
+                    perspective transformation. Note that this value was obtained in the calculation two times
+                    previous.
+SY1     (1.15.0)    Y-element of 2-dimensional screen coordinates or 2-dimensional coordinates following
+                    perspective transformation. Note that this value was obtained in the calculation two times
+                    previous.
+}}}
+Internal operations:<br>
+See Data #14: SXY2 and Data #15: SXYP.
+
+<b>Register number: Data #14</b>
+
+Register name: SXY2<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |SY2                              |SX2                            |
+     -----------------------------------------------------------------
+Fields:
+SX2     (1.15.0)    X-element of 2-dimensional screen coordinates or 2-dimensional coordinates following
+                    perspective transformation. Note that this value was obtained in the calculation one time
+                    previous.
+SY2     (1.15.0)    Y-element of 2-dimensional screen coordinates or 2-dimensional coordinates following
+                    perspective transformation. Note that this value was obtained in the calculation one time
+                    previous.
+}}}
+Internal operations:<br>
+In several GTE instructions, substitutions are made in the following sequence.<br>
+SXY0 = SXY1;<br>
+SXY1 = SXY2;<br>
+SXY2 = Coordinate XY-elements obtained through calculation.
+
+<b>Register number: Data #15</b>
+
+Register name: SXYP<br>
+Access: W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |SYP                              |SXP                            |
+     -----------------------------------------------------------------
+Fields:
+SXP     (1.15.0)    X-element of coordinates transferred to SXY2
+SYP     (1.15.0)    Y-element of coordinates transferred to SXY2
+}}}
+Internal operations:<br>
+The following operations are generated at the same time as the write.<br>
+SXY0 = SXY1;<br>
+SXY1 = SXY2;<br>
+SXY2 = SXYP;
+
+<b>Register number: Data #16</b>
+
+Register name: SZ0<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |0                                |SZ0                            |
+     -----------------------------------------------------------------
+Fields:
+SZ0     (0.16.0)    Screen coordinate Z-element. Note that this value was obtained in the calculation four times
+                    previous.
+}}}
+Internal operations:<br>
+See Data #19: SZ3.
+
+<b>Register number: Data #17</b>
+
+Register name: SZ1<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |0                                |SZ1                            |
+     -----------------------------------------------------------------
+Fields:
+SZ1     (0.16.0)    Screen coordinate Z-element. Note that this value was obtained in the calculation three times
+                    previous.
+}}}
+Internal operations:<br>
+See Data #19: SZ3.
+
+<b>Register number: Data #18</b>
+
+Register name: SZ2<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |0                                |SZ2                            |
+     -----------------------------------------------------------------
+Fields:
+SZ2     (0.16.0)    Screen coordinate Z-element. Note that this value was obtained in the calculation two times
+                    previous.
+}}}
+Internal operations:<br>
+See Data #19: SZ3.
+
+<b>Register number: Data #19</b>
+
+Register name: SZ3<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                            16 15                             0
+     -----------------------------------------------------------------
+    |0                                |SZ3                            |
+     -----------------------------------------------------------------
+Fields:
+SZ3     (0.16.0)    Screen coordinate Z-element. Note that this value was obtained in the calculation one time
+                    previous.
+}}}
+Internal operations:<br>
+In several GTE instructions, substitutions are made in the following sequence.<br>
+SZ0 = SZ1;<br>
+SZ1 = SZ2;<br>
+SZ2 = SZ3;<br>
+SZ3 = Coordinate Z-element obtained through calculation.
+
+<b>Register number: Data #20</b>
+
+Register name: RGB0<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                             16 15                              0
+     -------------------------------------------------------------------
+    |CD0             |B0              |G0              |R0              |
+     -------------------------------------------------------------------
+
+Fields:
+R0      (0.8.0)     Characteristic color R-element
+G0      (0.8.0)     Characteristic color G-element
+B0      (0.8.0)     Characteristic color B-element
+CD0     (-.8.-)     Arbitrary 8-bit data
+}}}
+Internal operations:<br>
+See Data #22: RGB2.
+
+<b>Register number: Data #21</b>
+
+Register name: RGB1<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                             16 15                              0
+     -------------------------------------------------------------------
+    |CD1             |B1              |G1              |R1              |
+     -------------------------------------------------------------------
+
+Fields:
+R1      (0.8.0)     Characteristic color R-element
+G1      (0.8.0)     Characteristic color G-element
+B1      (0.8.0)     Characteristic color B-element
+CD1     (-.8.-)     Arbitrary 8-bit data
+}}}
+Internal operations:<br>
+See Data #22: RGB2.
