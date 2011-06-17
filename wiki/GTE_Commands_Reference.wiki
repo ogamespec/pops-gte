@@ -113,3 +113,6 @@ is 0, and with a 12-bit fraction if sf is 1.
 || *OP* || *6* || Outer product|| 
 || *GPF* || *5* || General purpose interpolation|| 
 || *GPL* || *5* || General purpose interpolation|| 
+
+==Command Details==
+Command details are listed on the pages which follow.
