@@ -1,0 +1,32 @@
+#summary Official information from devkit. Part III.
+
+=GTE Commands Reference=
+
+==Limiters==
+
+During some calculation processing, calculation results, data values in registers, etc., are clipped when they
+exceed specified upper limit and lower limit values. In other words, data values lower than the lower limit
+value are converted to the lower limit value, and data values higher than the upper limit value are converted
+to the upper limit value. Also, the occurrence of such conversions is reflected in out-of-bounds data
+detection flags in the FLAG register. These functions are referred to as "limiters”.
+
+The usage of the various limiters and the codes used to specify them in this documentation are listed
+below.
+
+||Code<br>Specific<br>ation||Limiter||Out-of-<br>bounds<br>detect bit||Lower limit||Upper limit||Comments||
+|| *A1S* || *A1* || *24* || *-2`^`15* || *2`^`15-1* || ||
+|| *A2S* || *A2* || *23* || -2`^`15 || 2`^`15-1 || || 
+|| *A3S* || *A3* || *22* || -2`^`15 || 2`^`15-1|| || 
+|| *A1U* || *A1* || *24* || 0 || 2`^`15-1|| || 
+|| *A2U* || *A2* || *23* || 0 || 2`^`15-1|| || 
+|| *A3U* || *A3* || *22* || 0 || 2`^`15-1|| || 
+|| *A1C* || *A1* || *24* || 0 or -2`^`15 || 2`^`15-1 || Lower limit value is<br> specified using lim <br>argument.|| 
+|| *A2C* || *A3* || *23* || 0 or -2`^`15 || 2`^`15-1 || Lower limit value <br>is specified using lim <br>argument.|| 
+|| *A3C* || *A3* || *22* || 0 or -2`^`15 || 2`^`15-1 || Lower limit value <br>is specified using lim <br>argument.|| 
+|| *B1* || *B1* || *21* || 0 || 2`^`8-1|| || 
+|| *B2* || *B2* || *20* || 0 || 2`^`8-1|| || 
+|| *B3* || *B3* || *19* || 0 || 2`^`8-1|| || 
+|| *C* || *C* || *18* || 0 || 2`^`16-1|| || 
+|| *D1* || *D1* || *14* || *-2`^`10* || *2`^`10-1* || || 
+|| *D2* || *D2* || *13* || *-2`^`10* || *2`^`10-1* || || 
+|| *E || *E* || *12* || *0* || *2`^`12-1* || || 
