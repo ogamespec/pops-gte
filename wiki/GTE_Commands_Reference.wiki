@@ -40,7 +40,7 @@ calculation operations that are subject to such detection.
 ==Explanations==
 
 ||Character attributes ||Example ||Content||
-||Underline || <u>VAL</u> ||Intermediate value<br>(No corresponding register)||
+||Underline || <u>*VAL*</u> ||Intermediate value<br>(No corresponding register)||
 ||Embolden || *OBJ* || 32-bit value||
 
 ||Code ||Meaning||
@@ -51,7 +51,7 @@ calculation operations that are subject to such detection.
 || *n=0,1,2 {}* || Repeat the process between the curly parentheses {} three<br>times, substituting 0, 1, and 2 for n.||
 || *(a.b.c)* || Fixed-point number<br>Sign portion: a bits, integer portion: b bits, fractional portion: c bits||
 || *(-.b.-)* || b-bit binary data ||
-|| *<n>* || Calculation subject to overflow and underflow testing<br>The test result is reflected in cumulative test flag n in the FLAG register.||
+|| *`<`n`>`* || Calculation subject to overflow and underflow testing<br>The test result is reflected in cumulative test flag n in the FLAG register.||
 
 <b>Descriptor examples:</b><br>
 (A)<br>
@@ -116,3 +116,27 @@ is 0, and with a 12-bit fraction if sf is 1.
 
 ==Command Details==
 Command details are listed on the pages which follow.
+
+<u>*RTPS`_________________________`Required cycles: 14*</u>
+
+*Function:* Coordinate transformation and perspective transformation
+
+*Calculations:*
+
+||(1.31.12) || <u>*SSX*</u> = *TRX* + R11`*`VX0 + R12`*`VY0 + R13`*`VZ0; `<`1`>` || 
+||(1.31.12) || <u>*SSY*</u> = *TRY* + R21`*`VX0 + R22`*`VY0 + R23`*`VZ0; `<`2`>` || 
+||(1.31.12) || <u>*SSZ*</u> = *TRZ* + R31`*`VX0 + R32`*`VY0 + R33`*`VZ0; `<`3`>` || 
+||(1.15. 0) || IR1 = limA1S(<u>*SSX*</u>); || 
+||(1.15. 0) || IR2 = limA2S(<u>*SSY*</u>); || 
+||(1.15. 0) || IR3 = limA3S(<u>*SSZ*</u>); || 
+||(0.16. 0) || SZx(0) <- SZ0(1) <- SZ1(2) <- SZ2(3) <- limC(<u>*SSZ*</u>); || 
+||(1.27.16) || <u>*SX*</u> = OFX + IR1`*`(H/SZ); `<`4`>` || 
+||(1.27.16) || <u>*SY*</u> = OFY + IR2`*`(H/SZ); `<`4`>` || 
+||(1.19.24) || <u>*P*</u> = DQB + DQA`*`(H/SZ); `<`4`>` || 
+||(1. 3.12) || IR0 = limE(<u>*P*</u>) ||  
+||(1.15. 0) || SX0 <- SX1 <- SX2 <- limD1(<u>*SX*</u>); || 
+||(1.15. 0) || SY0 <- SY1 <- SY2 <- limD2(<u>*SY*</u>); || 
+||(1. 7.24) || *MAC0* = <u>*P*</u>; || 
+||(1.31. 0) || *MAC1* = <u>*SSX*</u>; || 
+||(1.31. 0) || *MAC2* = <u>*SSY*</u>; || 
+||(1.31. 0) || *MAC3* = <u>*SSZ*</u>; || 
