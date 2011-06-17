@@ -15,18 +15,101 @@ below.
 
 ||Code<br>Specific<br>ation||Limiter||Out-of-<br>bounds<br>detect bit||Lower limit||Upper limit||Comments||
 || *A1S* || *A1* || *24* || *-2`^`15* || *2`^`15-1* || ||
-|| *A2S* || *A2* || *23* || -2`^`15 || 2`^`15-1 || || 
-|| *A3S* || *A3* || *22* || -2`^`15 || 2`^`15-1|| || 
-|| *A1U* || *A1* || *24* || 0 || 2`^`15-1|| || 
-|| *A2U* || *A2* || *23* || 0 || 2`^`15-1|| || 
-|| *A3U* || *A3* || *22* || 0 || 2`^`15-1|| || 
-|| *A1C* || *A1* || *24* || 0 or -2`^`15 || 2`^`15-1 || Lower limit value is<br> specified using lim <br>argument.|| 
-|| *A2C* || *A3* || *23* || 0 or -2`^`15 || 2`^`15-1 || Lower limit value <br>is specified using lim <br>argument.|| 
-|| *A3C* || *A3* || *22* || 0 or -2`^`15 || 2`^`15-1 || Lower limit value <br>is specified using lim <br>argument.|| 
-|| *B1* || *B1* || *21* || 0 || 2`^`8-1|| || 
-|| *B2* || *B2* || *20* || 0 || 2`^`8-1|| || 
-|| *B3* || *B3* || *19* || 0 || 2`^`8-1|| || 
-|| *C* || *C* || *18* || 0 || 2`^`16-1|| || 
+|| *A2S* || *A2* || *23* || *-2`^`15* || *2`^`15-1* || || 
+|| *A3S* || *A3* || *22* || *-2`^`15* || *2`^`15-1* || || 
+|| *A1U* || *A1* || *24* || *0* || *2`^`15-1* || || 
+|| *A2U* || *A2* || *23* || *0* || *2`^`15-1* || || 
+|| *A3U* || *A3* || *22* || *0* || *2`^`15-1* || || 
+|| *A1C* || *A1* || *24* || *0 or -2`^`15* || *2`^`15-1* || Lower limit value is<br> specified using lim <br>argument.|| 
+|| *A2C* || *A3* || *23* || *0 or -2`^`15* || *2`^`15-1* || Lower limit value <br>is specified using lim <br>argument.|| 
+|| *A3C* || *A3* || *22* || *0 or -2`^`15* || *2`^`15-1* || Lower limit value <br>is specified using lim <br>argument.|| 
+|| *B1* || *B1* || *21* || *0* || *2`^`8-1* || || 
+|| *B2* || *B2* || *20* || *0* || *2`^`8-1* || || 
+|| *B3* || *B3* || *19* || *0* || *2`^`8-1* || || 
+|| *C* || *C* || *18* || *0* || *2`^`16-1* || || 
 || *D1* || *D1* || *14* || *-2`^`10* || *2`^`10-1* || || 
 || *D2* || *D2* || *13* || *-2`^`10* || *2`^`10-1* || || 
-|| *E || *E* || *12* || *0* || *2`^`12-1* || || 
+|| *E* || *E* || *12* || *0* || *2`^`12-1* || || 
+
+==Calculation Error Detection==
+
+Overflow and underflow detection are performed only for certain specific calculation operations. In this
+documentation, the calculation test result flag number is listed between angle brackets < > to the right of
+calculation operations that are subject to such detection.
+
+==Explanations==
+
+||Character attributes ||Example ||Content||
+||Underline || <u>VAL</u> ||Intermediate value<br>(No corresponding register)||
+||Embolden || *OBJ* || 32-bit value||
+
+||Code ||Meaning||
+|| *limX()* ||Limiter application X is the limiter designation code.||
+|| *<-* || FIFO data transfer<br>Example: a <- b <- c <- d; is equivalent to the following:<br>a = b;<br>b = c;<br>c = d;<br>||
+|| *`^`* || Power<br>Example: a`^`b means "a to the power of b". ||
+|| *==* || Argument value condition ||
+|| *n=0,1,2 {}* || Repeat the process between the curly parentheses {} three<br>times, substituting 0, 1, and 2 for n.||
+|| *(a.b.c)* || Fixed-point number<br>Sign portion: a bits, integer portion: b bits, fractional portion: c bits||
+|| *(-.b.-)* || b-bit binary data ||
+|| *<n>* || Calculation subject to overflow and underflow testing<br>The test result is reflected in cumulative test flag n in the FLAG register.||
+
+<b>Descriptor examples:</b><br>
+(A)<br>
+(1.15.0) A = B;<br>
+--> A=B is executed for the fixed-point expression (1.15.0).
+
+(B)<br>
+(1.15.0) IR0 = limX(SSX);
+
+Limiter:
+||Code ||Lower limit ||Upper limit||
+|| *limX* || *-2`^`15* || *2`^`15-1* ||
+
+--> The 32-bit value SSX is rounded using the limiter specified by X. The fixed-point expression (1.15.0) representing the
+results obtained is substituted for IR1.
+
+(C)
+{{{
+n=0,1,2{
+    (1.3.12)L1n
+        = limA(LL1n);
+}
+}}}
+--> For the fixed-point expression (1.3.12), the following are executed:<br>
+L10=limA(LL10);<br>
+L11=limA(LL11);<br>
+L12=limA(LL12);
+
+(D)
+{{{
+sf==0       sf==1
+(1.31.0)    (1.19.12)   A = B;
+}}}
+--> B is substituted for A. However, the value is converted into a 32-bit signed fixed-point number with no fractional part if sf
+is 0, and with a 12-bit fraction if sf is 1.
+
+==Command List==
+
+|| Command || Required cycles || Function ||
+|| *RTPS* || *14* || Coordinate transformation &<br>perspective transformation|| 
+|| *RTPT* || *22* || Coordinate transformation &<br>perspective transformation|| 
+|| *NCDS* || *19* || Light source calculation|| 
+|| *NCDT* || *44* || Light source calculation|| 
+|| *NCCS* || *17* || Light source calculation|| 
+|| *NCCT* || *39* || Light source calculation|| 
+|| *CDP* || *13* || Light source calculation|| 
+|| *CC* || *11* || Light source calculation|| 
+|| *NCS* || *14* || Light source calculation|| 
+|| *NCT* || *30* || Light source calculation|| 
+|| *MVMVA* || *8* || Matrix calculation|| 
+|| *INTPL* || *8* || Interpolation|| 
+|| *DPCL* || *8* || Depth queuing|| 
+|| *DPCS* || *8* || Depth queuing|| 
+|| *DPCT* || *17* || Depth queuing|| 
+|| *SQR* || *5* || Vector squaring|| 
+|| *AVSZ3* || *5* || Z-averaging|| 
+|| *AVSZ4* || *6* || Z-averaging|| 
+|| *NCLIP* || *8* || Normal clipping|| 
+|| *OP* || *6* || Outer product|| 
+|| *GPF* || *5* || General purpose interpolation|| 
+|| *GPL* || *5* || General purpose interpolation|| 
