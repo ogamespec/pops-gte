@@ -963,3 +963,178 @@ CD1     (-.8.-)     Arbitrary 8-bit data
 }}}
 Internal operations:<br>
 See Data #22: RGB2.
+
+<b>Register number: Data #22</b>
+
+Register name: RGB2<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                             16 15                              0
+     -------------------------------------------------------------------
+    |CD2             |B2              |G2              |R2              |
+     -------------------------------------------------------------------
+
+Fields:
+R2      (0.8.0)     Characteristic color R-element
+G2      (0.8.0)     Characteristic color G-element
+B2      (0.8.0)     Characteristic color B-element
+CD2     (-.8.-)     Arbitrary 8-bit data
+}}}
+Internal operations:<br>
+When several GTE instructions are executed, substitutions are made in the following sequence.<br>
+R0 = R1;<br>
+R1 = R2;<br>
+R2 = RGB Register R-field<br>
+G0 = G1;<br>
+G1 = G2;<br>
+G2 = RGB Register G-field<br>
+B0 = B1;<br>
+B1 = B2;<br>
+B2 = RGB Register B-field<br>
+CD0 = CD1;<br>
+CD1 = CD2;<br>
+CD2 = Bit pattern of GTE instruction currently being executed.
+
+<b>Register number: Data #23</b>
+
+Register name: RES1<br>
+Access: Prohibited<br>
+
+<b>Register number: Control #24</b>
+
+Register name: MAC0<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |MAC0                                                             |
+     -----------------------------------------------------------------
+Fields:
+MAC0     (1.31.0)        Sum of products value #0
+}}}
+
+<b>Register number: Control #25</b>
+
+Register name: MAC1<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |MAC1                                                             |
+     -----------------------------------------------------------------
+Fields:
+MAC1     (1.31.0)        Sum of products value #1
+}}}
+
+<b>Register number: Control #26</b>
+
+Register name: MAC2<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |MAC2                                                             |
+     -----------------------------------------------------------------
+Fields:
+MAC2     (1.31.0)        Sum of products value #2
+}}}
+
+<b>Register number: Control #27</b>
+
+Register name: MAC3<br>
+Access: R/W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |MAC3                                                             |
+     -----------------------------------------------------------------
+Fields:
+MAC3     (1.31.0)        Sum of products value #3
+}}}
+
+<b>Register number: Control #28</b>
+
+Register name: IRGB<br>
+Access: W<br>
+Bit pattern:<br>
+{{{
+Bit  31                              15 14      10 9        5 4        0
+     -------------------------------------------------------------------
+    |                                  |IB        |IG        |IR        |
+     -------------------------------------------------------------------
+Fields:
+IR      (-.5.-)     Color data (R-element) to be set as intermediate value
+IG      (-.5.-)     Color data (G-element) to be set as intermediate value
+IB      (-.5.-)     Color data (B-element) to be set as intermediate value
+}}}
+Internal operations:<br>
+The following processing is accomplished by writing data to this register.<br>
+IR1 = The value which format-converted R to (1.11.4)<br>
+IR2 = The value which format-converted G to (1.11.4)<br>
+IR3 = The value which format-converted B to (1.11.4)<br>
+
+<b>Register number: Control #29</b>
+
+Register name: ORGB<br>
+Access: W<br>
+Bit pattern:<br>
+{{{
+Bit  31                              15 14      10 9        5 4        0
+     -------------------------------------------------------------------
+    |                                  |OB        |OG        |OR        |
+     -------------------------------------------------------------------
+Fields:
+OR      (-.5.-)     Color data generated from intermediate value (R-element)
+OG      (-.5.-)     Color data generated from intermediate value (G-element)
+OB      (-.5.-)     Color data generated from intermediate value (B-element)
+}}}
+Internal operations:<br>
+By reading data from this register, the following operations are performed, including substitutions to each field.<br>
+OR = (IR1>>7)&0x1f;<br>
+OG = (IR2>>7)&0x1f;<br>
+OB = (IR3>>7)&0x1f;<br>
+The results obtained are then read.<br>
+
+<b>Register number: Control #30</b>
+
+Register name: LZCS<br>
+Access: W<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                              0
+     -----------------------------------------------------------------
+    |LZCS                                                             |
+     -----------------------------------------------------------------
+Fields:
+LZCS     (1.31.0)        LZC source data
+}}}
+Internal operations:<br>
+See Data #31: LZCR.
+
+<b>Register number: Control #31</b>
+
+Register name: LZCR<br>
+Access: R<br>
+Bit pattern:<br>
+{{{
+Bit  31                                                 6 5          0
+     -----------------------------------------------------------------
+    |                                                    |LZCR        |
+     -----------------------------------------------------------------
+Fields:
+LZCR     (0.6.0)        Leading zero/one count calculation result
+}}}
+Internal operations:<br>
+By reading data from this register, the following operations are performed, including substitutions to each field.<br>
+<br>
+Data #30: If the value of LZCS is positive,<br>
+LZCR = Leading zero count of LZCS value.<br>
+<br>
+Data #30: If the value of LZCS is negative,<br>
+LZCR = Leading one count of LZCS value.<br>
+The results obtained are then read.
