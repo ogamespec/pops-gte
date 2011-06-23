@@ -91,3 +91,21 @@ Pops missing emulation of test result `<`4`>` check :
 ||bit||meaning||
 ||16 ||1: Calculation test result #4 overflow generated (2`^`31 or more)||
 ||15 ||1: Calculation test result #4 underflow generated (less than -2`^`31)||
+
+== Pcsx-r C ==
+
+{{{
+
+#define limD(a) LIM((a), 0xffff, 0x0000, (1 << 31) | (1 << 18))
+#define F(a) BOUNDS((a), 0x7fffffff, (1 << 31) | (1 << 16), -(s64)0x80000000, (1 << 31) | (1 << 15))
+
+
+void gteAVSZ3() {
+    gteFLAG = 0;
+    gteMAC0 = F((s64)(gteZSF3 * gteSZ1) + (gteZSF3 * gteSZ2) + (gteZSF3 * gteSZ3));
+    gteOTZ = limD(gteMAC0 >> 12);
+}
+}}}
+
+<font color=red>*Pops has issue?*</font><br>
+Why Pops doesn't make overflow/underflow check of MAC0 calculation (FLAG[15] and FLAG[16]) ???
