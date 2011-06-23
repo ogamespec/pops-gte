@@ -1,69 +1,88 @@
 AVSZ3:
 
 Pcsx:
-	gteFLAG = 0;
+    gteFLAG = 0;
 
 
-	gteMAC0 = ((gteSZ0 + gteSZ1 + gteSZ2) * (gteZSF3)) >> 12;
+    gteMAC0 = ((gteSZ1 + gteSZ2 + gteSZ3) * (gteZSF3)) >> 12;
 
-	gteOTZ = FlimC(gteMAC0);
+    gteOTZ = FlimC(gteMAC0);
 
 
-	SUM_FLAG
+    SUM_FLAG
 
 Pops:
-	gteMAC0 = (gteSZ0 + gteSZ1 + gteSZ2) * gteZSF3;
-	gteFLAG = ((gteMAC0 >> 12) > 0xffff) << 18;
-	gteOTZ = min (0xffff, max (0, gteMAC0 >> 12) );
-	
+    gteMAC0 = (gteSZ1 + gteSZ2 + gteSZ3) * gteZSF3;
+    gteFLAG = ((gteMAC0 >> 12) > 0xffff) << 18;
+    gteOTZ = min (0xffff, max (0, gteMAC0 >> 12) );
+    
 
-	a0 = gteSZ0
-	a1 = gteSZ1
-	a2 = gteSZ2
+    a0 = gteSZ1
+    a1 = gteSZ2
+    a2 = gteSZ3
 
-	v0 = gteZSF3
+    v0 = gteZSF3
 
-	a0 = gteSZ0 + gteSZ1
-	a0 = gteSZ0 + gteSZ1 + gteSZ2
+    a0 = gteSZ1 + gteSZ2
+    a0 = gteSZ1 + gteSZ2 + gteSZ3
 
-	Acc = (gteSZ0 + gteSZ1 + gteSZ2) * gteZSF3
+    Acc = (gteSZ1 + gteSZ2 + gteSZ3) * gteZSF3
 
-	v0 = 0xFFFF
+    v0 = 0xFFFF
 
-	a0 = lo
+    a0 = lo
 
-	gteMAC0 = a0
+    gteMAC0 = a0
 
-	a0 = a0 >> 12
-	a1 = 0xFFFF < a0
-	a0 = max (0, a0)
-	a0 = min (0xFFFF, a0)
-	
-	a1 = a1 << 18
-	VFPU.S330 = a1
-	gteOTZ = a0
-	
+    a0 = a0 >> 12
+    a1 = 0xFFFF < a0
+    a0 = max (0, a0)
+    a0 = min (0xFFFF, a0)
+    
+    a1 = a1 << 18
+    VFPU.S330 = a1
+    gteOTZ = a0
+    
 
 
-	0x0000E5D0: 0x97840044 'D...' - lhu        $a0, 68($gp)
-	0x0000E5D4: 0x97850048 'H...' - lhu        $a1, 72($gp)
-	0x0000E5D8: 0x9786004C 'L...' - lhu        $a2, 76($gp)
-	0x0000E5DC: 0x878200F4 '....' - lh         $v0, 244($gp)
+    0x0000E5D0: 0x97840044 'D...' - lhu        $a0, 68($gp)
+    0x0000E5D4: 0x97850048 'H...' - lhu        $a1, 72($gp)
+    0x0000E5D8: 0x9786004C 'L...' - lhu        $a2, 76($gp)
+    0x0000E5DC: 0x878200F4 '....' - lh         $v0, 244($gp)
 
-	0x0000E5E0: 0x00852021 '! ..' - addu       $a0, $a0, $a1
-	0x0000E5E4: 0x00862021 '! ..' - addu       $a0, $a0, $a2
-	0x0000E5E8: 0x00820018 '....' - mult       $a0, $v0
-	0x0000E5EC: 0x3402FFFF '...4' - li         $v0, 0xFFFF
-	0x0000E5F0: 0x00002012 '. ..' - mflo       $a0
+    0x0000E5E0: 0x00852021 '! ..' - addu       $a0, $a0, $a1
+    0x0000E5E4: 0x00862021 '! ..' - addu       $a0, $a0, $a2
+    0x0000E5E8: 0x00820018 '....' - mult       $a0, $v0
+    0x0000E5EC: 0x3402FFFF '...4' - li         $v0, 0xFFFF
+    0x0000E5F0: 0x00002012 '. ..' - mflo       $a0
 
-	0x0000E5F4: 0xAF840060 '`...' - sw         $a0, 96($gp)
+    0x0000E5F4: 0xAF840060 '`...' - sw         $a0, 96($gp)
 
-	0x0000E5F8: 0x00042303 '.#..' - sra        $a0, $a0, 12
-	0x0000E5FC: 0x0044282B '+(D.' - sltu       $a1, $v0, $a0
-	0x0000E600: 0x0004202C ', ..' - max        $a0, $zr, $a0
-	0x0000E604: 0x0044202D '- D.' - min        $a0, $v0, $a0
-	0x0000E608: 0x00052C80 '.,..' - sll        $a1, $a1, 18
-	0x0000E60C: 0x48E5000F '...H' - mtv        $a1, S330
-	0x0000E610: 0x03E00008 '....' - jr         $ra
-	0x0000E614: 0xA784001C '....' - sh         $a0, 28($gp)
+    0x0000E5F8: 0x00042303 '.#..' - sra        $a0, $a0, 12
+    0x0000E5FC: 0x0044282B '+(D.' - sltu       $a1, $v0, $a0
+    0x0000E600: 0x0004202C ', ..' - max        $a0, $zr, $a0
+    0x0000E604: 0x0044202D '- D.' - min        $a0, $v0, $a0
+    0x0000E608: 0x00052C80 '.,..' - sll        $a1, $a1, 18
+    0x0000E60C: 0x48E5000F '...H' - mtv        $a1, S330
+    0x0000E610: 0x03E00008 '....' - jr         $ra
+    0x0000E614: 0xA784001C '....' - sh         $a0, 28($gp)
 
+
+Pops C :
+
+#define gteSZ1     ((u16*)psxRegs.CP2D.r)[17*2]
+#define gteSZ2     ((u16*)psxRegs.CP2D.r)[18*2]
+#define gteSZ3     ((u16*)psxRegs.CP2D.r)[19*2]
+#define gteZSF3    ((s16*)psxRegs.CP2C.r)[58]
+#define gteOTZ     ((s16*)psxRegs.CP2D.r)[7*2]
+
+AVSZ3
+{
+    u32     acc = gteSZ1 + gteSZ2 + gteSZ3;
+    s64     mac = acc * gteZSF3;
+    s32     prod = (s32)mac;      // get lower part of 64-bit result
+    gteMAC0 = prod;
+    prod = prod >> 12;     // keep sign while shifting
+    gteOTZ = min (0xFFFF, max (0, prod));
+    FLAG[18] = (u32)prod > 0xFFFF;       // since this is unsigned comparsion, all negative numbers are also checked
+}
