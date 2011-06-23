@@ -24,7 +24,7 @@ Example:
 {{{
 rs = 0xAA
 rd = 0x11223344
-ins   rs, rs, 16, 8
+ins   rd, rs, 16, 8
 rd = 0x11AA3344
 }}}
 
