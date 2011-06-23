@@ -8,7 +8,7 @@ Called 2 times: from CpuMainLoop and from main Init sub_00000494
     CpuReset ();
     sub_0000B3F4 ();
     sub_0000C360 ();    // Ge
-    sub_0000EFB4 ();
+    MDECReset ();
     sub_00026BD0 ();    // Audio
     sub_0000BEA8 ();
     sub_0000ADE4 ();
