@@ -108,4 +108,4 @@ void gteAVSZ3() {
 }}}
 
 <font color=red>*Pops has issue?*</font><br>
-Why Pops doesn't make overflow/underflow check of MAC0 calculation (FLAG[15] and FLAG[16]) ???
+Why Pops doesn't make overflow/underflow check of MAC0 calculation (FLAG`[`15`]` and FLAG`[`16`]`) ??? Need to check on real hardware.
