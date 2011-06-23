@@ -1,4 +1,4 @@
-#summary Z-averaging
+#summary Z-averaging 3 values
 
 = Introduction =
 
