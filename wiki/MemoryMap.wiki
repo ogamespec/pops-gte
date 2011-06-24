@@ -20,3 +20,24 @@ RTPS/RTPT generated reciprocal table is located at *0x000F198C*, 0x8000 32-bit w
 At *0x09800000* located 2 MB of PSX RAM buffer
 
 At *0x00013000* located 1024 byte Scratch Pad 
+
+== MDEC ==
+
+*0x13400* : quantization table. Format :
+{
+    float   y;
+    float   uv;
+} [64];
+
+*0x0002D500* : quantization scale table. 64 halfwords:
+{{{
+        8000 B18B  B18B A73D  F642 A73D  E7F8 9683   
+        E7F8 9683  8000 D0C4  DA82 D0C4  6492 8000   
+        B18B C4A7  C4A7 B18B  6492 4546  8B7E A73D  
+        B0FC A73D  8B7E 4546  2351 6016  8366 9683  
+        9683 8366  6016 2351  30FC 5A82  7642 8000  
+        7642 5A82  30FC 2E24  5175 6492  6492 5175  
+        2E24 2987  4546 4F04  4546 2987  2351 366D  
+        366D 2351  1BBF 257E  1BBF 131D  131D 09BE  
+}}}
+(already "zigzag"-ed)
