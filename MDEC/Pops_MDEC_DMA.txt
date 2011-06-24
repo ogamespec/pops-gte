@@ -1,0 +1,79 @@
+
+#define MDEC0_SIZE_MASK     0x0000FFFF
+
+    float   iqtab[64*2];        // 0 ... 2 ... 4 ... 6  - Y component
+                                //... 1 ... 2 ... 5     - UV component
+
+    u16 iqscale[64] = {
+        8000 B18B  B18B A73D  F642 A73D  E7F8 9683   
+        E7F8 9683  8000 D0C4  DA82 D0C4  6492 8000   
+        B18B C4A7  C4A7 B18B  6492 4546  8B7E A73D  
+        B0FC A73D  8B7E 4546  2351 6016  8366 9683  
+        9683 8366  6016 2351  30FC 5A82  7642 8000  
+        7642 5A82  30FC 2E24  5175 6492  6492 5175  
+        2E24 2987  4546 4F04  4546 2987  2351 366D  
+        366D 2351  1BBF 257E  1BBF 131D  131D 09BE  
+    }
+
+F040:
+int MDEC_DMA0 (u32 addr, int length )
+{
+    addr &= 0x1FFFFFFF;
+    u8 * ramptr = 0x09800000 | addr;
+    if (addr > 0x007FFFFF) ramptr = NULL;
+
+    switch ( mdec.reg0 >> 29 )
+    {
+        case 0:
+            return length;
+
+        case 1:     // decode
+            mdec.block_size = (mdec.reg0 & MDEC0_SIZE_MASK) * 2;
+            mdec.block_ptr = ramptr;
+            if ([0x00119B70 + 16])
+            {
+                [0x00119B70 + 12] = length;
+                MDECDecode ();
+            }
+            sub_00017B4C ();
+            return 0;
+
+        case 2:     // quantization table upload
+            for (int i=0; i<128; i++)
+            {
+                float iq;
+                int prod = ramptr[i] * iqscale[i & 0x3f];
+                if ( (i & 0x3F) == 0 ) prod = prod * 8;
+                if (i & 0x40) iq = (float)prod * 1.1368683772161603e-13f;   // 0x2A000000 as hex
+                else iq = (float)prod * 1.7719999551773071f;    // 0x3FE2D0E5 as hex
+                iqtab[(i & 0x3F) * 2 + i / 64] = iq;
+            }
+            return length;
+    }
+}
+
+======================================================================
+
+F164:
+int MDEC_DMA1 (u32 addr, int length )
+{
+    addr &= 0x1FFFFFFF;
+    u8 * ramptr = 0x09800000 | addr;
+    if (addr > 0x007FFFFF) ramptr = NULL;
+
+    int old_size = mdec.block_size;
+    mdec.block_size = length;
+    if ( old_size > 0 )
+    { 
+        if ( [0x00119B70 + 12] ) MDECDecode ();
+    }
+    else mdec.block_ptr = ramptr;
+    return 0;
+}
+
+u8 _0x002092FF;
+
+void sub_00017B4C ()
+{
+    _0x002092FF = 1;
+}
