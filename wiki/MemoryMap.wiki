@@ -24,10 +24,12 @@ At *0x00013000* located 1024 byte Scratch Pad
 == MDEC ==
 
 *0x13400* : quantization table. Format :
+{{{
 {
     float   y;
     float   uv;
 } [64];
+}}}
 
 *0x0002D500* : quantization scale table. 64 halfwords:
 {{{
