@@ -3,7 +3,8 @@
 Called 2 times: from CpuMainLoop and from main Init sub_00000494
 
 // sub_000003F8:
-
+void PsxReset()
+{
     sub_00000A84 ();
     CpuReset ();
     sub_0000B3F4 ();
@@ -16,5 +17,6 @@ Called 2 times: from CpuMainLoop and from main Init sub_00000494
     sub_0000C594 ();
     sub_0000A4D0 ();
 
-    memclr ( 0x09800000 ... 0x09A00000 );
-    memclr ( 0x00013000 ... 0x00013400 );
+    memclr ( 0x09800000 ... 0x09A00000 );       // Clear RAM
+    memclr ( 0x00013000 ... 0x00013400 );       // Clear Scratchpad
+}
