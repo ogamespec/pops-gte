@@ -95,7 +95,7 @@ void MDECReset (void)
     float   iqtab[64*2];        // 0 ... 2 ... 4 ... 6  - Y component
                                 //... 1 ... 2 ... 5     - UV component
 
-    u16 * iqscale[64] = {
+    u16 iqscale[64] = {
         8000 B18B  B18B A73D  F642 A73D  E7F8 9683   
         E7F8 9683  8000 D0C4  DA82 D0C4  6492 8000   
         B18B C4A7  C4A7 B18B  6492 4546  8B7E A73D  
