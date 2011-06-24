@@ -14,6 +14,7 @@ Size of this structure is 0x22C bytes.
 ||+0x0080||GTE Status Registers||
 ||+0x0100||COP0 Registers||
 ||+0x0208||Program Counter||
+||+0x0214||Cycle Counter?||
 
 RTPS/RTPT generated reciprocal table is located at *0x000F198C*, 0x8000 32-bit words.
 
