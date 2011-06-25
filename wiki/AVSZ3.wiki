@@ -4,6 +4,16 @@
 
 Experimental wiki-based reversing (no SVN).
 
+== Instruction encoding ==
+
+{{{
+
+    AVSZ3  cop2 0x158002d = 0100.10 01.0101. 1000.0000.00 00.00 10.1101     25
+
+    0x4958002D
+
+}}}
+
 
 == RAW Pops dissasembly ==
 
