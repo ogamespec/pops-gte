@@ -1,0 +1,8 @@
+
+B4A4:
+void SetDMAHandler (int chan, dma_handler)
+{
+    chan = chan & 0xFF;
+    [0x00119A88 + chan * 16] = dma_handler;
+    InstallHardwareHooks ( 0x1F801080 + chan * 16, 16, NULL, sub_0000B984 );
+}

@@ -1,0 +1,165 @@
+// wtf?
+void sub_0000BD64 (void *reg_base)
+{
+    u32 target = *(u32 *)(reg_base );
+    if ( target < 0 ) return;
+
+    u32 count = RtcReadCount (reg_base);
+
+    if ( *(u32 *)(reg_base + 12) )
+    {
+        sub_0000095C ();
+        *(u32 *)(reg_base + 12) = 0;
+    }
+
+    u32 mode = *(u16 *)(reg_base + 8);
+    if ( mode & 0x38 ) return;
+
+    if ( count > target )
+    {
+        target += 0x10000;
+        if ( mode & 0x20 ) target = 0x10000;
+    }
+
+    if ( (target & (target-1)) &&  (( *(u32 *)[000F1400] & 0x400 ) == 0) ) 
+    {
+        int check = ( sub_0000AD5C () >> *(u8 *)(reg_base + 10) ) & 1;
+        if ( check == 0) return;
+        if ( (mode & 0x10) == 0 ) return;
+    }
+
+    *(u32 *)(reg_base + 12) = sub_0000081C ( 
+            (target - count) << *(u8 *)(reg_base + 11), 
+            (proc)0x0000BF34, reg_base, 0x00010000 );
+}
+
+
+sub_0000BD64 (reg_base):
+    v1 = *(u32 *)(reg_base );
+    s0 = reg_base
+    if (v1 < 0) return
+    v0 = RtcReadCount (reg_base);
+    a0 = *(u32 *)(reg_base + 12);
+    s1 = v0
+    if (a0) 
+    {
+        sub_0000095C ()
+        *(u32 *)(reg_base + 12) = 0
+    }
+
+    v1 = *(u16 *)(reg_base + 8)
+    a0 = v1 & 0x38
+    if (a0 == 0) return;
+    s2 = *(u32 *)(reg_base );
+    a1 = s2 < s1
+    t0 = 0x000F0000
+    if (a1)
+    {
+        a2 = 0x00010000
+        v0 = v1 & 0x20
+        s2 = s2 + a2
+        if (v0) s2 = a2
+    }
+
+    a3 = *(u32 *)[000F1400];
+    v1 = a3 & 0x400
+    t2 = s2 - 1
+
+
+    if ( (s2 & t2) == 0 && v1 == 0) 
+    {
+        sub_0000AD5C ();
+        t5 = *(u8 *)(reg_base + 10)
+        t4 = v0 >> t5
+        t3 = t4 & 1
+        if (t3 == 0) return;
+        t7 = *(u16 *)(reg_base + 8)
+        t6 = t7 & 0x10
+        if (t6 == 0) return;
+    }
+
+    t8 = *(u8 *)(reg_base + 11)
+    t9 = s2 - s1
+    s2 = 0x00010000
+    a0 = t9 << t8
+    a1 = 0x0000BF34
+    *(u32 *)(reg_base + 12) = sub_0000081C ( t9 << t8, 0x0000BF34, reg_base );
+
+-------------------------------------------------------------------------
+
+
+sub_0000AD5C:       ; Refs: 0x0000BE1C 
+    0x0000AD5C: 0x3C050001 '...<' - lui        $a1, 0x1
+    0x0000AD60: 0x8CA50130 '0...' - lw         $a1, 304($a1)
+    0x0000AD64: 0x3C020001 '...<' - lui        $v0, 0x1
+    0x0000AD68: 0x8C422074 't B.' - lw         $v0, 8308($v0)
+    0x0000AD6C: 0x30A40001 '...0' - andi       $a0, $a1, 0x1
+    0x0000AD70: 0x03E00008 '....' - jr         $ra
+    0x0000AD74: 0x0004100A '....' - movz       $v0, $zr, $a0
+
+-------------------------------------------------------------------------
+
+
+    0x0000BF34: 0x27BDFFF0 '...'' - addiu      $sp, $sp, -16
+    0x0000BF38: 0xAFB00000 '....' - sw         $s0, 0($sp)
+    0x0000BF3C: 0x00808021 '!...' - move       $s0, $a0
+    0x0000BF40: 0xAFBF0004 '....' - sw         $ra, 4($sp)
+    0x0000BF44: 0x94850008 '....' - lhu        $a1, 8($a0)
+    0x0000BF48: 0x30A3FFFF '...0' - andi       $v1, $a1, 0xFFFF
+    0x0000BF4C: 0x30640030 '0.d0' - andi       $a0, $v1, 0x30
+    0x0000BF50: 0x1080000C '....' - beqz       $a0, loc_0000BF84
+    0x0000BF54: 0x30A4FFFF '...0' - andi       $a0, $a1, 0xFFFF
+    0x0000BF58: 0x30640080 '..d0' - andi       $a0, $v1, 0x80
+    0x0000BF5C: 0x10800004 '....' - beqz       $a0, loc_0000BF70
+    0x0000BF60: 0x24020400 '...$' - li         $v0, 1024
+    0x0000BF64: 0x38A30400 '...8' - xori       $v1, $a1, 0x400
+    0x0000BF68: 0xA6030008 '....' - sh         $v1, 8($s0)
+    0x0000BF6C: 0x3062FFFF '..b0' - andi       $v0, $v1, 0xFFFF
+
+loc_0000BF70:       ; Refs: 0x0000BF5C 
+    0x0000BF70: 0x30450400 '..E0' - andi       $a1, $v0, 0x400
+    0x0000BF74: 0x14A00018 '....' - bnez       $a1, loc_0000BFD8
+    0x0000BF78: 0x00000000 '....' - nop        
+    0x0000BF7C: 0x96050008 '....' - lhu        $a1, 8($s0)
+
+loc_0000BF80:       ; Refs: 0x0000BFF8 
+    0x0000BF80: 0x30A4FFFF '...0' - andi       $a0, $a1, 0xFFFF
+
+loc_0000BF84:       ; Refs: 0x0000BF50 0x0000BFE8 
+    0x0000BF84: 0x30880008 '...0' - andi       $t0, $a0, 0x8
+    0x0000BF88: 0x11000007 '....' - beqz       $t0, loc_0000BFA8
+    0x0000BF8C: 0x308B0040 '@..0' - andi       $t3, $a0, 0x40
+    0x0000BF90: 0x3C020001 '...<' - lui        $v0, 0x1
+    0x0000BF94: 0x8C42020C '..B.' - lw         $v0, 524($v0)
+    0x0000BF98: 0x3C0A0001 '...<' - lui        $t2, 0x1
+    0x0000BF9C: 0x8D4A0214 '..J.' - lw         $t2, 532($t2)
+    0x0000BFA0: 0x004A4823 '#HJ.' - subu       $t1, $v0, $t2
+    0x0000BFA4: 0xAE090004 '....' - sw         $t1, 4($s0)
+
+loc_0000BFA8:       ; Refs: 0x0000BF88 
+    0x0000BFA8: 0x55600005 '..`U' - bnezl      $t3, loc_0000BFC0
+    0x0000BFAC: 0xAE00000C '....' - sw         $zr, 12($s0)
+    0x0000BFB0: 0x00A06021 '!`..' - move       $t4, $a1
+    0x0000BFB4: 0x7C0C2904 '.).|' - ins        $t4, $zr, 4, 2
+    0x0000BFB8: 0xA60C0008 '....' - sh         $t4, 8($s0)
+    0x0000BFBC: 0xAE00000C '....' - sw         $zr, 12($s0)
+
+loc_0000BFC0:       ; Refs: 0x0000BFA8 
+    0x0000BFC0: 0x0C002F59 'Y/..' - jal        sub_0000BD64
+    0x0000BFC4: 0x02002021 '! ..' - move       $a0, $s0
+    0x0000BFC8: 0x8FBF0004 '....' - lw         $ra, 4($sp)
+    0x0000BFCC: 0x8FB00000 '....' - lw         $s0, 0($sp)
+    0x0000BFD0: 0x03E00008 '....' - jr         $ra
+    0x0000BFD4: 0x27BD0010 '...'' - addiu      $sp, $sp, 16
+
+loc_0000BFD8:       ; Refs: 0x0000BF74 
+    0x0000BFD8: 0x0C002B5E '^+..' - jal        sub_0000AD78
+    0x0000BFDC: 0x9204000A '....' - lbu        $a0, 10($s0)
+    0x0000BFE0: 0x96050008 '....' - lhu        $a1, 8($s0)
+    0x0000BFE4: 0x30A60010 '...0' - andi       $a2, $a1, 0x10
+    0x0000BFE8: 0x10C0FFE6 '....' - beqz       $a2, loc_0000BF84
+    0x0000BFEC: 0x30A4FFFF '...0' - andi       $a0, $a1, 0xFFFF
+    0x0000BFF0: 0x34A70800 '...4' - ori        $a3, $a1, 0x800
+    0x0000BFF4: 0x00E02821 '!(..' - move       $a1, $a3
+    0x0000BFF8: 0x08002FE0 './..' - j          loc_0000BF80
+    0x0000BFFC: 0xA6070008 '....' - sh         $a3, 8($s0)

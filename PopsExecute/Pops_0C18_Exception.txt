@@ -1,0 +1,184 @@
+0x0002CCD8: // packed as words. hex values.
+    01 01 0F 01 01 08 01 01 
+    01 01 01 01 01 01 01 06 
+    13 08 08 08 01 2C 01 08 
+    11 01 01 01 01 0E 01 0B 
+    01 01 01 1F 01 01 01 01
+    01 11 0D 05 01 06 05 01
+    01 01 01 17 01 01 01 01
+    01 01 01 01 27 05 05 01
+
+0x0002CD18 (30): начиная от ExcCode = 4
+    0x00000E24    0x00000E24    0x00000D0C    0x00000D0C
+    0x00000D0C    0x00000D0C    0x00000D0C    0x00000D0C
+    0x00000D0C    0x00000D0C    0x00000D0C    0x00000D0C
+    0x00000D0C    0x00000D0C    0x00000D0C    0x00000D0C
+    0x00000D0C    0x00000D0C    0x00000D0C    0x00000D0C
+    0x00000D0C    0x00000D0C    0x00000D0C    0x00000D0C
+    0x00000D0C    0x00000D0C    0x00000D0C    0x00000D0C
+    0x00000D0C    +33/0x00000E14
+
+// sub_00000C18 (ExcCode)
+void CpuException (int ExcCode, u32 address)
+
+    u32 epc = PC;
+
+    if (ExcCode > 0) goto loc_00000DE4
+
+    [0x00010218] = 0
+    a1 = 1
+
+loc_00000CB4:
+    u32 *real_pc;
+    u32 pc = PC & 0x1FFFFFFF;
+    if (pc > 0x007FFFFF) {
+        pc = pc - 0x1FC00000;
+        real_pc = pc +  0x0006BA8C         // rombios
+        if (pc > 0x0007FFFF) real_pc = 0
+    }
+    else real_pc = 0x9800000 | pc; 
+
+    opcode = *real_pc            // fetch opcode
+    if ( (opcode >> 25) != 37 ) goto loc_00000D0C
+
+    epc += 4
+    [0x00010214] -= a1;
+    
+    ExecGTEInstruction (opcode);
+
+    a1 = 0x0002CCD8[opcode & 0x3f]
+    goto loc_00000CB4
+
+loc_00000D0C:
+    SR = (SR & ~0x3F) | ( (SR << 2) & 0x3F )    // push SR KU/IE fields
+    Cause = (Cause & 0x3000FF00) | (ExcCode << 2)
+    if ( SR & 0x00400000 == 0)  // BEV = 0?
+    {
+        PC = 0x80000080
+        if ( [0x00010228] == 0 ) sub_00009630 ( 0x80000080 )
+        COP0[EPC] = s0
+        [0x00010218] = [0x00010228]  
+    }
+    else 
+    {
+
+        if ( [0x09E00000] == 0 )
+        {
+            sub_00009630 ( 0xBFC00000 )
+        }
+
+        COP0[EPC] = s0
+        [0x00010218] = [0x09E00000]
+    }
+
+
+    return
+
+loc_00000DE4:
+    
+    s4 = a0 & 0xf
+    v1 = (a0 & 0xf) - 4
+    s1 = v1 < 30
+    if (s1 >= 30) { goto loc_00000D0C; }
+
+    jmp 0x0002CD18[ (a0 & 0xf) - 4] ;
+            
+0x00000E14:
+    CpuReset ()
+    goto loc_00000D0C
+
+0x00000E24:
+    COP0[BadVaddr] = a1
+    goto loc_00000D0C
+
+---------------------------------------------------
+
+// Регистры CPU (структура, пока не именованая), расположена по адресу PSP 0x00010000:
+
++0      : GTE Control
++0x80   : GTE Status
++0x100  : COP0 Regs
++0x208  : PC
+
+// sub_00000E34
+void CpuReset (void)
+{
+    memset ( 0x00010000, 0,  0x22C );   // очистить регистры CPU
+
+    GTEControl[FLAG] = 0x20;
+    COP0[SR] = 0x00400000;      // BEV = 1
+    COP0[PRID] = 1
+    PC = 0xBFC00000    
+}
+
+
+.....
+
+static u8 gteTiming[32] = {
+    0x01 0x0F 0x01 0x01 0x01 0x01 0x08 0x01 
+    0x01 0x01 0x01 0x01 0x06 0x01 0x01 0x01 
+    0x08 0x08 0x08 0x13 0x08 0x01 0x2C 0x01
+    0x01 0x01 0x01 0x11 0x0B 0x01 0x0E 0x01 
+    0x1F 0x01 0x01 0x01 0x01 0x01 0x01 0x01 
+    0x05 0x0D 0x11 0x01 0x01 0x05 0x06 0x01 
+    0x17 0x01 0x01 0x01 0x01 0x01 0x01 0x01 
+    0x01 0x01 0x01 0x01 0x01 0x05 0x05 0x27 
+}
+
+// sub_00000C18
+void CpuException (int ExcCode, u32 bad_addr )
+{
+    u32 epc = PC;
+    [0x00010218] = 0
+
+    if ( ExcCode == 0 ) {   // Interrupt
+
+        clock = 1;
+
+        while (1)
+        {
+            // Translate PC
+            u32 *real_pc;
+            u32 pc = PC & 0x1FFFFFFF;
+            if (pc > 0x007FFFFF) {
+                pc = pc - 0x1FC00000;
+                real_pc = pc +  0x0006BA8C         // rombios
+                if (pc > 0x0007FFFF) real_pc = 0;
+            }
+            else real_pc = 0x9800000 | pc; 
+
+            u32 opcode = *real_pc            // fetch opcode
+            if ( (opcode >> 25) != 37 ) break;
+
+            epc += 4
+            [0x00010214] -= clock;
+    
+            ExecGTEInstruction (opcode);
+
+            clock = gteTiming[opcode & 0x3f];
+        }
+    }
+
+    if ( ExcCode == 4 || ExcCode == 5 ) {   // AdEL или AdES
+        COP0[BadVaddr] = bad_addr;
+    }
+
+    if ( ExcCode == 33 ) CpuReset ();       // псево-исключение для сброса CPU.
+
+    SR = (SR & ~0x3F) | ( (SR << 2) & 0x3F )    // push SR KU/IE fields
+    Cause = (Cause & 0x3000FF00) | (ExcCode << 2)
+
+    if ( (SR & 0x00400000) == 0)  // BEV = 0?
+    {
+        PC = 0x80000080;
+        if ( [0x00010228] == 0 ) CpuRecompile ( 0x80000080 );
+        COP0[EPC] = epc;
+        [0x00010218] = [0x00010228];
+    }
+    else 
+    {
+        if ( [0x09E00000] == 0 ) CpuRecompile ( 0xBFC00000 );
+        COP0[EPC] = epc;
+        [0x00010218] = [0x09E00000];
+    }
+}

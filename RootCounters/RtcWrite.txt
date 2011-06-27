@@ -1,0 +1,210 @@
+
+void RtcWrite ( u32 addr, u32 value, int write_type )
+{
+}
+
+
+write_type: 0 - sb, 1 - sh, 2 - sw, 3 - dummy
+
+EXT RD, RS, P, S: RS = RS P+S-1:P
+INS RD, RS, P, S: RD P+S-1:P = RS S-1:0
+MOVN RD, RS, RT: IF RT != 0, RD = RS
+MOVZ RD, RS, RT: IF RT = 0, RD = RS
+
+
+    0x0000C120: 0x7C870900 '...|' - ext        $a3, $a0, 4, 2
+    0x0000C124: 0x3C030012 '...<' - lui        $v1, 0x12
+    0x0000C128: 0x27BDFFF0 '...'' - addiu      $sp, $sp, -16
+; Data ref 0x00119B00 ... 0x00000000 0x00000000 0x00000000 0x00000000 
+    0x0000C12C: 0x24629B00 '..b$' - addiu      $v0, $v1, -25856
+    0x0000C130: 0x00074100 '.A..' - sll        $t0, $a3, 4
+    0x0000C134: 0x3084000F '...0' - andi       $a0, $a0, 0xF
+    0x0000C138: 0x24060004 '...$' - li         $a2, 4
+    0x0000C13C: 0xAFB00000 '....' - sw         $s0, 0($sp)
+    0x0000C140: 0x30A5FFFF '...0' - andi       $a1, $a1, 0xFFFF
+    0x0000C144: 0x01028021 '!...' - addu       $s0, $t0, $v0
+    0x0000C148: 0xAFBF0008 '....' - sw         $ra, 8($sp)
+    0x0000C14C: 0x10860050 'P...' - beq        $a0, $a2, loc_0000C290
+    0x0000C150: 0xAFB10004 '....' - sw         $s1, 4($sp)
+    0x0000C154: 0x2C860005 '...,' - sltiu      $a2, $a0, 5
+    0x0000C158: 0x50C00042 'B..P' - beqzl      $a2, loc_0000C264
+    0x0000C15C: 0x24070008 '...$' - li         $a3, 8
+    0x0000C160: 0x50800006 '...P' - beqzl      $a0, loc_0000C17C
+    0x0000C164: 0x8E040000 '....' - lw         $a0, 0($s0)
+    0x0000C168: 0x8FBF0008 '....' - lw         $ra, 8($sp)
+
+    a3 = (addr >> 4) & 3;       // выбрать счётчик
+    v0 = 0x00119B00
+    t0 = a3 << 4
+    a0 = a0 & 0xf;              // выбрать регистр
+    a2 = 4
+    value = value & 0xffff      // a1
+    s0 = reg_base
+    if ( a0 == 4)  goto C290;       // Mode
+
+    a2 = a0 < 5
+    if ( a0 >= 5 ) { a3=8; goto C264}   // Target
+    if ( a0 == 0 ) { a0 = *(u32 *)(reg_base ); goto C17C; }     // Count
+
+loc_0000C16C:
+    return;
+
+Write Count:
+
+    if ( *(u32 *)(reg_base ) >= 0 ) {
+        t2 = [0x0001020C]
+        t1 = [0x00010214]
+        a1 = t2 - t1
+        *(u32 *)(reg_base + 4) = [0x0001020C] - [0x00010214]
+    }
+    else *(u32 *)(reg_base + 4) = 0
+
+    t8 = 1
+
+    if ( counter == 1) { s1 = *(u16 *)(reg_base + 8); goto C1D8 }
+
+loc_0000C1A8
+    a0 = *(u32 *)(reg_base + 12)
+
+loc_0000C1AC
+    if (a0 != 0) goto C1C8
+
+loc_0000C1C8:       ; Refs: 0x0000C1AC 
+    sub_0000095C (a0);
+    *(u32 *)(reg_base + 12) = 0;
+    sub_0000BD64 (reg_base);
+    return;
+
+C1D8:
+    t9 = s1 & 1
+    if (t9 == 0) { a0 = *(u32 *)(reg_base + 12); goto C1AC; }
+    s1 = s1 & 6
+    t0 = 4
+    a0 = 6
+    if (s1 == t0) goto C24C
+
+loc_0000C1F4:
+    if (s1 == a0) goto C224
+    v1 = reg_base[0]; 
+
+loc_0000C200:
+    ins        $v1, $zr, 17, 15
+    reg_base[0] = v1
+    t4 = [0x0001020C]
+    t3 = [0x00010214]
+    t2 = t4 - t3
+    reg_base[4] = t2
+    goto C1A8    
+
+loc_0000C224:
+    sub_00017D5C ();
+    if (v0 != 0) { v1 = *(u32 *)(reg_base); goto C200; }
+    v0 = *(u32 *)(base_reg );
+
+loc_0000C238:
+    t1 = 0x80000000
+    *(u32 *)(reg_base + 4) = 0
+    a2 = v0 | t1
+    *(u32 *)(reg_base ) = a2
+    goto C1A8
+
+loc_0000C24C:
+    sub_00017D5C ();
+    if ( v0 != 0) { v0 = *(u32 *)(reg_base ); goto C238; }
+    a0 = 6
+    goto C1F4
+
+----------------------------------------------------------
+
+Write Target:
+
+    if ( (addr & 0xf) != 8 ) return;
+    if ( value == 0 ) value = 0x10000;
+    if ( *(u32 *)(reg_base ) == value ) return;
+    *(u32 *)(reg_base ) = (*(u32 *)(reg_base ) & 0x80000000) | value;
+    sub_0000BD64 (reg_base);
+    return;
+
+loc_0000C264:       ; Refs: 0x0000C158 
+    0x0000C264: 0x1487FFC1 '....' - bne        $a0, $a3, loc_0000C16C
+    0x0000C268: 0x8FBF0008 '....' - lw         $ra, 8($sp)
+    0x0000C26C: 0x8E030000 '....' - lw         $v1, 0($s0)
+    0x0000C270: 0x3C070001 '...<' - lui        $a3, 0x1
+    0x0000C274: 0x00E5280A '.(..' - movz       $a1, $a3, $a1
+    0x0000C278: 0x1065FFBC '..e.' - beq        $v1, $a1, loc_0000C16C
+    0x0000C27C: 0x7C03F004 '...|' - ins        $v1, $zr, 0, 31
+    0x0000C280: 0x00658825 '%.e.' - or         $s1, $v1, $a1
+    0x0000C284: 0x02002021 '! ..' - move       $a0, $s0
+    0x0000C288: 0x0800306E 'n0..' - j          loc_0000C1B8
+    0x0000C28C: 0xAE110000 '....' - sw         $s1, 0($s0)
+
+Write Mode:
+
+loc_0000C290:       ; Refs: 0x0000C14C 
+    0x0000C290: 0x960E0008 '....' - lhu        $t6, 8($s0)
+    0x0000C294: 0x30A503FF '...0' - andi       $a1, $a1, 0x3FF
+    0x0000C298: 0x31C603FF '...1' - andi       $a2, $t6, 0x3FF
+    0x0000C29C: 0x01C66823 '#h..' - subu       $t5, $t6, $a2
+    0x0000C2A0: 0x01A56025 '%`..' - or         $t4, $t5, $a1
+    0x0000C2A4: 0x3184FFFF '...1' - andi       $a0, $t4, 0xFFFF
+    0x0000C2A8: 0x308B0001 '...0' - andi       $t3, $a0, 0x1
+    0x0000C2AC: 0x11600005 '..`.' - beqz       $t3, loc_0000C2C4
+    0x0000C2B0: 0xA60C0008 '....' - sh         $t4, 8($s0)
+    0x0000C2B4: 0x30910006 '...0' - andi       $s1, $a0, 0x6
+    0x0000C2B8: 0x2A2F0004 '../*' - slti       $t7, $s1, 4
+    0x0000C2BC: 0x51E00005 '...Q' - beqzl      $t7, loc_0000C2D4
+    0x0000C2C0: 0x8E190000 '....' - lw         $t9, 0($s0)
+
+loc_0000C2C4:       ; Refs: 0x0000C2AC 
+    0x0000C2C4: 0x8E180000 '....' - lw         $t8, 0($s0)
+    0x0000C2C8: 0x7C18FC44 'D..|' - ins        $t8, $zr, 17, 15
+    0x0000C2CC: 0xAE180000 '....' - sw         $t8, 0($s0)
+    0x0000C2D0: 0x8E190000 '....' - lw         $t9, 0($s0)
+
+loc_0000C2D4:       ; Refs: 0x0000C2BC 
+    0x0000C2D4: 0x07220007 '..".' - bltzl      $t9, loc_0000C2F4
+    0x0000C2D8: 0xAE000004 '....' - sw         $zr, 4($s0)
+    0x0000C2DC: 0x3C020001 '...<' - lui        $v0, 0x1
+    0x0000C2E0: 0x8C42020C '..B.' - lw         $v0, 524($v0)
+    0x0000C2E4: 0x3C040001 '...<' - lui        $a0, 0x1
+    0x0000C2E8: 0x8C840214 '....' - lw         $a0, 532($a0)
+    0x0000C2EC: 0x00444023 '#@D.' - subu       $t0, $v0, $a0
+    0x0000C2F0: 0xAE080004 '....' - sw         $t0, 4($s0)
+
+loc_0000C2F4:       ; Refs: 0x0000C2D4 
+    0x0000C2F4: 0x10C5FFAA '....' - beq        $a2, $a1, loc_0000C1A0
+    0x0000C2F8: 0x24180001 '...$' - li         $t8, 1
+    0x0000C2FC: 0x14E00006 '....' - bnez       $a3, loc_0000C318
+    0x0000C300: 0xA200000B '....' - sb         $zr, 11($s0)
+    0x0000C304: 0x30A30100 '...0' - andi       $v1, $a1, 0x100
+    0x0000C308: 0x10600004 '..`.' - beqz       $v1, loc_0000C31C
+    0x0000C30C: 0x24090001 '...$' - li         $t1, 1
+    0x0000C310: 0x24060003 '...$' - li         $a2, 3
+    0x0000C314: 0xA206000B '....' - sb         $a2, 11($s0)
+
+loc_0000C318:       ; Refs: 0x0000C2FC 
+    0x0000C318: 0x24090001 '...$' - li         $t1, 1
+
+loc_0000C31C:       ; Refs: 0x0000C308 
+    0x0000C31C: 0x10E90009 '....' - beq        $a3, $t1, loc_0000C344
+    0x0000C320: 0x30AA0100 '...0' - andi       $t2, $a1, 0x100
+    0x0000C324: 0x240E0002 '...$' - li         $t6, 2
+
+loc_0000C328:       ; Refs: 0x0000C344 0x0000C358 
+    0x0000C328: 0x14EEFF9D '....' - bne        $a3, $t6, loc_0000C1A0
+    0x0000C32C: 0x24180001 '...$' - li         $t8, 1
+    0x0000C330: 0x30AF0200 '...0' - andi       $t7, $a1, 0x200
+    0x0000C334: 0x11E0FF9A '....' - beqz       $t7, loc_0000C1A0
+    0x0000C338: 0x24050003 '...$' - li         $a1, 3
+    0x0000C33C: 0x08003068 'h0..' - j          loc_0000C1A0
+    0x0000C340: 0xA205000B '....' - sb         $a1, 11($s0)
+
+loc_0000C344:       ; Refs: 0x0000C31C 
+    0x0000C344: 0x1140FFF8 '..@.' - beqz       $t2, loc_0000C328
+    0x0000C348: 0x240E0002 '...$' - li         $t6, 2
+    0x0000C34C: 0x3C0D000F '...<' - lui        $t5, 0xF
+; Data ref 0x000F1454 ... 0x00000000 0x00000000 0x00000000 0x00000000 
+    0x0000C350: 0x8DAC1454 'T...' - lw         $t4, 5204($t5)
+    0x0000C354: 0x258B000C '...%' - addiu      $t3, $t4, 12
+    0x0000C358: 0x080030CA '.0..' - j          loc_0000C328
+    0x0000C35C: 0xA20B000B '....' - sb         $t3, 11($s0)

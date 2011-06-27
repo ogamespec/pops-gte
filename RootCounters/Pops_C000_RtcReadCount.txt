@@ -1,0 +1,108 @@
+
+// sub_0000C000
+u32 RtcReadCount (void *reg_base)
+{
+    u32 count = *(u32 *)[0x0001020C] - *(u32 *)[0x00010214] - *(u32 *)(reg_base + 4)
+    u32 target = *(u32 *)(reg_base )        // Target
+
+    if ( target < 0 ) return  *(u32 *)(reg_base + 4);
+
+    div = *(u8 *)(reg_base + 11)
+    count = count >> div
+    if ( target > count ) return count & 0xffff;
+
+    if ( count > 0xffff )
+    {
+        *(u16 *)(reg_base + 8) |= 0x1000;
+        count = count & 0xffff;
+    }
+
+    if ( *(u16 *)(reg_base + 8)  & 8 )      // Tar:1 - Count to value in target register
+    {
+        count = count % target;
+    }
+
+    *(u32 *)(reg_base + 4) = *(u32 *)[0x0001020C] - *(u32 *)[0x00010214] - (count << div);
+    return count & 0xffff;
+}
+
+    t0 = 0x00010000
+    t0 = [0x00010214]
+    t1 = 0x00010000
+    t1 = [0x0001020C]
+    a1 = *(u32 *)(reg_base + 4)
+    a2 = *(u32 *)(reg_base )                // Target
+    a3 = t1 - t0
+    v0 = a1
+    t0 = a3 - a1
+    if ( a2 < 0 ) return
+
+    a1 = *(u8 *)(reg_base + 11)
+    v0 = 0xffff
+    t0 = t0 >> a1
+    t2 = t0 < a2
+    v1 = t0 > 0xffff
+    if (t2 == 0) goto C04C
+
+C040
+    v0 = t0 & 0xFFFF
+
+C044
+    return
+
+C04C
+
+
+
+sub_0000C000:       ; Refs: 0x0000BC5C 0x0000BCAC 0x0000BD84 0x0000C0CC 0x000CFD6C 0x000D1FB0 
+    0x0000C000: 0x3C080001 '...<' - lui        $t0, 0x1
+    0x0000C004: 0x8D080214 '....' - lw         $t0, 532($t0)
+    0x0000C008: 0x3C090001 '...<' - lui        $t1, 0x1
+    0x0000C00C: 0x8D29020C '..).' - lw         $t1, 524($t1)
+    0x0000C010: 0x8C850004 '....' - lw         $a1, 4($a0)
+    0x0000C014: 0x8C860000 '....' - lw         $a2, 0($a0)
+    0x0000C018: 0x01283823 '#8(.' - subu       $a3, $t1, $t0
+    0x0000C01C: 0x00A01021 '!...' - move       $v0, $a1
+    0x0000C020: 0x04C00008 '....' - bltz       $a2, loc_0000C044
+    0x0000C024: 0x00E54023 '#@..' - subu       $t0, $a3, $a1
+
+    0x0000C028: 0x9085000B '....' - lbu        $a1, 11($a0)
+    0x0000C02C: 0x3402FFFF '...4' - li         $v0, 0xFFFF
+    0x0000C030: 0x00A84006 '.@..' - srlv       $t0, $t0, $a1
+    0x0000C034: 0x0106502B '+P..' - sltu       $t2, $t0, $a2
+    0x0000C038: 0x11400004 '..@.' - beqz       $t2, loc_0000C04C
+    0x0000C03C: 0x0048182B '+.H.' - sltu       $v1, $v0, $t0
+
+loc_0000C040:       ; Refs: 0x0000C084 
+    0x0000C040: 0x3102FFFF '...1' - andi       $v0, $t0, 0xFFFF
+
+loc_0000C044:       ; Refs: 0x0000C020 
+    0x0000C044: 0x03E00008 '....' - jr         $ra
+    0x0000C048: 0x00000000 '....' - nop        
+
+loc_0000C04C:       ; Refs: 0x0000C038 
+    t5 = *(u16 *)(reg_base + 8)
+    if ( v1 == 0) goto c068;
+    t0 = t0 & 0xFFFF
+    mode |= 0x1000
+    t5 = mode
+
+    0x0000C04C: 0x50600006 '..`P' - beqzl      $v1, loc_0000C068
+    0x0000C050: 0x948D0008 '....' - lhu        $t5, 8($a0)
+    0x0000C054: 0x948B0008 '....' - lhu        $t3, 8($a0)
+    0x0000C058: 0x3108FFFF '...1' - andi       $t0, $t0, 0xFFFF
+    0x0000C05C: 0x35631000 '..c5' - ori        $v1, $t3, 0x1000
+    0x0000C060: 0xA4830008 '....' - sh         $v1, 8($a0)
+    0x0000C064: 0x948D0008 '....' - lhu        $t5, 8($a0)
+
+loc_0000C068:       ; Refs: 0x0000C04C
+    t4 = mode & 8
+    t6 = t0 << a1
+    if (t4)
+        t0 = t0 % a2
+        t6 = t0 << a1
+
+loc_0000C080:       ; Refs: 0x0000C06C
+    a2 = a3 - t6
+    *(u32 *)(reg_base + 4) = a2
+    return;

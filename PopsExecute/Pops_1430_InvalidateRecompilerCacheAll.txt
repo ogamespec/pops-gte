@@ -1,0 +1,13 @@
+
+// Refs: 0x00000598 0x0000080C 0x00001298 0x0000A44C
+
+// sub_00001430
+void * InvalidateRecompilerCacheAll ( void )
+{
+    memclr ( 0x09C00000 - 0x09E00000 );
+
+    [0x00010220] = 0x09580000;
+    [0x00010228] = 0
+
+    return 0x09580000;
+}

@@ -1,0 +1,29 @@
+
+Процедура инициализации обработчиков доступа к регистрам:
+
+
+sub_0000BF00:       ; Refs: 0x000004B4 
+    0x0000BF00: 0x3C020001 '...<' - lui        $v0, 0x1
+; Data ref 0x0000C08C ... 0x27BDFFF0 0xAFB00000 0x3C030012 0x246A9B00 
+    0x0000BF04: 0x2446C08C '..F$' - addiu      $a2, $v0, -16244
+    0x0000BF08: 0x3C040001 '...<' - lui        $a0, 0x1
+    0x0000BF0C: 0x3C021F80 '...<' - lui        $v0, 0x1F80
+    0x0000BF10: 0x27BDFFF0 '...'' - addiu      $sp, $sp, -16
+; Data ref 0x0000C120 ... 0x7C870900 0x3C030012 0x27BDFFF0 0x24629B00 
+    0x0000BF14: 0x2487C120 ' ..$' - addiu      $a3, $a0, -16096
+    0x0000BF18: 0x24050030 '0..$' - li         $a1, 48
+    0x0000BF1C: 0xAFBF0000 '....' - sw         $ra, 0($sp)
+    0x0000BF20: 0x0C000406 '....' - jal        sub_00001018
+    0x0000BF24: 0x34441100 '..D4' - ori        $a0, $v0, 0x1100
+    0x0000BF28: 0x8FBF0000 '....' - lw         $ra, 0($sp)
+    0x0000BF2C: 0x03E00008 '....' - jr         $ra
+    0x0000BF30: 0x27BD0010 '...'' - addiu      $sp, $sp, 16
+
+a2 = 0c08c          /// read callback
+a0 = 0x00010000
+v0 = 0x1f800000
+a3 = 0c120          /// write callback
+a1 = 48             /// Обработчики на Root Counter 3 (vertical retrace) не ставятся.
+a0 = 0x1f801100
+
+1018 ( 0x1f801100, 0x30, rtcRead, rtcWrite );

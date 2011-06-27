@@ -1,0 +1,9 @@
+Процедуры инициализации Pops.
+
+
+sub_05A8:
+int AllocPSXMemory ()
+{
+	return sceKernelAllocPartitionMemory ( 2, "PSXMemory", 2, 0xA00100, 0x09580000);
+}
+

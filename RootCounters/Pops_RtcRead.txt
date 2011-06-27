@@ -1,0 +1,132 @@
+
+// Только для чтения RTC0,RTC1,RTC2.
+// Для чтения RTC3 (vertical retrace) используется другой обработчик.
+u32 RtcRead ( u32 addr, int read_type )
+{
+    u32 result;
+    void * reg_base = 0x119B00 + addr & 0x30;
+
+    *(u32 *)[0x00010214] += 4;      // увеличить какой то счётчик на 4.
+
+    switch ( addr & 0xf )
+    {                      
+        case 0:         // Count
+            result = RtcReadCount (reg_base);
+            break;
+
+        case 4:         // Mode
+            result = *(u16)(reg_base + 8) & 0xFFFF;
+            *(u16)(reg_base + 8) &= ~(0x1000 | 0x0800);    // clear bits 11,12
+            break;
+    
+        case <=8:       // Target
+            result = *(u16)(reg_base);
+            break;
+
+        default:            // неиспользуемое пространство
+            result = 0;
+    }
+
+    if (read_type == 1/*LH*/) result = (u32)(s32)(s16)(u16)result;    // расширить знак до 32 бит при режиме чтения Read Halfword.
+    return result;
+}
+
+read_type: 0 - lb, 1 - lh, 2 - lw, 3 - read 0, 4 - lbu, 5 - lhu
+
+EXT RD, RS, P, S: RS = RS P+S-1:P
+INS RD, RS, P, S: RD P+S-1:P = RS S-1:0
+MOVN RD, RS, RT: IF RT != 0, RD = RS
+MOVZ RD, RS, RT: IF RT = 0, RD = RS
+
+rtc0 - count
+rtc4 - mode
+rct8 - target
+
+
+    t2 = 0x119B00
+    a2 = addr & 0xF         // выбрать регистр
+    t3 = addr & 0x30        // выбрать счетчик
+    v0 = 0x00010000
+    v0 = [0x00010214]
+    v1 = 4
+    a0 = t3 + t2
+    t1 = [0x00010214] + 4
+    at = 0x00010000
+    [0x00010214] = t1
+    s0 = read_type
+    if (a2 != count) goto loc_0000C0F0
+
+    // Read Count
+    sub_0000C000 ();
+
+
+    0x0000C08C: 0x27BDFFF0 '...'' - addiu      $sp, $sp, -16
+    0x0000C090: 0xAFB00000 '....' - sw         $s0, 0($sp)
+    0x0000C094: 0x3C030012 '...<' - lui        $v1, 0x12
+; Data ref 0x00119B00 ... 0x00000000 0x00000000 0x00000000 0x00000000 
+    0x0000C098: 0x246A9B00 '..j$' - addiu      $t2, $v1, -25856
+    0x0000C09C: 0xAFBF0004 '....' - sw         $ra, 4($sp)
+    0x0000C0A0: 0x3086000F '...0' - andi       $a2, $a0, 0xF
+    0x0000C0A4: 0x308B0030 '0..0' - andi       $t3, $a0, 0x30
+    0x0000C0A8: 0x3C020001 '...<' - lui        $v0, 0x1
+    0x0000C0AC: 0x8C420214 '..B.' - lw         $v0, 532($v0)
+    0x0000C0B0: 0x24030004 '...$' - li         $v1, 4
+    0x0000C0B4: 0x016A2021 '! j.' - addu       $a0, $t3, $t2
+    0x0000C0B8: 0x24490004 '..I$' - addiu      $t1, $v0, 4
+    0x0000C0BC: 0x3C010001 '...<' - lui        $at, 0x1
+    0x0000C0C0: 0xAC290214 '..).' - sw         $t1, 532($at)
+    0x0000C0C4: 0x14C0000A '....' - bnez       $a2, loc_0000C0F0
+    0x0000C0C8: 0x00A08021 '!...' - move       $s0, $a1
+    0x0000C0CC: 0x0C003000 '.0..' - jal        sub_0000C000
+    0x0000C0D0: 0x00000000 '....' - nop        
+
+loc_0000C0D4
+    a0 = (u32)(s32)(s16)(u16)v0     // расширить знак до 32 бит
+    if (read_type == 1 /*LH*/) v0 = a0
+    return;
+
+loc_0000C0D4:       ; Refs: 0x0000C0F8 0x0000C100 0x0000C118 
+    0x0000C0D4: 0x3A070001 '...:' - xori       $a3, $s0, 0x1
+    0x0000C0D8: 0x8FBF0004 '....' - lw         $ra, 4($sp)
+    0x0000C0DC: 0x8FB00000 '....' - lw         $s0, 0($sp)
+    0x0000C0E0: 0x7C022620 ' &.|' - seh        $a0, $v0
+    0x0000C0E4: 0x0087100A '....' - movz       $v0, $a0, $a3
+    0x0000C0E8: 0x03E00008 '....' - jr         $ra
+    0x0000C0EC: 0x27BD0010 '...'' - addiu      $sp, $sp, 16
+
+loc_0000C0F0
+    v0 = 8
+    if ( (addr & 0xf) == 4 ) goto c108
+    if ( (addr & 0xf) <= 8 )  {     v0 = *(u16 *)a0; goto c0d4  }
+
+    // Unused space read.
+    v0 = 0
+    goto c0d4
+
+loc_0000C0F0:       ; Refs: 0x0000C0C4 
+    0x0000C0F0: 0x10C30005 '....' - beq        $a2, $v1, loc_0000C108
+    0x0000C0F4: 0x24020008 '...$' - li         $v0, 8
+    0x0000C0F8: 0x50C2FFF6 '...P' - beql       $a2, $v0, loc_0000C0D4
+    0x0000C0FC: 0x94820000 '....' - lhu        $v0, 0($a0)
+    0x0000C100: 0x08003035 '50..' - j          loc_0000C0D4
+    0x0000C104: 0x00001021 '!...' - move       $v0, $zr
+
+loc_0000C108            /// Read mode
+
+31  10  9   8   7   6   5   4   3   2   1   0   
+Garbage Div Clc     Iq2     Iq1 Tar     En  
+
+    a2 = *(u16 *)(a0 + 8)
+    a1 = a2 & 0xE7FF;       // clear bits 11,12
+    v0 = a2 & 0xFFFF
+    *(u16 *)(a0 + 8) = a1
+    goto c0d4;
+
+
+loc_0000C108:       ; Refs: 0x0000C0F0 
+    0x0000C108: 0x94860008 '....' - lhu        $a2, 8($a0)
+    0x0000C10C: 0x00C02821 '!(..' - move       $a1, $a2
+    0x0000C110: 0x7C0562C4 '.b.|' - ins        $a1, $zr, 11, 2
+    0x0000C114: 0x30C2FFFF '...0' - andi       $v0, $a2, 0xFFFF
+    0x0000C118: 0x08003035 '50..' - j          loc_0000C0D4
+    0x0000C11C: 0xA4850008 '....' - sh         $a1, 8($a0)
