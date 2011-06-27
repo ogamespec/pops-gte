@@ -1,0 +1,21 @@
+Вызывается 1 раз из CpuMainLoop.
+
+Сделать невалидным рекомпилированный блок кода по адресу address.
+Области ROM пропускаются потому что нет нужды очищать кеш компилятора для этих областей, потому что ROM не изменяется.
+
+// sub_000013A8
+void InvalidateRecompilerCacheByAddress (u32 address)
+
+    address &= 0x1FFFFFFF;      // папское MMU
+    if ( address > 0x00800000 ) return;     // только RAM
+
+    start = 0x09C00000 + (address & 0x001FFFFC);   // начало на кусок кода из LUT
+    void * block = *start;
+    if (block == 0) return;        // нечего очищать, код еще не компилировался
+    length = *(u16 *)(block - 2);   // размер куска (в словах) хранится чуть выше рекомпилированного кода (трюк)
+
+    memclr (start, 0, length * 4);  // очистить LUT
+
+    sub_00005AC0 (block)
+    sceKernelIcacheInvalidateRange (block, 8);      // не забываем про write-back кеш PSP CPU
+    sceKernelDcacheWritebackInvalidateRange (block, 8);

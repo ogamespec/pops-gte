@@ -1,0 +1,22 @@
+
+Вызывается 1 раз из module_start
+
+// sub_00000494
+void PSXInit (void)
+    
+    GteInit ();
+    InitHardwareHooks ();
+
+    // Установка хуков на регистры железа
+    sub_0000ADF8 ();            // INTC
+    sub_0000BF00 ();            // ROOT COUNTERS
+    sub_0000B474 ();            // DMA INTC
+    sub_0000C3A4 ();            // GPU
+    sub_0000F00C ();            // MDEC
+    sub_00026C2C ();            // SPU
+    sub_00010A1C ();            // CDROM
+    sub_0000C600 ();            // SIO
+
+    sub_0000A4EC ();            // что то связанное с рекомпилером
+
+    sub_000003F8 ();            // вторая большая процедура инициализации (сброс всего железа судя по всему)

@@ -1,0 +1,21 @@
+Вызывается 1 раз из PopsMain.
+
+// sub_00000508
+
+void CpuMainLoop (void)
+
+    sub_000006AC ()
+
+loc_0000052C:
+    v0 = CpuExecute ();
+    if (v0 == 2) goto loc_00000574  // сделать откомпилированный код по адресу PC невалидным
+    if (v0 >= 3) goto loc_0000052C
+    v0 = CpuRecompile (PC);
+    if (v0 < 0) CpuException (4, PC);       // Address error, load/I-fetch
+    goto loc_0000052C
+
+// код нужнается в перекомпиляции.
+loc_00000574:
+    if ([0x000F1404] & 1) InvalidateRecompilerCacheAll ();  // очистить весь кеш рекомпилера
+    else InvalidateRecompilerCacheByAddress ( PC );
+    goto loc_0000052C
