@@ -141,4 +141,28 @@ Command details are listed on the pages which follow.
 ||(1.31. 0) || *MAC2* = <u>*SSY*</u>; || 
 ||(1.31. 0) || *MAC3* = <u>*SSZ*</u>; || 
 
+
+==DPCS Required cycles: 8==
+
+Function: Depth queuing
+
+Calculations:
+
+<table>
+<tr><td width="80px;">(1.27.16)</td><td><u><b>RR0</b></u> = R`*`1.0 + IR0`*`limA1S(*RFC*-R`*`1.0); `<1>` </td></tr>
+<tr><td>(1.27.16)</td><td>   <u><b>GG0</b></u> = G`*`1.0 + IR0`*`limA2S(*GFC*-G`*`1.0); `<2>` </td></tr>
+<tr><td>(1.27.16)</td><td>   <u><b>BB0</b></u> = B`*`1.0 + IR0`*`limA3S(*BFC*-B`*`1.0); `<3>`</td></tr>
+<tr><td>(1.11. 4)</td><td>   IR1 = limA1S(<u><b>RR0</b></u>);</td></tr>
+<tr><td>(1.11. 4)</td><td>   IR2 = limA2S(<u><b>GG0</b></u>);</td></tr>
+<tr><td>(1.11. 4)</td><td>   IR3 = limA3S(<u><b>BB0</b></u>);</td></tr>
+<tr><td>(-.8.-)</td><td>     CD0 <- CD1 <- CD2 <- CODE</td></tr>
+<tr><td>(0. 8. 0)</td><td>   R0 <- R1 <- R2 <- limB1(<u><b>RR0</b></u>);</td></tr>
+<tr><td>(0. 8. 0)</td><td>   G0 <- G1 <- G2 <- limB2(<u><b>GG0</b></u>);</td></tr>
+<tr><td>(0. 8. 0)</td><td>   B0 <- B1 <- B2 <- limB3(<u><b>BB0</b></u>);</td></tr>
+<tr><td>(1.27. 4)</td><td>   *MAC1* = <u><b>RR0</b></u>;</td></tr>
+<tr><td>(1.27. 4)</td><td>   *MAC2* = <u><b>GG0</b></u>;</td></tr>
+<tr><td>(1.27. 4)</td><td>   *MAC3* = <u><b>BB0</b></u>;</td></tr>
+</table>
+
 _to be continued..._
+
