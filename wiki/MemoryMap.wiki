@@ -11,7 +11,7 @@ Some big structure related to PSX CPU registers is resided at address *0x0001000
 Size of this structure is 0x22C bytes.
 ||*offset*||*description*||
 ||+0x0000||GTE Control Registers||
-||+0x0080||GTE Status Registers||
+||+0x0080||GTE Data Registers||
 ||+0x0100||COP0 Registers||
 ||+0x0208||Program Counter||
 ||+0x0214||Cycle Counter ?||
