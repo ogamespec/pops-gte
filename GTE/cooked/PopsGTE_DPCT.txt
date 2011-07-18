@@ -9,32 +9,57 @@ n=0,1,2 {
     (1.27.16)   RRn = Rn*1.0 + IR0*limA1S(RFC-R*1.0); <1>
     (1.27.16)   GGn = Gn*1.0 + IR0*limA2S(GFC-G*1.0); <2>
     (1.27.16)   BBn = Bn*1.0 + IR0*limA3S(BFC-B*1.0); <3>
-    (1.11. 4)   IR1 = limA1S(RR2);
-    (1.11. 4)   IR2 = limA2S(GG2);
-    (1.11. 4)   IR3 = limA3S(BB2);
     (-.8.-)     CDn = CODE
     (0. 8. 0)   Rn = limB1(RRn);
     (0. 8. 0)   Gn = limB2(GGn);
     (0. 8. 0)   Bn = limB3(BBn);
 }
+    (1.11. 4)   IR1 = limA1S(RR2);
+    (1.11. 4)   IR2 = limA2S(GG2);
+    (1.11. 4)   IR3 = limA3S(BB2);
     (1.27. 4)   MAC1 = RR2;
     (1.27. 4)   MAC2 = GG2;
     (1.27. 4)   MAC3 = BB2;
 
+Pops:
+    
+    at = 0      // FLAG
+    t5 = IR0
+    t6 = 32767
+    a1 = -32768
+    t4 = 255
+    v0 = RGB
+    t2 = RFC
+    a2 = GFC
+    a0 = BFC
 
-    0x0000E958: 0x2787FFF4 '...'' - addiu      $a3, $gp, -12
-    0x0000E95C: 0x24010000 '...$' - li         $at, 0
-    0x0000E960: 0x8F8D0020 ' ...' - lw         $t5, 32($gp)
-    0x0000E964: 0x240E7FFF '...$' - li         $t6, 32767
-    0x0000E968: 0x24058000 '...$' - li         $a1, -32768
-    0x0000E96C: 0x240C00FF '...$' - li         $t4, 255
-    0x0000E970: 0x8F820018 '....' - lw         $v0, 24($gp)
-    0x0000E974: 0x8F8A00D4 '....' - lw         $t2, 212($gp)
-    0x0000E978: 0x8F8600D8 '....' - lw         $a2, 216($gp)
-    0x0000E97C: 0x8F8400DC '....' - lw         $a0, 220($gp)
+loc_0000E980:   
 
-loc_0000E980:       ; Refs: 0x0000EA64 
-    0x0000E980: 0x8CEB005C '\...' - lw         $t3, 92($a3)
+    t3 = RGB[n]
+    t1 = RFC - R[n] << 4
+    t7 = min (max (t1, -32768), 32767)    // LIM_A1S
+    t0 = (t1 != t7) << 24    //  <1>
+    t8 = R[n] << 16 + t7 * IR0
+    t1 = t8 >> 16
+    t0[21] = t1 >U 255
+    v0[R] = min (255, max (0, t1))  // LIM_B1
+
+        same for GGn and BBn :
+
+    n = 0, 1, 2 {
+        RRn = Rn << 16 + IR0 * LIM_A1S (RFC - Rn << 4)     // FLAG[24]
+        GGn = Gn << 16 + IR0 * LIM_A2S (BFC - Gn << 4)     // FLAG[23]
+        BBn = Bn << 16 + IR0 * LIM_A3S (GFC - Bn << 4)     // FLAG[22]
+        CDn = CODE;
+        Rn = LIM_B1 (RRn >> 16);       // FLAG[21]
+        Gn = LIM_B2 (GGn >> 16);       // FLAG[20]
+        Bn = LIM_B3 (BBn >> 16);       // FLAG[19]
+    }
+
+    FLAG |= t0 after each iteration.
+
+
+    0x0000E980: 0x8CEB005C '\...' - lw         $t3, 92($a3)     // RGB0 -> RGB1 -> RGB2
     0x0000E984: 0x24E70004 '...$' - addiu      $a3, $a3, 4
     0x0000E988: 0x7D783800 '.8x}' - ext        $t8, $t3, 0, 8
     0x0000E98C: 0x0018C100 '....' - sll        $t8, $t8, 4
@@ -54,6 +79,7 @@ loc_0000E980:       ; Refs: 0x0000EA64
     0x0000E9C4: 0x0189482D '-H..' - min        $t1, $t4, $t1
     0x0000E9C8: 0x7DE8AD44 'D..}' - ins        $t0, $t7, 21, 1
     0x0000E9CC: 0x7D223804 '.8"}' - ins        $v0, $t1, 0, 8
+
     0x0000E9D0: 0x7D633A00 '.:c}' - ext        $v1, $t3, 8, 8
     0x0000E9D4: 0x00031900 '....' - sll        $v1, $v1, 4
     0x0000E9D8: 0x00C34823 '#H..' - subu       $t1, $a2, $v1
@@ -72,6 +98,7 @@ loc_0000E980:       ; Refs: 0x0000EA64
     0x0000EA0C: 0x0189482D '-H..' - min        $t1, $t4, $t1
     0x0000EA10: 0x7DE8A504 '...}' - ins        $t0, $t7, 20, 1
     0x0000EA14: 0x7D227A04 '.z"}' - ins        $v0, $t1, 8, 8
+
     0x0000EA18: 0x7D6B3C00 '.<k}' - ext        $t3, $t3, 16, 8
     0x0000EA1C: 0x000B5900 '.Y..' - sll        $t3, $t3, 4
     0x0000EA20: 0x008B4823 '#H..' - subu       $t1, $a0, $t3
@@ -90,33 +117,81 @@ loc_0000E980:       ; Refs: 0x0000EA64
     0x0000EA54: 0x0189482D '-H..' - min        $t1, $t4, $t1
     0x0000EA58: 0x7DE89CC4 '...}' - ins        $t0, $t7, 19, 1
     0x0000EA5C: 0x7D22BC04 '.."}' - ins        $v0, $t1, 16, 8
-    0x0000EA60: 0xACE20058 'X...' - sw         $v0, 88($a3)
+
+    0x0000EA60: 0xACE20058 'X...' - sw         $v0, 88($a3)     // RGB0 -> RGB1 -> RGB2
     0x0000EA64: 0x14FCFFC6 '....' - bne        $a3, $gp, loc_0000E980
     0x0000EA68: 0x00280825 '%.(.' - or         $at, $at, $t0
+
+----------
+
+    MAC1 = RRn >> 12
+    MAC2 = GGn >> 12
+    MAC3 = BBn >> 12
+
+    IR1 = LIM_A1S (MAC1)    // FLAG[24];
+    IR2 = LIM_A2S (MAC2)    // FLAG[23];
+    IR3 = LIM_A3S (MAC3)    // FLAG[22];
+
     0x0000EA6C: 0x0018C303 '....' - sra        $t8, $t8, 12
-    0x0000EA70: 0xAF980064 'd...' - sw         $t8, 100($gp)
+    0x0000EA70: 0xAF980064 'd...' - sw         $t8, 100($gp)    // MAC1
     0x0000EA74: 0x0305602C ',`..' - max        $t4, $t8, $a1
     0x0000EA78: 0x018E602D '-`..' - min        $t4, $t4, $t6
     0x0000EA7C: 0x030CC023 '#...' - subu       $t8, $t8, $t4
     0x0000EA80: 0x0018402B '+@..' - sltu       $t0, $zr, $t8
-    0x0000EA84: 0xAF8C0024 '$...' - sw         $t4, 36($gp)
+    0x0000EA84: 0xAF8C0024 '$...' - sw         $t4, 36($gp)     // IR1
     0x0000EA88: 0x00084600 '.F..' - sll        $t0, $t0, 24
+
     0x0000EA8C: 0x00031B03 '....' - sra        $v1, $v1, 12
-    0x0000EA90: 0xAF830068 'h...' - sw         $v1, 104($gp)
+    0x0000EA90: 0xAF830068 'h...' - sw         $v1, 104($gp)    // MAC2
     0x0000EA94: 0x0065602C ',`e.' - max        $t4, $v1, $a1
     0x0000EA98: 0x018E602D '-`..' - min        $t4, $t4, $t6
     0x0000EA9C: 0x006C1823 '#.l.' - subu       $v1, $v1, $t4
     0x0000EAA0: 0x0003182B '+...' - sltu       $v1, $zr, $v1
-    0x0000EAA4: 0xAF8C0028 '(...' - sw         $t4, 40($gp)
+    0x0000EAA4: 0xAF8C0028 '(...' - sw         $t4, 40($gp)     // IR2
     0x0000EAA8: 0x7C68BDC4 '..h|' - ins        $t0, $v1, 23, 1
+
     0x0000EAAC: 0x000B5B03 '.[..' - sra        $t3, $t3, 12
-    0x0000EAB0: 0xAF8B006C 'l...' - sw         $t3, 108($gp)
+    0x0000EAB0: 0xAF8B006C 'l...' - sw         $t3, 108($gp)    // MAC3
     0x0000EAB4: 0x0165602C ',`e.' - max        $t4, $t3, $a1
     0x0000EAB8: 0x018E602D '-`..' - min        $t4, $t4, $t6
     0x0000EABC: 0x016C5823 '#Xl.' - subu       $t3, $t3, $t4
     0x0000EAC0: 0x000B582B '+X..' - sltu       $t3, $zr, $t3
-    0x0000EAC4: 0xAF8C002C ',...' - sw         $t4, 44($gp)
+    0x0000EAC4: 0xAF8C002C ',...' - sw         $t4, 44($gp)     // IR3
     0x0000EAC8: 0x7D68B584 '..h}' - ins        $t0, $t3, 22, 1
+
     0x0000EACC: 0x00280825 '%.(.' - or         $at, $at, $t0
     0x0000EAD0: 0x03E00008 '....' - jr         $ra
     0x0000EAD4: 0x48E1000F '...H' - mtv        $at, S330
+
+
+---------------------
+
+Resulting assembly:
+
+DPCT:
+
+    FLAG = 0
+
+    n = 0, 1, 2 {
+        RRn = Rn << 16 + IR0 * LIM_A1S (RFC - Rn << 4)     // FLAG[24]
+        GGn = Gn << 16 + IR0 * LIM_A2S (BFC - Gn << 4)     // FLAG[23]
+        BBn = Bn << 16 + IR0 * LIM_A3S (GFC - Bn << 4)     // FLAG[22]
+        CDn = CODE;
+        Rn = LIM_B1 (RRn >> 16);       // FLAG[21]
+        Gn = LIM_B2 (GGn >> 16);       // FLAG[20]
+        Bn = LIM_B3 (BBn >> 16);       // FLAG[19]
+    }
+
+    MAC1 = RRn >> 12
+    MAC2 = GGn >> 12
+    MAC3 = BBn >> 12
+
+    IR1 = LIM_A1S (MAC1)    // FLAG[24];
+    IR2 = LIM_A2S (MAC2)    // FLAG[23];
+    IR3 = LIM_A3S (MAC3)    // FLAG[22];
+
+
+FLAWS:
+
+    Pops has no check for "Calculation test result #1/2/3 overflow generated (2^43 or more)"
+    (see bits 30, 29, 28 in FLAG)
