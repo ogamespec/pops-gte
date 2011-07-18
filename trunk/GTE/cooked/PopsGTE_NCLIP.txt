@@ -1,14 +1,24 @@
 
+NCLIP Required cycles: 8
+
+Function: Normal clipping
+
+Calculations:
+
+(1.43. 0) OPZ = SX0*SY1 + SX1*SY2 + SX2*SY0
+                - SX0*SY2 - SX1*SY0 - SX2*SY1; <4>
+(1.31. 0) MAC0 = OPZ;
+
 http://mrmrice.fx-world.org/vfpu.html
 
 Pcsx:
-	gteFLAG = 0;
-	gteMAC0 =	gteSX0 * (gteSY1 - gteSY2) +
-				gteSX1 * (gteSY2 - gteSY0) +
-				gteSX2 * (gteSY0 - gteSY1);
+    gteFLAG = 0;
+    gteMAC0 =   gteSX0 * (gteSY1 - gteSY2) +
+                gteSX1 * (gteSY2 - gteSY0) +
+                gteSX2 * (gteSY0 - gteSY1);
 
-	//gteMAC0 = (gteSX0 - gteSX1) * (gteSY0 - gteSY2) - (gteSX0 - gteSX2) * (gteSY0 - gteSY1);
-	// закомментированный код похож на код Pops, но регистры перепутаны местами.
+    //gteMAC0 = (gteSX0 - gteSX1) * (gteSY0 - gteSY2) - (gteSX0 - gteSX2) * (gteSY0 - gteSY1);
+    // закомментированный код похож на код Pops, но регистры перепутаны местами.
 
 --------------------
 
@@ -16,8 +26,8 @@ Pops:
 
 GTE_NCLIP ()
 {
-	gteMAC0 = (gteSX1 - gteSX0) * (gteSY2 - gteSY0) - (gteSX2 - gteSX0) * (gteSY1 - gteSY0);
-	VFPU.S330 = 0;	// похоже это gteFLAG
+    gteMAC0 = (gteSX1 - gteSX0) * (gteSY2 - gteSY0) - (gteSX2 - gteSX0) * (gteSY1 - gteSY0);
+    VFPU.S330 = 0;  // похоже это gteFLAG
 }
 
 
@@ -25,51 +35,51 @@ GTE_NCLIP ()
 
 Регистры GTE DATA хранятся по PSP адресу 0x10000
 
-	a0 = gteSX0
-	a1 = gteSY0
-	a2 = gteSX1
-	v0 = gteSY1
-	at = gteSY2
-	gp = gteSX2
+    a0 = gteSX0
+    a1 = gteSY0
+    a2 = gteSX1
+    v0 = gteSY1
+    at = gteSY2
+    gp = gteSX2
 
-	a2 = gteSX1 - gteSX0
-	at = gteSY2 - gteSY0
+    a2 = gteSX1 - gteSX0
+    at = gteSY2 - gteSY0
 
-	acc = (gteSX1 - gteSX0) * (gteSY2 - gteSY0)
+    acc = (gteSX1 - gteSX0) * (gteSY2 - gteSY0)
 
-	a2 = gteSX2 - gteSX0
-	at = gteSY1 - gteSY0
+    a2 = gteSX2 - gteSX0
+    at = gteSY1 - gteSY0
 
-	acc -= (gteSX2 - gteSX0) * (gteSY1 - gteSY0)
+    acc -= (gteSX2 - gteSX0) * (gteSY1 - gteSY0)
 
-	gp = 0x10000
+    gp = 0x10000
 
-	S330 = 0;
+    S330 = 0;
 
-	gteMAC0 = LO
+    gteMAC0 = LO
 
 ------
 
 
-	0x0000E58C: 0x87840030 '0...' - lh         $a0, 48($gp)
-	0x0000E590: 0x87850032 '2...' - lh         $a1, 50($gp)
-	0x0000E594: 0x87860034 '4...' - lh         $a2, 52($gp)
-	0x0000E598: 0x87820036 '6...' - lh         $v0, 54($gp)
-	0x0000E59C: 0x8781003A ':...' - lh         $at, 58($gp)
-	0x0000E5A0: 0x879C0038 '8...' - lh         $gp, 56($gp)
+    0x0000E58C: 0x87840030 '0...' - lh         $a0, 48($gp)
+    0x0000E590: 0x87850032 '2...' - lh         $a1, 50($gp)
+    0x0000E594: 0x87860034 '4...' - lh         $a2, 52($gp)
+    0x0000E598: 0x87820036 '6...' - lh         $v0, 54($gp)
+    0x0000E59C: 0x8781003A ':...' - lh         $at, 58($gp)
+    0x0000E5A0: 0x879C0038 '8...' - lh         $gp, 56($gp)
 
-	0x0000E5A4: 0x00C43023 '#0..' - subu       $a2, $a2, $a0
-	0x0000E5A8: 0x00250823 '#.%.' - subu       $at, $at, $a1
+    0x0000E5A4: 0x00C43023 '#0..' - subu       $a2, $a2, $a0
+    0x0000E5A8: 0x00250823 '#.%.' - subu       $at, $at, $a1
 
-	0x0000E5AC: 0x00C10018 '....' - mult       $a2, $at
+    0x0000E5AC: 0x00C10018 '....' - mult       $a2, $at
 
-	0x0000E5B0: 0x03843023 '#0..' - subu       $a2, $gp, $a0
-	0x0000E5B4: 0x00450823 '#.E.' - subu       $at, $v0, $a1
+    0x0000E5B0: 0x03843023 '#0..' - subu       $a2, $gp, $a0
+    0x0000E5B4: 0x00450823 '#.E.' - subu       $at, $v0, $a1
 
-	0x0000E5B8: 0x00C1002E '....' - msub       $a2, $at			// было msub $zr, $at %)
+    0x0000E5B8: 0x00C1002E '....' - msub       $a2, $at         // было msub $zr, $at %)
 
-	0x0000E5BC: 0x3C1C0001 '...<' - lui        $gp, 0x1
-	0x0000E5C0: 0x48E0000F '...H' - mtv        $zr, S330
-	0x0000E5C4: 0x00002012 '. ..' - mflo       $a0
-	0x0000E5C8: 0x03E00008 '....' - jr         $ra
-	0x0000E5CC: 0xAF840060 '`...' - sw         $a0, 96($gp)
+    0x0000E5BC: 0x3C1C0001 '...<' - lui        $gp, 0x1
+    0x0000E5C0: 0x48E0000F '...H' - mtv        $zr, S330
+    0x0000E5C4: 0x00002012 '. ..' - mflo       $a0
+    0x0000E5C8: 0x03E00008 '....' - jr         $ra
+    0x0000E5CC: 0xAF840060 '`...' - sw         $a0, 96($gp)

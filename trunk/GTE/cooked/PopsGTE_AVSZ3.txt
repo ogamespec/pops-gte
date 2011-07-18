@@ -1,3 +1,16 @@
+
+AVSZ3 Required cycles: 5
+
+Function: Z-averaging
+
+Calculations:
+
+(1.31.21)   OOTZ = ZSF3*SZ0(1)
+                    + ZSF3*SZ1(2)
+                    + ZSF3*SZ2(3); <4>
+(0.16. 0)   OTZ = limC(OOTZ);
+(1.31. 0)   MAC0 = OOTZ;
+
 AVSZ3:
 
 Pcsx:
