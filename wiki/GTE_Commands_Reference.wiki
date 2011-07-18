@@ -164,4 +164,166 @@ Calculations:
 <tr><td>(1.27. 4)</td><td>   *MAC3* = <u><b>BB0</b></u>;</td></tr>
 </table>
 
+==DPCT Required cycles: 17==
+
+Function: Depth queuing
+
+Calculations:
+
+{{{
+n=0,1,2 {
+    (1.27.16)   RRn = Rn*1.0 + IR0*limA1S(RFC-R*1.0); <1>
+    (1.27.16)   GGn = Gn*1.0 + IR0*limA2S(GFC-G*1.0); <2>
+    (1.27.16)   BBn = Bn*1.0 + IR0*limA3S(BFC-B*1.0); <3>
+    (1.11. 4)   IR1 = limA1S(RR2);
+    (1.11. 4)   IR2 = limA2S(GG2);
+    (1.11. 4)   IR3 = limA3S(BB2);
+    (-.8.-)     CDn = CODE
+    (0. 8. 0)   Rn = limB1(RRn);
+    (0. 8. 0)   Gn = limB2(GGn);
+    (0. 8. 0)   Bn = limB3(BBn);
+}
+    (1.27. 4)   MAC1 = RR2;
+    (1.27. 4)   MAC2 = GG2;
+    (1.27. 4)   MAC3 = BB2;
+}}}
+
+==SQR sf  Required cycles: 5==
+
+Function: Vector squaring
+
+Items specified using arguments:
+
+||Argument ||Specified content ||Value=0 ||Value=1||
+||sf ||Output format ||-- ||Performs calculations on data <br>shifted 12 bits to the left in the<br>IRn register.||
+
+Calculations: (m and n specify the data format of IRp(p=1,2,3) as (1.m.n).)
+{{{
+sf == 0     sf == 1
+(1.m+28.n)  (1.m+16.n+12)   L1 = IR1*IR1; <1>
+(1.m+28.n)  (1.m+16.n+12)   L2 = IR2*IR2; <2>
+(1.m+28.n)  (1.m+16.n+12)   L3 = IR3*IR3; <3>
+(1.m.n)     (1.m+16.n+12)   IR1 = limA1U(L1);
+(1.m.n)     (1.m+16.n+12)   IR2 = limA2U(L2);
+(1.m.n)     (1.m+16.n+12)   IR3 = limA3U(L3);
+(1.m+16.0)  (1.m+16.n+12)   MAC1 = L1;
+(1.m+16.0)  (1.m+16.n+12)   MAC2 = L2;
+(1.m+16.0)  (1.m+16.n+12)   MAC3 = L3;
+}}}
+
+==AVSZ3 Required cycles: 5==
+
+Function: Z-averaging
+
+Calculations:
+{{{
+(1.31.21)   OOTZ = ZSF3*SZ0(1)
+                    + ZSF3*SZ1(2)
+                    + ZSF3*SZ2(3); <4>
+(0.16. 0)   OTZ = limC(OOTZ);
+(1.31. 0)   MAC0 = OOTZ;
+}}}
+
+==AVSZ4 Required cycles: 6==
+
+Function: Z-averaging
+
+Calculations:
+{{{
+(1.31.12)   OOTZ =ZSF4*SZx(0)
+                    + ZSF4*SZ0(1)
+                    + ZSF4*SZ1(2)
+                    + ZSF4*SZ2(3); <4>
+(0.16. 0)   OTZ = limC(OOTZ);
+(1.31. 0)   MAC0 = OOTZ;
+}}}
+
+==NCLIP Required cycles: 8==
+
+Function: Normal clipping
+
+Calculations:
+{{{
+(1.43. 0) OPZ = SX0*SY1 + SX1*SY2 + SX2*SY0
+                - SX0*SY2 - SX1*SY0 - SX2*SY1; <4>
+(1.31. 0) MAC0 = OPZ;
+}}}
+
+==OP sf   Required cycles: 6==
+
+Function: Outer product
+
+Items specified using arguments:
+
+||Argument ||Specified content ||Value=0 ||Value=1||
+||sf ||Output format ||--|| Performs calculations on data<br>shifted 12 bits to the left in the<br>IRn register.||
+
+Calculations: (m and n specify the data format of IRp(p=1,2,3) as (1.m.n).)
+{{{
+sf == 0     sf == 1
+(1.m+28.n)  (1.m+16.n+12)   OPX = DY1(R22)*DZ2(IR3)
+                                  - DZ1(R33)*DY2(IR2); <1>
+(1.m+28.n)  (1.m+16.n+12)   OPY = DZ1(R33)*DX2(IR1)
+                                  - DX1(R11)*DZ2(IR3); <2>
+(1.m+28.n)  (1.m+16.n+12)   OPZ = DX1(R11)*DY2(IR2)
+                                  - DY1(R22)*DX2(IR1); <3>
+(1.m.n)     (1.m.n)         IR1 = limA1S(OPX);
+(1.m.n)     (1.m.n)         IR2 = limA2S(OPY);
+(1.m.n)     (1.m.n)         IR3 = limA3S(OPZ);
+(1.m+16.n)  (1.m+16.n)      MAC1 = OPX;
+(1.m+16.n)  (1.m+16.n)      MAC2 = OPY;
+(1.m+16.n)  (1.m+16.n)      MAC3 = OPZ;
+}}}
+
+==GPF sf  Required cycles: 5==
+
+Function: General purpose interpolation
+
+Items specified using arguments:
+||Argument ||Specified content ||Value=0 ||Value=1||
+||sf ||Output format ||-- ||Performs calculations on data<br>shifted 12 bits to the left in the<br>IRn register.||
+
+Calculations: (m and n specify the data format of IRp(p=1,2,3) as (1.m.n).)
+{{{
+sf == 0     sf == 1
+(1.m+28.n)  (1.m+16.n+12)   IPX = IR0*IR1; <1>
+(1.m+28.n)  (1.m+16.n+12)   IPY = IR0*IR2; <2>
+(1.m+28.n)  (1.m+16.n+12)   IPZ = IR0*IR3; <3>
+(1.m.n)     (1.m.n)         IR1 = limA1S(IPX);
+(1.m.n)     (1.m.n)         IR2 = limA2S(IPY);
+(1.m.n)     (1.m.n)         IR3 = limA3S(IPZ);
+(1.m+16.n)  (1.m+16.n)      MAC1 = IPX;
+(1.m+16.n)  (1.m+16.n)      MAC2 = IPY(1.m+16.n) (1.m+16.n)     MAC3 = IPZ;
+(-.8.-)     CD0 <- CD1 <- CD2 <- CODE
+(0. 0. 8)   R0 <- R1 <- R2 <- limB1(IPX);
+(0. 0. 8)   G0 <- G1 <- G2 <- limB2(IPY);
+(0. 0. 8)   B0 <- B1 <- B2 <- limB3(IPZ);
+}}}
+
+==GPL sf Required cycles: 5==
+
+Function: General purpose interpolation
+
+Items specified using arguments:
+||Argument ||Specified content ||Value=0 ||Value=1||
+||sf ||Output format ||-- ||Performs calculations on data<br>shifted 12 bits to the left in the<br>IRn register.||
+
+Calculations: (m and n specify the data format of IRp(p=1,2,3) as (1.m.n).)
+{{{
+sf == 0     sf == 1
+(1.m+28.n)  (1.m+16.n+12)   IPX = MAC1 + IR0*IR1; <1>
+(1.m+28.n)  (1.m+16.n+12)   IPY = MAC2 + IR0*IR2; <2>
+(1.m+28.n)  (1.m+16.n+12)   IPZ = MAC3 + IR0*IR3; <3>
+(1.m.n)     (1.m.n)         IR1 = limA1S(IPX);
+(1.m.n)     (1.m.n)         IR2 = limA2S(IPY);
+(1.m.n)     (1.m.n)         IR3 = limA3S(IPZ);
+(1.m+16.n)  (1.m+16.n)      MAC1 = IPX;
+(1.m+16.n)  (1.m+16.n)      MAC2 = IPY;
+(1.m+16.n)  (1.m+16.n)      MAC3 = IPZ;
+(-.8.-)     CD0 <- CD1 <- CD2 <- CODE
+(0. 0. 8)   R0 <- R1 <- R2 <- limB1(IPX);
+(0. 0. 8)   G0 <- G1 <- G2 <- limB2(IPY);
+(0. 0. 8)   B0 <- B1 <- B2 <- limB3(IPZ);
+}}}
+
 _to be continued..._
