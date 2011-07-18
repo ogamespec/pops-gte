@@ -262,3 +262,31 @@ Prefix table codes for destination:
 ||m||ignore||
 ||0:1||clamp value to `[0.0; 1.0]`||
 ||-1:1||clamp value to `[-1.0; 1.0]`||
+
+=prxtool Bugs=
+
+== Bug in msub decoding ==
+
+All msub instructions use $zr instead proper RS register, for example:
+
+{{{
+   0x0000E5B8: 0x00C1002E '....' - msub       $zr, $at
+}}}
+
+Should be:
+
+{{{
+   0x0000E5B8: 0x00C1002E '....' - msub       $a2, $at
+}}}
+
+== Bug in vi2uc.q decoding ==
+
+{{{
+0x0000D420: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
+}}}
+
+Destination is always single register. Following instruction should be decoded as follow:
+
+{{{
+0x0000D420: 0xD03C83FE '..<.' - vi2uc.q    S723, C030
+}}}
