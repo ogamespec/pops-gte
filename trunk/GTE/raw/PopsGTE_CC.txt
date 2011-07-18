@@ -49,7 +49,7 @@ CC:
         0x0000D65C: 0xD006800F '....' - vzero.t    C330
         0x0000D660: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
         0x0000D664: 0xD0468F8F '..F.' - vfad.q     C330, C330
-        0x0000D668: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
+        0x0000D668: 0xD03C83FE '..<.' - vi2uc.q    S723, C030       // fixed
         0x0000D66C: 0xF79E0058 'X...' - svl.q      C720, 88($gp)    
         0x0000D670: 0x03E00008 '....' - jr         $ra
         0x0000D674: 0xD2700F0F '..p.' - vf2id.s    S330, S330, 16

@@ -131,9 +131,9 @@ NCDT:
         0x0000D9B4: 0x6C028A05 '...l' - vcmp.t     NE, C220, C020
         0x0000D9B8: 0xD21F8202 '....' - vf2in.t    C020, C020, 31
         0x0000D9BC: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
-        0x0000D9C0: 0xD03C80BE '..<.' - vi2uc.q    R702, C000
-        0x0000D9C4: 0xD03C81DE '..<.' - vi2uc.q    C720, C010
-        0x0000D9C8: 0xD03C82FE '..<.' - vi2uc.q    R702, C020
+        0x0000D9C0: 0xD03C80BE '..<.' - vi2uc.q    S323, C000   // fixed
+        0x0000D9C4: 0xD03C81DE '..<.' - vi2uc.q    S523, C010   // fixed
+        0x0000D9C8: 0xD03C82FE '..<.' - vi2uc.q    S723, C020   // fixed
         0x0000D9CC: 0xD0468F8F '..F.' - vfad.q     C330, C330
         0x0000D9D0: 0xF79E0058 'X...' - svl.q      C720, 88($gp)
         0x0000D9D4: 0x03E00008 '....' - jr         $ra

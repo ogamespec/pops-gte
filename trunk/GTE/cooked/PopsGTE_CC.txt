@@ -217,10 +217,10 @@ CC:
 7:
         [IR0] [] [RGB0] []
         [IR1] [] [RGB1] []
-        [rgb] [rgb] [rgb] [rgb]
-        [IR3] [] [RES1] []
+        [IR2] [] [RGB2] []
+        [IR3] [] [rg]   []
 
-        0x0000D668: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
+        0x0000D668: 0xD03C83FE '..<.' - vi2uc.q    S723, C030       // fixed
 
         gteRGB0 = gteRGB1
         gteRGB1 = gteRGB2
