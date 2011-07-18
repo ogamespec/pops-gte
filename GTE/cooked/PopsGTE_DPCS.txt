@@ -175,12 +175,17 @@ VFPU 4:
 7:
     rgb = [RGB >> 1][I C_BB0 * 2^31][I C_GG0 * 2^31][I C_RR0 * 2^31]
 
-    []    []    [RGB0] []
-    []    []    [RGB1] []
-    [rgb] [rgb] [rgb]  [rgb]
-    []    []    [RES1] []
-    
+    [] [] [RGB0] []
+    [] [] [RGB1] []
+    [] [] [RGB2] []
+    [] [] [rgb]  []
 
+    gteRGB0 = gteRGB1
+    gteRGB1 = gteRGB2
+    gteRGB2 = rgb
+
+    S330 = I floor( (F AA1 + AA2 + AA3 + BB1 + BB2 + BB3) * 2^16 )
+    
 RAW:
 
 
@@ -228,7 +233,7 @@ RAW:
     0x0000D414: 0xD006800F '....' - vzero.t    C330
     0x0000D418: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
     0x0000D41C: 0xD0468F8F '..F.' - vfad.q     C330, C330
-    0x0000D420: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
+    0x0000D420: 0xD03C83FE '..<.' - vi2uc.q    S723, C030           // fixed
     0x0000D424: 0xF79E0058 'X...' - svl.q      C720, 88($gp)        // RGBX
     0x0000D428: 0x03E00008 '....' - jr         $ra
     0x0000D42C: 0xD2700F0F '..p.' - vf2id.s    S330, S330, 16

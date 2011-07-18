@@ -244,10 +244,10 @@ VFPU 4:
 7:
         [] [] [RGB0] []
         [] [] [RGB1] []
-        [rgb] [rgb] [rgb] [rgb]
-        [] [] [RES1] []
+        [] [] [RGB2] []
+        [] [] [rgb]  []
 
-        0x0000DD84: 0xD03C83FE '..<.' - vi2uc.q    R702, C030
+        0x0000DD84: 0xD03C83FE '..<.' - vi2uc.q    S723, C030       // fixed
 
         gteRGB0 = gteRGB1
         gteRGB1 = gteRGB2
