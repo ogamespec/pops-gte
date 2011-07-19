@@ -12,25 +12,24 @@ My Pops version: `branches/pops-352/src(r5285)`
 Table resided at 0x0002CCD8 in PRX:
 
 static u8 gteTiming`[32]` = {
-    ||0x01 ||0x0F ||0x01 ||0x01 ||0x01 ||0x01 ||0x08 ||0x01 ||
-    ||0x01 ||0x01 ||0x01 ||0x01 ||0x06 ||0x01 ||0x01 ||0x01 ||
-    ||0x08 ||0x08 ||0x08 ||0x13 ||0x08 ||0x01 ||0x2C ||0x01 ||
-    ||0x01 ||0x01 ||0x01 ||0x11 ||0x0B ||0x01 ||0x0E ||0x01 ||
-    ||0x1F ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||
-    ||0x05 ||0x0D ||0x11 ||0x01 ||0x01 ||0x05 ||0x06 ||0x01 ||
-    ||0x17 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||
-    ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x05 ||0x05 ||0x27 ||
+||0x01 ||0x0F ||0x01 ||0x01 ||0x01 ||0x01 ||0x08 ||0x01 ||
+||0x01 ||0x01 ||0x01 ||0x01 ||0x06 ||0x01 ||0x01 ||0x01 ||
+||0x08 ||0x08 ||0x08 ||0x13 ||0x08 ||0x01 ||0x2C ||0x01 ||
+||0x01 ||0x01 ||0x01 ||0x11 ||0x0B ||0x01 ||0x0E ||0x01 ||
+||0x1F ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||
+||0x05 ||0x0D ||0x11 ||0x01 ||0x01 ||0x05 ||0x06 ||0x01 ||
+||0x17 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||
+||0x01 ||0x01 ||0x01 ||0x01 ||0x01 ||0x05 ||0x05 ||0x27 ||
 
 Corresponding GTE instructions:
-    ||psxBASIC|| gteRTPS || psxNULL || psxNULL|| psxNULL|| psxNULL || gteNCLIP|| psxNULL||
-    ||psxNULL || psxNULL || psxNULL || psxNULL|| gteOP  || psxNULL || psxNULL || psxNULL||
-    ||gteDPCS || gteINTPL|| gteMVMVA|| gteNCDS|| gteCDP || psxNULL || gteNCDT || psxNULL|| 
-    ||psxNULL || psxNULL || psxNULL || gteNCCS|| gteCC  || psxNULL || gteNCS  || psxNULL|| 
-
-    ||gteNCT  || psxNULL || psxNULL || psxNULL|| psxNULL|| psxNULL || psxNULL || psxNULL||
-    ||gteSQR  || gteDCPL || gteDPCT || psxNULL|| psxNULL|| gteAVSZ3||gteAVSZ4|| psxNULL||  
-    ||gteRTPT || psxNULL || psxNULL || psxNULL|| psxNULL|| psxNULL || psxNULL ||psxNULL||
-    ||psxNULL || psxNULL || psxNULL || psxNULL|| psxNULL|| gteGPF  || gteGPL  || gteNCCT ||
+||psxBASIC|| gteRTPS || psxNULL || psxNULL|| psxNULL|| psxNULL || gteNCLIP|| psxNULL||
+||psxNULL || psxNULL || psxNULL || psxNULL|| gteOP  || psxNULL || psxNULL || psxNULL||
+||gteDPCS || gteINTPL|| gteMVMVA|| gteNCDS|| gteCDP || psxNULL || gteNCDT || psxNULL|| 
+||psxNULL || psxNULL || psxNULL || gteNCCS|| gteCC  || psxNULL || gteNCS  || psxNULL|| 
+||gteNCT  || psxNULL || psxNULL || psxNULL|| psxNULL|| psxNULL || psxNULL || psxNULL||
+||gteSQR  || gteDPCL || gteDPCT || psxNULL|| psxNULL|| gteAVSZ3||gteAVSZ4|| psxNULL||  
+||gteRTPT || psxNULL || psxNULL || psxNULL|| psxNULL|| psxNULL || psxNULL ||psxNULL||
+||psxNULL || psxNULL || psxNULL || psxNULL|| psxNULL|| gteGPF  || gteGPL  || gteNCCT ||
 
 Result table:
 ||instruction||clocks (Pops)||Doomed/Padua gte.txt||
