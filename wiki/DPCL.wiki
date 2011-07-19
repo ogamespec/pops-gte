@@ -4,6 +4,7 @@
 
 Unofficial documents mistyped DPCL as _DCPL_. This is incorrect. Official naming of this instruction is DPCL. Just for the note :O)
 
+DPCL = DePth Cue Light
 
 = Details =
 
