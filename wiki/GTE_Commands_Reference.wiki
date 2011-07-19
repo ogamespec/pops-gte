@@ -638,7 +638,8 @@ sf == 0     sf == 1
 (1.m.n)     (1.m.n)         IR2 = limA2S(IPY);
 (1.m.n)     (1.m.n)         IR3 = limA3S(IPZ);
 (1.m+16.n)  (1.m+16.n)      MAC1 = IPX;
-(1.m+16.n)  (1.m+16.n)      MAC2 = IPY(1.m+16.n) (1.m+16.n)     MAC3 = IPZ;
+(1.m+16.n)  (1.m+16.n)      MAC2 = IPY;
+(1.m+16.n)  (1.m+16.n)      MAC3 = IPZ;
 (-.8.-)     CD0 <- CD1 <- CD2 <- CODE
 (0. 0. 8)   R0 <- R1 <- R2 <- limB1(IPX);
 (0. 0. 8)   G0 <- G1 <- G2 <- limB2(IPY);
