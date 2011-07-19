@@ -28,6 +28,6 @@ Official calculations :
 (1.27. 4)   MAC3 = BB0;
 }}}
 
-Pops calculations :
+Pops calculations is surprisingly follow :
 
 _not yet readt stay tuned_
