@@ -141,6 +141,77 @@ Command details are listed on the pages which follow.
 ||(1.31. 0) || *MAC2* = <u>*SSY*</u>; || 
 ||(1.31. 0) || *MAC3* = <u>*SSZ*</u>; || 
 
+==MVMVA sf,mx,v,cv,lm Required cycles: 8==
+
+Function: Matrix and vector multiplication
+
+Items specified using arguments:
+||Argument ||Specified content ||Value=0 ||Value = 1 ||Value = 2|| Value = 3||
+||sf ||Scaling format ||Scale large ||Scale small ||Not valid ||Not valid||
+||mx ||Multiplication<br>array (MX)<br>*(1.3.12)*||*R* ||*L* ||*LR* ||Not valid||
+||v ||Multiplication<br>vector (V)<br>*(1.m.n)*||*Vp0*<br>*p=X/Y/Z*||*Vp1*<br>*p=X/Y/Z*||*Vp2*<br>*p=X/Y/Z*||*IRp*<br>*p=1/2/3*||
+||cv ||Addition vector<br>(CV)<br>*(1.16+m. n)*||*TRp*<br>*p=X/Y/Z*||*pBK*<br>*p=R/B/G*||Not valid ||*0*||
+||lm ||Limiter A1/2/3<br>lower limit||-2`^`15 ||*0* ||Not valid ||Not valid||
+
+`*` Data formats<br>
+The multiplication matrix data format is fixed.<br>
+The other data formats are determined by the multiplication vector data format.
+
+Calculations: (m and n are determined by the multiplication vector data format.)
+{{{
+(1.16+m.n+12)   MT1 = CV1 + MX11*V1 + MX12*V2 + MX13*V3; <1>
+(1.16+m.n+12)   MT2 = CV2 + MX21*V1 + MX22*V2 + MX23*V3; <2>
+(1.16+m.n+12)   MT3 = CV3 + MX31*V1 + MX32*V2 + MX33*V3; <3>
+(1.16+m.n)      MAC1 = MT1;
+(1.16+m.n)      MAC2 = MT2;
+(1.16+m.n)      MAC3 = MT3;
+sf == 0         sf == 1
+(1.m-12.n+12)   (1.m.n)     IR1 = limA1C(MT1);
+(1.m-12.n+12)   (1.m.n)     IR2 = limA2C(MT2);
+(1.m-12.n+12)   (1.m.n)     IR3 = limA3C(MT3);
+}}}
+
+==INTPL Required cycles: 8==
+
+Function: Interpolation
+
+Calculations: (m and n specify the data format of IRp(p=1,2,3) as (1.m.n).)
+{{{
+(1.16+m.n+12)   IPL1 = 1.0*IR1 + IR0*limA1S(RFC-1.0*IR1); <1>
+(1.16+m.n+12)   IPL2 = 1.0*IR2 + IR0*limA2S(GFC-1.0*IR2); <2>
+(1.16+m.n+12)   IPL3 = 1.0*IR3 + IR0*limA3S(BFC-1.0*IR3); <3>
+(1.m.n)         IR1 = limA1S(IPL1);
+(1.m.n)         IR2 = limA2S(IPL2);
+(1.m.n)         IR3 = limA3S(IPL3);
+(-.8.-)         CD0 <- CD1 <- CD2 <- CODE
+(0.12-n.n-4)    R0 <- R1 <- R2 <- limB1(IPL1);
+(0.12-n.n-4)    G0 <- G1 <- G2 <- limB2(IPL2);
+(0.12-n.n-4)    B0 <- B1 <- B2 <- limB3(IPL3);
+(1.16+m.n)      MAC1 = IPL1;
+(1.16+m.n)      MAC2 = IPL2;
+(1.16+m.n)      MAC3 = IPL3;
+}}}
+
+==DPCL Required cycles: 8==
+
+Function: Depth queuing
+
+Calculations:
+{{{
+(1.27.16)   RR0 = R*IR1 + IR0*limA1S(RFC - R*IR1); <1>
+(1.27.16)   GG0 = G*IR2 + IR0*limA2S(GFC - G*IR2); <2>
+(1.27.16)   BB0 = B*IR3 + IR0*limA3S(BFC - B*IR3); <3>
+(1.11. 4)   IR1 = limA1S(RR0);
+(1.11. 4)   IR2 = limA2S(GG0);
+(1.11. 4)   IR3 = limA3S(BB0);
+(-. 8. -)   CD0 <- CD1 <- CD2 <- CODE
+(0. 8. 0)   R0 <- R1 <- R2 <- limB1(RR0);
+(0. 8. 0)   G0 <- G1 <- G2 <- limB2(GG0);
+(0. 8. 0)   B0 <- B1 <- B2 <- limB3(BB0);
+(1.27. 4)   MAC1 = RR0;
+(1.27. 4)   MAC2 = GG0;
+(1.27. 4)   MAC3 = BB0;
+}}}
 
 ==DPCS Required cycles: 8==
 
