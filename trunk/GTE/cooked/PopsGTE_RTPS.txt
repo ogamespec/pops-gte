@@ -1,3 +1,27 @@
+
+RTPS Required cycles: 14
+
+Function: Coordinate transformation and perspective transformation
+
+Calculations:
+(1.31.12) SSX = TRX + R11*VX0 + R12*VY0 + R13*VZ0; <1>
+(1.31.12) SSY = TRY + R21*VX0 + R22*VY0 + R23*VZ0; <2>
+(1.31.12) SSZ = TRZ + R31*VX0 + R32*VY0 + R33*VZ0; <3>
+(1.15. 0) IR1 = limA1S(SSX);
+(1.15. 0) IR2 = limA2S(SSY);
+(1.15. 0) IR3 = limA3S(SSZ);
+(0.16. 0) SZx(0) <- SZ0(1) <- SZ1(2) <- SZ2(3) <- limC(SSZ);
+(1.27.16) SX = OFX + IR1*(H/SZ); <4>
+(1.27.16) SY = OFY + IR2*(H/SZ); <4>
+(1.19.24) P = DQB + DQA*(H/SZ); <4>
+(1. 3.12) IR0 = limE(P)
+(1.15. 0) SX0 <- SX1 <- SX2 <- limD1(SX);
+(1.15. 0) SY0 <- SY1 <- SY2 <- limD2(SY);
+(1. 7.24) MAC0 = P;
+(1.31. 0) MAC1 = SSX;
+(1.31. 0) MAC2 = SSY;
+(1.31. 0) MAC3 = SSZ;
+
 RTPS:
 
 Pcsx:

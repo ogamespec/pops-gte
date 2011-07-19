@@ -1,3 +1,27 @@
+
+CC Required cycles: 11
+Function: Light source calculation
+Calculations:
+(1.19.24) RRLT = RBK + LR1*IR1 + LR2*IR2 + LR3*IR3; <1>
+(1.19.24) GGLT = GBK + LG1*IR1 + LG2*IR2 + LG3*IR3; <2>
+(1.19.24) BBLT = BBK + LB1*IR1 + LB2*IR2 + LB3*IR3; <3>
+(1. 3.12) RLT = limA1U(RRLT);
+(1. 3.12) GLT = limA2U(GGLT);
+(1. 3.12) BLT = limA3U(BBLT);
+(1.27.16) RR0 = R*RLT; <1>
+(1.27.16) GG0 = G*GLT; <2>
+(1.27.16) BB0 = B*BLT; <3>
+(1.11. 4) IR1 = limA1U(RR0);
+(1.11. 4) IR2 = limA2U(GG0);
+(1.11. 4) IR3 = limA3U(BB0);
+(-. 8. -) CD0 <- CD1 <- CD2 <- CODE
+(0. 8. 0) R0 <- R1 <- R2 <- limB1(RR0);
+(0. 8. 0) G0 <- G1 <- G2 <- limB2(GG0);
+(0. 8. 0) B0 <- B1 <- B2 <- limB3(BB0);
+(1.27. 4) MAC1 = RR0;
+(1.27. 4) MAC2 = GG0;
+(1.27. 4) MAC3 = BB0;
+
 Pcsx:
         gteFLAG = 0;
         

@@ -1,3 +1,36 @@
+
+NCCS Required cycles: 17
+
+Function: Light source calculation
+
+Calculations:
+(1.19.24) LL1 = L11*VX0 + L12*VY0 + L13*VZ0; <1>
+(1.19.24) LL2 = L21*VX0 + L22*VY0 + L23*VZ0; <2>
+(1.19.24) LL3 = L31*VX0 + L32*VY0 + L33*VZ0; <3>
+(1. 3.12) L1 = limA(LL1);
+(1. 3.12) L2 = limA(LL2);
+(1. 3.12) L3 = limA(LL3);
+(1.19.24) RRLT = RBK + LR1*L1 +LR2*L2 + LR3*L3; <1>
+(1.19.24) GGLT = GBK + LG1*L1 +LG2*L2 + LG3*L3; <2>
+(1.19.24) BBLT = BBK + LB1*L1 +LB2*L2 + LB3*L3; <3>
+(1. 3.12) RLT = limA1U(RRLT);
+(1. 3.12) GLT = limA2U(GGLT);
+(1. 3.12) BLT = limA3U(BBLT);
+(1.27.16) RR0 = R*RLT; <1>
+(1.27.16) GG0 = G*GLT; <2>
+(1.27.16) BB0 = B*BLT; <3>
+(1.11. 4) IR1 = limA1U(RR0);
+(1.11. 4) IR2 = limA2U(GG0);
+(1.11. 4) IR3 = limA3U(BB0);
+(-. 8. -) CD0 <- CD1 <- CD2 <- CODE
+(0. 8. 0) R0 <- R1 <- R2 <- limB1(RR0);
+(0. 8. 0) G0 <- G1 <- G2 <- limB2(GG0);
+(0. 8. 0) B0 <- B1 <- B2 <- limB3(BB0);
+(1.27. 4) MAC1 = RR0;
+(1.27. 4) MAC2 = GG0;
+(1.27. 4) MAC3 = BB0;
+
+
 NCCS:
 
     0x0000D9DC: 0xDB8800A0 '....' - lv.q       C200, 160($gp)
