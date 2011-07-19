@@ -1,3 +1,24 @@
+
+DPCL Required cycles: 8
+
+Function: Depth queuing
+
+Calculations:
+(1.27.16)   RR0 = R*IR1 + IR0*limA1S(RFC - R*IR1); <1>
+(1.27.16)   GG0 = G*IR2 + IR0*limA2S(GFC - G*IR2); <2>
+(1.27.16)   BB0 = B*IR3 + IR0*limA3S(BFC - B*IR3); <3>
+(1.11. 4)   IR1 = limA1S(RR0);
+(1.11. 4)   IR2 = limA2S(GG0);
+(1.11. 4)   IR3 = limA3S(BB0);
+(-. 8. -)   CD0 <- CD1 <- CD2 <- CODE
+(0. 8. 0)   R0 <- R1 <- R2 <- limB1(RR0);
+(0. 8. 0)   G0 <- G1 <- G2 <- limB2(GG0);
+(0. 8. 0)   B0 <- B1 <- B2 <- limB3(BB0);
+(1.27. 4)   MAC1 = RR0;
+(1.27. 4)   MAC2 = GG0;
+(1.27. 4)   MAC3 = BB0;
+
+
 DPCL:
 
     0x0000D4A8: 0xDB940020 ' ...' - lv.q       C500, 32($gp)

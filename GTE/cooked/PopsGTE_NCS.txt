@@ -1,5 +1,30 @@
 NCS: Normal Color Single
 
+NCS Required cycles: 14
+
+Function: Light source calculation
+
+Calculations:
+(1.19.24) LL1 = L11*VX0 + L12*VY0 + L13*VZ0; <1>
+(1.19.24) LL2 = L21*VX0 + L22*VY0 + L23*VZ0; <2>
+(1.19.24) LL3 = L31*VX0 + L32*VY0 + L33*VZ0; <3>
+(1. 3.12) L1 = limA1U(LL1);
+(1. 3.12) L2 = limA2U(LL2);
+(1. 3.12) L3 = limA3U(LL3);
+(1.19.24) RR0 = RBK + LR1*L1 + LR2*L2 + LR3*L3; <1>
+(1.19.24) GG0 = GBK + LG1*L1 + LG2*L2 + LG3*L3; <2>
+(1.19.24) BB0 = BBK + LB1*L1 + LB2*L2 + LB3*L3; <3>
+(1. 3.12) IR1 = limA1U(RR0);
+(1. 3.12) IR2 = limA2U(GG0);
+(1. 3.12) IR3 = limA3U(BB0);
+(-. 8. -) CD0 <- CD1 <- CD2 <- CODE
+(0. 0. 8) R0 <- R1 <- R2 <- limB1(RR0);
+(0. 0. 8) G0 <- G1 <- G2 <- limB2(GG0);
+(0. 0. 8) B0 <- B1 <- B2 <- limB3(BB0);
+(1.19.12) MAC1 = RR0;
+(1.19.12) MAC2 = GG0;
+(1.19.12) MAC3 = BB0;
+
 Pcsx:
 
 #define GTE_NCS(vn)  \

@@ -1,3 +1,36 @@
+
+NCDT Required cycles: 44
+
+Function: Light source calculation
+
+Calculations:
+n=0,1,2 {
+    (1.19.24) LL1n = L11*VXn + L12*Vyn + L13*VZn; <1>
+    (1.19.24) LL2n = L21*VXn + L22*Vyn + L23*VZn; <2>
+    (1.19.24) LL3n = L31*VXn + L32*Vyn + L33*VZn; <3>
+    (1. 3.12) L1n = limA1U(LL1n);
+    (1. 3.12) L2n = limA2U(LL2n);
+    (1. 3.12) L3n = limA3U(LL3n);
+    (1.19.24) RRLTn = RBK + LR1*L1n + LR2*L2n + LR3*L3n; <1>
+    (1.19.24) GGLTn = GBK + LG1*L1n + LG2*L2n + LG3*L3n; <2>
+    (1.19.24) BBLTn = BBK + LB1*L1n + LB2*L2n + LB3*L3n; <3>
+    (1. 3.12) RLTn = limA1U(RRLTn);
+    (1. 3.12) GLTn = limA2U(GGLTn);
+    (1. 3.12) BLTn = limA3U(BBLTn);
+    (1.27.16) RRn = R*RLTn + IR0*limA1S(RFC - R*RLTn); <1>
+    (1.27.16) GGn = G*GLTn + IR0*limA2S(GFC - G*GLTn); <2>
+    (1.27.16) BBn = B*BLTn + IR0*limA3S(BFC - B*BLTn); <3>
+    (-. 8. -) CDn = CODE
+    (-. 8. 0) Rn = limB1(RRn); Gn = limB2(GGn);
+    (-.8. 0) Bn = limB3(BBn);
+}
+    (1.11. 4) IR1 = limA1U(RR2);
+    (1.11. 4) IR2 = limA2U(GG2);
+    (1.11. 4) IR3 = limA3U(BB2);
+    (1.27. 4) MAC1 = RR2;
+    (1.27. 4) MAC2 = GG2;
+    (1.27. 4) MAC3 = BB2;
+
 NCDT: Normal Color Depth Cue Triple
 
 
