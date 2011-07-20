@@ -50,7 +50,7 @@ static char *Mnem[] = {
  "COP0", "COP1", "COP2", "COP3",
 
  /* GTE */
- "RTPS", "RTPT", "DCPL", "DPCS", "DPCT", "INTPL", "NCS", "NCT",
+ "RTPS", "RTPT", "DPCL", "DPCS", "DPCT", "INTPL", "NCS", "NCT",
  "NCDS", "NCDT", "NCCS", "NCCT", "CDP", "CC", "NCLIP", "AVSZ3",
  "AVSZ4", "MVMVA", "SQR", "OP", "GPF", "GPL",
 
@@ -83,7 +83,7 @@ static char *Mnem[] = {
  "cop0", "cop1", "cop2", "cop3",
 
  /* GTE */
- "rtps", "rtpt", "dcpl", "dpcs", "dpct", "intpl", "ncs", "nct",
+ "rtps", "rtpt", "dpcl", "dpcs", "dpct", "intpl", "ncs", "nct",
  "ncds", "ncdt", "nccs", "ncct", "cdp", "cc", "nclip", "avsz3",
  "avsz4", "mvmva", "sqr", "op", "gpf", "gpl",
 
@@ -118,7 +118,7 @@ enum {
 
  I_COP0, I_COP1, I_COP2, I_COP3,
 
- I_RTPS, I_RTPT, I_DCPL, I_DPCS, I_DPCT, I_INTPL, I_NCS, I_NCT,
+ I_RTPS, I_RTPT, I_DPCL, I_DPCS, I_DPCT, I_INTPL, I_NCS, I_NCT,
  I_NCDS, I_NCDT, I_NCCS, I_NCCT, I_CDP, I_CC, I_NCLIP, I_AVSZ3,
  I_AVSZ4, I_MVMVA, I_SQR, I_OP, I_GPF, I_GPL,
 
@@ -471,7 +471,7 @@ void PSXDisasm(DisasmData *disa)
     NCS     cop2 0xc8041e = 0100.10 10.1100. 1000.0000.01 00.00 01.1110     36
     NCT     cop2 0xd80420 = 0100.10 10.1101. 1000.0000.01 00.00 10.0000     40
     SQR     cop2 0xa00428 = 0100.10 10.1010. 0000.0000.01 00.00 10.1000     50
-    DCPL    cop2 0x680029 = 0100.10 10.0110. 1000.0000.00 00.00 10.1001     51
+    DPCL    cop2 0x680029 = 0100.10 10.0110. 1000.0000.00 00.00 10.1001     51
     DPCT    cop2 0xf8002a = 0100.10 10.1111. 1000.0000.00 00.00 10.1010     52
     AVSZ3  cop2 0x158002d = 0100.10 11.0101. 1000.0000.00 00.00 10.1101     55
     AVSZ4  cop2 0x168002e = 0100.10 11.0110. 1000.0000.00 00.00 10.1110     56
@@ -508,7 +508,7 @@ void PSXDisasm(DisasmData *disa)
                 case 036: name(I_NCS); gteops(); type(DISA_TYPE_COP2); break;
                 case 040: name(I_NCT); gteops(); type(DISA_TYPE_COP2); break;
                 case 050: name(I_SQR); gteops(); type(DISA_TYPE_COP2); break;
-                case 051: name(I_DCPL); gteops(); type(DISA_TYPE_COP2); break;
+                case 051: name(I_DPCL); gteops(); type(DISA_TYPE_COP2); break;
                 case 052: name(I_DPCT); gteops(); type(DISA_TYPE_COP2); break;
                 case 055: name(I_AVSZ3); gteops(); type(DISA_TYPE_COP2); break;
                 case 056: name(I_AVSZ4); gteops(); type(DISA_TYPE_COP2); break;
