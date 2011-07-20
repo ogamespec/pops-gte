@@ -29,7 +29,6 @@ bss     group   bss                     ; main data group
     include disasm.obj
     include gte2.obj
     include gte.obj
-    include rootcnt.obj
     
     regs    pc=__SN_ENTRY_POINT     ; entry point
 
