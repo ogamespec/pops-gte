@@ -28,3 +28,15 @@
 
 
 Instructions parameters, such as MVMVA are shown by zero values.
+
+
+==cop2 Macro==
+
+PsyQ assembler has cop2 macro:
+{{{
+cop2 value 
+}}}
+is same as
+{{{
+dw $4a000000 | value
+}}}
