@@ -62,4 +62,4 @@
 потом запустите BUILD.BAT, после чего в DOSBox запустите CONVERT.BAT
 
 org.
-Last Modified: 25 Jun 2011
+Last Modified: 20 Jul 2011

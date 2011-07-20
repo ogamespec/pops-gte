@@ -192,7 +192,9 @@ static int ExecuteInstr (void)
     ExitCriticalSection();
 
     WritebackGTERegs ();
+    StopRCnt (RCntCNT1);
     SetRCnt (RCntCNT1, 0xffff, RCntMdNOINTR );
+    ResetRCnt (RCntCNT1);
     StartRCnt (RCntCNT1);
     before = GetRCnt (RCntCNT1);
     code ();
