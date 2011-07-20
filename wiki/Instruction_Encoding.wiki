@@ -1,6 +1,6 @@
 #summary Binary representation of GTE instructions
 
-||*Instruction*||*HEX*||
+|| *Instruction* || *HEX* ||
 ||    RTPS||   0x4A180001 ||
 ||    NCLIP||   0x4B400006 ||
 ||    OP ||   0x4B70000C ||
