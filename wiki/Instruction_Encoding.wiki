@@ -1,0 +1,30 @@
+#summary Binary representation of GTE instructions
+
+||Instruction||HEX||
+||    RTPS||   0x4A180001 ||
+||    NCLIP||   0x00000000 ||
+||    OP ||   0x00000000 ||
+||    DPCS||   0x00000000 ||
+||    INTPL||   0x00000000 ||
+||    MVMVA||   0x00000000 ||
+||    NCDS ||   0x4AE80413 ||
+||    CDP  ||   0x4B280414 ||
+||    NCDT ||   0x4AF80416 ||
+||    NCCS ||   0x00000000 ||
+||    CC   ||   0x00000000 ||
+||    NCS  ||   0x00000000 ||
+||    NCT  ||   0x00000000 ||
+||    SQR  ||   0x00000000 ||
+||    DPCL ||   0x4A680029 ||
+||    DPCT ||   0x00000000 ||
+||    AVSZ3 ||   0x00000000 ||
+||    AVSZ4 ||   0x00000000 ||
+||    RTPT  ||   0x4A280030 ||
+||    GPF   ||   0x00000000 ||
+||    GPL   ||   0x00000000 ||
+||    NCCT  ||   0x00000000 ||
+
+
+
+
+Instructions parameters, such as MVMVA are shown by zero values.
