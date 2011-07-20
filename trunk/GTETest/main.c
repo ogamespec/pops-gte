@@ -48,7 +48,7 @@ static char *CP2D_Name[32] = {
 
 static char *CP2C_Name[32] = {
  "R11R12", "R13R21", "R22R23", "R31R32", "R33", "TRX", "TRY", "TRZ",
- "L11L12", "L13L21", "L22L23", "Ll31L32", "L33", "RBK", "GBK", "BBK",
+ "L11L12", "L13L21", "L22L23", "L31L32", "L33", "RBK", "GBK", "BBK",
  "LR1LR2", "LR3LG1", "LG2LG3", "LB1LB2", "LB3", "RFC", "GFC", "BFC",
  "OFX", "OFY", "H", "DQA", "DQB", "ZSF3", "ZSF4", "FLAG"
 };
@@ -69,6 +69,7 @@ static u_long Instr = 0x12345678;       // Instruction to execute.
 #define RTPS        0x4A180001
 
 static u_long Code[32];                 // JIT-compiled instructions to execute.
+static int GteCycles = 0;               // used to measure GTE instruction cycles
 
 // For editing
 static int  RegCursor = 0;
@@ -165,10 +166,11 @@ static void PrintGTECtrl (void)
     }
 }
 
-static void ExecuteInstr (void)
+static int ExecuteInstr (void)
 {
     DisasmData dis;
     void (*code)(void);
+    long before, after;
 
     dis.instr = Instr;
     dis.pc = 0x80000000;
@@ -190,8 +192,14 @@ static void ExecuteInstr (void)
     ExitCriticalSection();
 
     WritebackGTERegs ();
+    SetRCnt (RCntCNT1, 0xffff, RCntMdNOINTR );
+    StartRCnt (RCntCNT1);
+    before = GetRCnt (RCntCNT1);
     code ();
+    after = GetRCnt (RCntCNT1);
+    StopRCnt (RCntCNT1);
     DumpGTERegs ();
+    return after - before;
 }
 
 main ()
@@ -330,7 +338,7 @@ main ()
        
         if ( (PadData & _PAD(0, PADstart)) && !(oldPadData & _PAD(0, PADstart)))
         {
-            ExecuteInstr ();
+            GteCycles = ExecuteInstr ();
         }
        
         if ( (PadData & _PAD(0, PADselect)) && !(oldPadData & _PAD(0, PADselect)))
@@ -356,6 +364,8 @@ main ()
 
         PSXDisasm (&dis);
         sprintf (txt, "\nPC: %08X\n%08X %-8s%-10s\nReg: %i, Nibble: %i, Instr nibble: %i\n", pc0, dis.instr, dis.mnem, dis.operands, RegCursor, RegNibble, InstrNibble);
+        FntPrint (fnt, txt);
+        sprintf (txt, "\ncycles (with decorating code): %i", GteCycles );
         FntPrint (fnt, txt);
                
         FntFlush (fnt);
