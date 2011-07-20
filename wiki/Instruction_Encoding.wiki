@@ -27,7 +27,7 @@
 
 
 
-Instructions parameters, such as MVMVA are shown by zero values.
+Instructions parameters, such as MVMVA are set to zero.
 
 
 ==cop2 Macro==
