@@ -25,6 +25,7 @@ Calculations:
 (1.27. 4) MAC2 = GG0;
 (1.27. 4) MAC3 = BB0;
 
+
 Pcsx:
     double RR0,GG0,BB0;
 
@@ -47,224 +48,231 @@ Pcsx:
 
     SUM_FLAG
 
+
 Pops:
 
-    C700: [RGB0] [RGB1] [RGB2] [RES1]
-    t6 = IR0 << 12
-    t4 = gteR
-    Acc = gteR * IR1
-    t0 = Lo >> 8
-    t8 = RFC - Lo >> 8
-    t2 = min ( max (t8, -32768), 32767)
-    at = (t2 != t8) << 24
-    t2 = t2 << 8
-    Acc = t2 * (IR0 << 12)
-    t8 = Hi
-    t8 = MAC1 = Hi + Lo >> 8
-    t2 = C_MAC1 = min (max(MAC1,-32768), 32767)
-    at |= (MAC1 != C_MAC1) << 24
+VFPU 4:
+        [0x100f] [0x20f] [-8f] [7.999756f]
+        [0x80f]  [0x10f] [-8f] [7.999756f]
+        [0x40f]  [0x08f] [-8f] [7.999756f]
+        [0]      [0]     [0]   [0]
 
-    0x0000E668: 0xDB9C0050 'P...' - lv.q       C700, 80($gp)        // RGB0
-    0x0000E66C: 0x8F8E0020 ' ...' - lw         $t6, 32($gp)         // IR0
-    0x0000E670: 0x8F890018 '....' - lw         $t1, 24($gp)         // RGB
-    0x0000E674: 0x000E7300 '.s..' - sll        $t6, $t6, 12
-    0x0000E678: 0x8F880024 '$...' - lw         $t0, 36($gp)         // IR1
-    0x0000E67C: 0x8F8B00D4 '....' - lw         $t3, 212($gp)        // RFC
-    0x0000E680: 0x7D2C3800 '.8,}' - ext        $t4, $t1, 0, 8
-    0x0000E684: 0x01880018 '....' - mult       $t4, $t0
-    0x0000E688: 0x24028000 '...$' - li         $v0, -32768
-    0x0000E68C: 0x24037FFF '...$' - li         $v1, 32767
-    0x0000E690: 0x00004012 '.@..' - mflo       $t0
-    0x0000E694: 0x00084203 '.B..' - sra        $t0, $t0, 8
-    0x0000E698: 0x0168C023 '#.h.' - subu       $t8, $t3, $t0
-    0x0000E69C: 0x0302502C ',P..' - max        $t2, $t8, $v0
-    0x0000E6A0: 0x0143502D '-PC.' - min        $t2, $t2, $v1
-    0x0000E6A4: 0x030AC023 '#...' - subu       $t8, $t8, $t2
-    0x0000E6A8: 0x0018082B '+...' - sltu       $at, $zr, $t8
-    0x0000E6AC: 0x00010E00 '....' - sll        $at, $at, 24
-    0x0000E6B0: 0x000A5200 '.R..' - sll        $t2, $t2, 8
-    0x0000E6B4: 0x014E0018 '..N.' - mult       $t2, $t6
-    0x0000E6B8: 0x240500FF '...$' - li         $a1, 255
-    0x0000E6BC: 0x0000C010 '....' - mfhi       $t8
-    0x0000E6C0: 0x0118C021 '!...' - addu       $t8, $t0, $t8
-    0x0000E6C4: 0xAF980064 'd...' - sw         $t8, 100($gp)        // MAC1
-    0x0000E6C8: 0x0302502C ',P..' - max        $t2, $t8, $v0
-    0x0000E6CC: 0x0143502D '-PC.' - min        $t2, $t2, $v1
-    0x0000E6D0: 0x030AC023 '#...' - subu       $t8, $t8, $t2
-    0x0000E6D4: 0x0018C02B '+...' - sltu       $t8, $zr, $t8
-    0x0000E6D8: 0x0018C600 '....' - sll        $t8, $t8, 24
-    0x0000E6DC: 0x00380825 '%.8.' - or         $at, $at, $t8
+5:
+    [IR0] [] [] []
+    [IR1] [] [] []
+    [IR2] [] [] []
+    [IR3] [] [] []
 
-    t4 = gteG
-    Acc = gteG * IR2
-    IR1 = C_MAC1
-    t2 = t2 >> 4
-    t0 = Lo >> 8
-    t8 = GFC - Lo >> 8
-    t3 = min( max(t8,-32768), 32767)
-    at |= (t8 != t3) << 23
-    t3 = t3 << 8
-    Acc = t3 * (IR0 << 12)
-    t3 = (C_MAC1 >> 4) > 255
-    t2 = min ( 255, max (0, C_MAC1 >> 4))
-    at |= ( (C_MAC1 >> 4) > 255 ) << 21
-    Replace R component (t2) in RGB.
-    t8 = MAC2 = Hi + Lo >> 8
-    t2 = C_MAC2 = min (max (MAC2,-32768), 32767)
-    at |= (MAC2 != C_MAC2) << 23
+2:
+    [LR1LR2] [L33] [] [LB3]
+    [LR3LG1] [RBK] [] [RFC]
+    [LG2LG3] [GBK] [] [GFC]
+    [LB1LB2] [BBK] [] [BFC]
 
-    0x0000E6E0: 0x8F880028 '(...' - lw         $t0, 40($gp)         // IR2
-    0x0000E6E4: 0x8F8B00D8 '....' - lw         $t3, 216($gp)        // GFC
-    0x0000E6E8: 0x7D2C3A00 '.:,}' - ext        $t4, $t1, 8, 8
-    0x0000E6EC: 0x01880018 '....' - mult       $t4, $t0
-    0x0000E6F0: 0xAF8A0024 '$...' - sw         $t2, 36($gp)         // IR1
-    0x0000E6F4: 0x000A5103 '.Q..' - sra        $t2, $t2, 4
-    0x0000E6F8: 0x00004012 '.@..' - mflo       $t0
-    0x0000E6FC: 0x00084203 '.B..' - sra        $t0, $t0, 8
-    0x0000E700: 0x0168C023 '#.h.' - subu       $t8, $t3, $t0
-    0x0000E704: 0x0302582C ',X..' - max        $t3, $t8, $v0
-    0x0000E708: 0x0163582D '-Xc.' - min        $t3, $t3, $v1
-    0x0000E70C: 0x030BC023 '#...' - subu       $t8, $t8, $t3
-    0x0000E710: 0x0018C02B '+...' - sltu       $t8, $zr, $t8
-    0x0000E714: 0x7F01BDC4 '....' - ins        $at, $t8, 23, 1
-    0x0000E718: 0x000B5A00 '.Z..' - sll        $t3, $t3, 8
-    0x0000E71C: 0x016E0018 '..n.' - mult       $t3, $t6
-    0x0000E720: 0x00AA582B '+X..' - sltu       $t3, $a1, $t2
-    0x0000E724: 0x000A502C ',P..' - max        $t2, $zr, $t2
-    0x0000E728: 0x00AA502D '-P..' - min        $t2, $a1, $t2
-    0x0000E72C: 0x7D61AD44 'D.a}' - ins        $at, $t3, 21, 1
-    0x0000E730: 0x7D493804 '.8I}' - ins        $t1, $t2, 0, 8
-    0x0000E734: 0x0000C010 '....' - mfhi       $t8
-    0x0000E738: 0x0118C021 '!...' - addu       $t8, $t0, $t8
-    0x0000E73C: 0xAF980068 'h...' - sw         $t8, 104($gp)        // MAC2
-    0x0000E740: 0x0302502C ',P..' - max        $t2, $t8, $v0
-    0x0000E744: 0x0143502D '-PC.' - min        $t2, $t2, $v1
-    0x0000E748: 0x030AC023 '#...' - subu       $t8, $t8, $t2
-    0x0000E74C: 0x0018C02B '+...' - sltu       $t8, $zr, $t8
-    0x0000E750: 0x0018C5C0 '....' - sll        $t8, $t8, 23
-    0x0000E754: 0x00380825 '%.8.' - or         $at, $at, $t8
+0:
+    [F LR1 << 16 / 2^28] [F LG1 << 16 / 2^28] [F LB1 << 16 / 2^28] []
+    [F LR2 << 16 / 2^28] [F LG2 << 16 / 2^28] [F LB2 << 16 / 2^28] []
+    [F LR3 << 16 / 2^28] [F LG3 << 16 / 2^28] [F LB3 * 2^12]       []
+    [F RBK / 2^12] [F GBK / 2^12] [F BBK / 2^12] []
 
-    t4 = gteB
-    Acc = gteB * IR3
-    IR2 = C_MAC2
-    t2 = t2 >> 4
-    t0 = Lo >> 8
-    t8 = BFC - Lo >> 8
-    t3 = min( max(t8,-32768), 32767)
-    at |= (t3 != t8) << 22
-    t3 = t3 << 8
-    Acc = t3 * (IR0 << 12)
-    at |= ( (C_MAC2 >> 4) > 255 ) << 20
-    t2 = min ( 255, max (0, C_MAC2 >> 4))
-    Replace G component (t2) in RGB.
-    t8 = MAC3 = Hi + Lo >> 8
-    t2 = C_MAC3 = min (max (MAC3,-32768), 32767)
-    at |= (MAC3 != C_MAC3) << 22
-    IR3 = C_MAC3
-    t3 = C_MAC3 >> 4
-    at |= ( (C_MAC3 >> 4) > 255 ) << 19
-    t3 = min ( 255, max (0, C_MAC3 >> 4))
-    Replace B component (t3) in RGB.
+2:
+    [F IR1 / 2^12] [L33] [] [LB3]
+    [F IR2 / 2^12] [RBK] [] [RFC]
+    [F IR3 / 2^12] [GBK] [] [GFC]
+    [F IR0 / 2^12] [BBK] [] [BFC]
 
-    S330 = at
+3:
+    [] [] [] [0]
+    [] [] [] [0]
+    [] [] [] [0]
+    [] [] [] []
 
-    0x0000E758: 0x8F88002C ',...' - lw         $t0, 44($gp)         // IR3
-    0x0000E75C: 0x8F8B00DC '....' - lw         $t3, 220($gp)        // BFC
-    0x0000E760: 0x7D2C3C00 '.<,}' - ext        $t4, $t1, 16, 8
-    0x0000E764: 0x01880018 '....' - mult       $t4, $t0
-    0x0000E768: 0xAF8A0028 '(...' - sw         $t2, 40($gp)         // IR2
-    0x0000E76C: 0x000A5103 '.Q..' - sra        $t2, $t2, 4
-    0x0000E770: 0x00004012 '.@..' - mflo       $t0
-    0x0000E774: 0x00084203 '.B..' - sra        $t0, $t0, 8
-    0x0000E778: 0x0168C023 '#.h.' - subu       $t8, $t3, $t0
-    0x0000E77C: 0x0302582C ',X..' - max        $t3, $t8, $v0
-    0x0000E780: 0x0163582D '-Xc.' - min        $t3, $t3, $v1
-    0x0000E784: 0x030BC023 '#...' - subu       $t8, $t8, $t3
-    0x0000E788: 0x0018C02B '+...' - sltu       $t8, $zr, $t8
-    0x0000E78C: 0x7F01B584 '....' - ins        $at, $t8, 22, 1
-    0x0000E790: 0x000B5A00 '.Z..' - sll        $t3, $t3, 8
-    0x0000E794: 0x016E0018 '..n.' - mult       $t3, $t6
-    0x0000E798: 0x00AA582B '+X..' - sltu       $t3, $a1, $t2
-    0x0000E79C: 0x000A502C ',P..' - max        $t2, $zr, $t2
-    0x0000E7A0: 0x00AA502D '-P..' - min        $t2, $a1, $t2
-    0x0000E7A4: 0x7D61A504 '..a}' - ins        $at, $t3, 20, 1
-    0x0000E7A8: 0x7D497A04 '.zI}' - ins        $t1, $t2, 8, 8
-    0x0000E7AC: 0x0000C010 '....' - mfhi       $t8
-    0x0000E7B0: 0x0118C021 '!...' - addu       $t8, $t0, $t8
-    0x0000E7B4: 0xAF98006C 'l...' - sw         $t8, 108($gp)        // MAC3
-    0x0000E7B8: 0x0302502C ',P..' - max        $t2, $t8, $v0
-    0x0000E7BC: 0x0143502D '-PC.' - min        $t2, $t2, $v1
-    0x0000E7C0: 0x030AC023 '#...' - subu       $t8, $t8, $t2
-    0x0000E7C4: 0x0018C02B '+...' - sltu       $t8, $zr, $t8
-    0x0000E7C8: 0x0018C580 '....' - sll        $t8, $t8, 22
-    0x0000E7CC: 0x00380825 '%.8.' - or         $at, $at, $t8
-    0x0000E7D0: 0xAF8A002C ',...' - sw         $t2, 44($gp)         // IR3
-    0x0000E7D4: 0x000A5903 '.Y..' - sra        $t3, $t2, 4
-    0x0000E7D8: 0x00AB502B '+P..' - sltu       $t2, $a1, $t3
-    0x0000E7DC: 0x000B582C ',X..' - max        $t3, $zr, $t3
-    0x0000E7E0: 0x00AB582D '-X..' - min        $t3, $a1, $t3
-    0x0000E7E4: 0x7D419CC4 '..A}' - ins        $at, $t2, 19, 1
-    0x0000E7E8: 0x7D69BC04 '..i}' - ins        $t1, $t3, 16, 8
-    0x0000E7EC: 0x48E9007C '|..H' - mtv        $t1, S703
+1:
+    [] [RR0 = LR1 * IR1 + LR2 * IR2 + LR3 * IR3 + RBK] [] []
+    [] [GG0 = LG1 * IR1 + LG2 * IR2 + LG3 * IR3 + GBK] [] []
+    [] [BB0 = LB1 * IR1 + LB2 * IR2 + LB3 * IR3 + BBK] [] []
+    [] [TRASH]                                   [] []
 
-    C700: [RGB0] [RGB1] [RGB2] [RGB]
+    0x0000D4A8: 0xDB940020 ' ...' - lv.q       C500, 32($gp)        // IR0
+    0x0000D4AC: 0xDB8900B0 '....' - lv.q       C210, 176($gp)       // L33 .. RBK GBK BBK
+    0x0000D4B0: 0xDB8800C0 '....' - lv.q       C200, 192($gp)       // LR1LR2 ...
+    0x0000D4B4: 0xDB8B00D0 '....' - lv.q       C230, 208($gp)       // LB3 RFC GFC BFC
+    0x0000D4B8: 0xD03B0880 '..;.' - vs2i.p     C000, C200
+    0x0000D4BC: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
+    0x0000D4C0: 0xD29C8080 '....' - vi2f.q     C000, C000, 28
+    0x0000D4C4: 0xD29C8181 '....' - vi2f.q     C010, C010, 28
+    0x0000D4C8: 0xD28C0B42 'B...' - vi2f.s     S022, S230, 12
+    0x0000D4CC: 0xD0004182 '.A..' - vmov.p     C020, C012
+    0x0000D4D0: 0xD0002141 'A!..' - vmov.s     S012, S011
+    0x0000D4D4: 0xD0000121 '!...' - vmov.s     S011, S010
+    0x0000D4D8: 0xD0006001 '.`..' - vmov.s     S010, S003
+    0x0000D4DC: 0xD28CC923 '#...' - vi2f.t     R003, C211, 12
+    0x0000D4E0: 0xDC000039 '9...' - vpfxs      [y, z, w, x]
+    0x0000D4E4: 0xD28C9488 '....' - vi2f.q     C200, C500, 12
+    0x0000D4E8: 0xD006800F '....' - vzero.t    C330
+    0x0000D4EC: 0xF1888005 '....' - vhtfm4.q   C110, M000, C200
 
-    RGB0 = RGB1
-    RGB1 = RGB2
-    RGB2 = RGB
+    a0 = RGB
 
-    0x0000E7F0: 0x48E1000F '...H' - mtv        $at, S330
-    0x0000E7F4: 0x03E00008 '....' - jr         $ra
-    0x0000E7F8: 0xF79C0058 'X...' - svl.q      C700, 88($gp)        // RGB2 +8
+1:
+    [ C_RR0 = min(max(RR0, 0), 7.999756f) ] [RR0] [] []
+    [ C_GG0 = min(max(GG0, 0), 7.999756f) ] [GG0] [] []
+    [ C_BB0 = min(max(BB0, 0), 7.999756f) ] [BB0] [] []
+    [] [] [] []
 
-------------------
+3:
+    [] [] [] [C_RR0 != RR0 ? 0x100f : 0]
+    [] [] [] [C_GG0 != GG0 ? 0x80f  : 0]
+    [] [] [] [C_BB0 != BB0 ? 0x40f  : 0]
+    [] [] [] []
 
-Pseudocode:
-    RGB = gteRGB;
-    gteFLAG = 0;
+0:
+    [F RFC / 2^12] [F LG1 << 16 / 2^28] [F LB1 << 16 / 2^28] []
+    [F GFC / 2^12] [F LG2 << 16 / 2^28] [F LB2 << 16 / 2^28] []
+    [F BFC / 2^12] [F LG3 << 16 / 2^28] [F LB3 * 2^12]       []
+    [F RBK / 2^12] [F GBK / 2^12] [F BBK / 2^12] []
+    
+    0x0000D4F0: 0x8F840018 '....' - lw         $a0, 24($gp)         // RGB
+    0x0000D4F4: 0xBFEA0040 '@...' - cache      0xA, 64($ra)
+    0x0000D4F8: 0x6DB38504 '...m' - vmax.t     C100, C110, R403
+    0x0000D4FC: 0x6D138404 '...m' - vmin.t     C100, C100, C430
+    0x0000D500: 0x6C058405 '...l' - vcmp.t     NE, C100, C110
+    0x0000D504: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+    0x0000D508: 0xD28CCB00 '....' - vi2f.t     C000, C231, 12
 
-    RR0 = RFC - (gteR * IR1) >> 8
-    GG0 = GFC - (gteG * IR2) >> 8
-    BB0 = BFC - (gteB * IR3) >> 8
+    v0 = R
+    a1 = G
+    a2 = B
 
-    C_RR0 = min ( max (RR0, -32768), 32767)
-    C_GG0 = min ( max (GG0, -32768), 32767)
-    C_BB0 = min ( max (BB0, -32768), 32767)
+0:
+    [F RFC / 2^12] [F R / 2^8] [] []
+    [F GFC / 2^12] [F G / 2^8] [] []
+    [F BFC / 2^12] [F B / 2^8] [] []
+    [] [] [] []
 
-    FLAG |= (RR0 != C_RR0) << 24
-    FLAG |= (GG0 != C_GG0) << 23
-    FLAG |= (BB0 != C_BB0) << 22
+2:
+    [F R / 2^8 * C_RR0] [L33] [] [LB3]
+    [F G / 2^8 * C_GG0] [RBK] [] [RFC]
+    [F B / 2^8 * C_BB0] [GBK] [] [GFC]
+    [F IR0 / 2^12] [BBK] [] [BFC]
 
-    Acc = (C_RR0 << 8) * (IR0 << 12)
-    MAC1 = Hi + Lo >> 8
-    Acc = (C_GG0 << 8) * (IR0 << 12)
-    MAC2 = Hi + Lo >> 8
-    Acc = (C_BB0 << 8) * (IR0 << 12)
-    MAC3 = Hi + Lo >> 8
+7:
+    [] [F RFC / 2^12 - F R / 2^8 * C_RR0] [] []
+    [] [F GFC / 2^12 - F G / 2^8 * C_GG0] [] []
+    [] [F BFC / 2^12 - F B / 2^8 * C_BB0] [] []
+    [] [] [] []
 
-    C_MAC1 = min (max(MAC1,-32768), 32767)
-    C_MAC2 = min (max(MAC2,-32768), 32767)
-    C_MAC3 = min (max(MAC3,-32768), 32767)
+    0x0000D50C: 0x7C823800 '.8.|' - ext        $v0, $a0, 0, 8
+    0x0000D510: 0x7C853A00 '.:.|' - ext        $a1, $a0, 8, 8
+    0x0000D514: 0x7C863C00 '.<.|' - ext        $a2, $a0, 16, 8
+    0x0000D518: 0x48E20001 '...H' - mtv        $v0, S010
+    0x0000D51C: 0x48E50021 '!..H' - mtv        $a1, S011
+    0x0000D520: 0x48E60041 'A..H' - mtv        $a2, S012
+    0x0000D524: 0xD2888101 '....' - vi2f.t     C010, C010, 8
+    0x0000D528: 0x64048108 '...d' - vmul.t     C200, C010, C100
+    0x0000D52C: 0x6088801D '...`' - vsub.t     C710, C000, C200
 
-    FLAG |= (MAC1 != C_MAC1) << 24
-    FLAG |= (MAC2 != C_MAC2) << 24
-    FLAG |= (MAC3 != C_MAC3) << 24
+7:
+    [] [RF = F RFC / 2^12 - F R / 2^8 * C_RR0] [C_RF = min (max(RF, -8), 7.999756f) ] []
+    [] [GF = F GFC / 2^12 - F G / 2^8 * C_GG0] [C_GF = min (max(GF, -8), 7.999756f) ] []
+    [] [BF = F BFC / 2^12 - F B / 2^8 * C_BB0] [C_BF = min (max(BF, -8), 7.999756f) ] []
+    [] [] [] []
 
-    IR1 = C_MAC1
-    IR2 = C_MAC2
-    IR3 = C_MAC3
+3:
+    [] [] [] [ |RF| >= 7.999756f ? 0x100 :   (C_RR0 != RR0 ? 0x100f : 0) ]
+    [] [] [] [ |GF| >= 7.999756f ? 0x80  :   (C_GG0 != GG0 ? 0x80f  : 0) ]
+    [] [] [] [ |BF| >= 7.999756f ? 0x40  :   (C_BB0 != BB0 ? 0x40f  : 0) ]
+    [] [] [] []
 
-    FLAG |= ( (C_MAC1 >> 4) & 0xff ) << 21
-    FLAG |= ( (C_MAC2 >> 4) & 0xff ) << 20
-    FLAG |= ( (C_MAC3 >> 4) & 0xff ) << 19
+7:
+    [] [C_RF * IR0] [C_RF = min (max(RF, -8), 7.999756f) ] []
+    [] [C_GF * IR0] [C_GF = min (max(GF, -8), 7.999756f) ] []
+    [] [C_BF * IR0] [C_BF = min (max(BF, -8), 7.999756f) ] []
+    [] [] [] []
 
-    R = min ( 255, max (0, C_MAC1 >> 4))
-    G = min ( 255, max (0, C_MAC2 >> 4))
-    B = min ( 255, max (0, C_MAC3 >> 4))
-    RGB <= R G B
+2:
+    [RR = F R / 2^8 * C_RR0 + C_RF * IR0] [L33] [] [LB3]
+    [GG = F G / 2^8 * C_GG0 + C_GF * IR0] [RBK] [] [RFC]
+    [BB = F B / 2^8 * C_BB0 + C_BF * IR0] [GBK] [] [GFC]
+    [F IR0 / 2^12] [BBK] [] [BFC]
+
+    0x0000D530: 0x6D929D1E '...m' - vmax.t     C720, C710, C420
+    0x0000D534: 0xDD0007E4 '....' - vpfxt      [|x|, |y|, |z|, w]
+    0x0000D538: 0x6C1D9303 '...l' - vcmp.t     LE, C430, C710
+    0x0000D53C: 0x6D139E1E '...m' - vmin.t     C720, C720, C430
+    0x0000D540: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+    0x0000D544: 0x65689E1D '..he' - vscl.t     C710, C720, S203
+    0x0000D548: 0x601D8808 '...`' - vadd.t     C200, C200, C710
+
+0:
+    [SAT_RR = CLAMP(RR, 0.0, 1.0)] [I RR * 2^12] [ C_RR = min (max (RR, 0), 7.999756f) ] []
+    [SAT_GG = CLAMP(GG, 0.0, 1.0)] [I GG * 2^12] [ C_GG = min (max (GG, 0), 7.999756f) ] []
+    [SAT_BB = CLAMP(BB, 0.0, 1.0)] [I BB * 2^12] [ C_BB = min (max (BB, 0), 7.999756f) ] []
+    []             []            []              [ RGB >> 1]
+
+7:
+    [] [C_RF * IR0] [RGB0] []
+    [] [C_GF * IR0] [RGB1] []
+    [] [C_BF * IR0] [RGB2] []
+    [] []           [RES1] []
+
+    MAC1 = RR
+    MAC2 = GG
+    MAC3 = BB
+
+    CC[0] = RR != C_RR
+    CC[1] = GG != C_GG
+    CC[2] = BB != C_BB
+
+0:
+    [SAT_RR = CLAMP(RR, 0.0, 1.0)] [I RR * 2^12] [ I C_RR * 2^12 ] [ I RR * 2^31]
+    [SAT_GG = CLAMP(GG, 0.0, 1.0)] [I GG * 2^12] [ I C_GG * 2^12 ] [ I GG * 2^31]
+    [SAT_BB = CLAMP(BB, 0.0, 1.0)] [I BB * 2^12] [ I C_BB * 2^12 ] [ I BB * 2^31]
+    []             []            []                                [ RGB >> 1]
+
+3:
+    [] [] [] [ A1 = RR != C_RR ? 0x100 :  ( |RF| >= 7.999756f ? 0x100 :   (C_RR0 != RR0 ? 0x100f : 0) ) ]
+    [] [] [] [ A2 = GG != C_GG ? 0x80  :  ( |GF| >= 7.999756f ? 0x80  :   (C_GG0 != GG0 ? 0x80f  : 0) ) ]
+    [] [] [] [ A3 = BB != C_BB ? 0x40  :  ( |BF| >= 7.999756f ? 0x40  :   (C_BB0 != BB0 ? 0x40f  : 0) ) ]
+    [] [] [] []
+
+    
+
+3:
+    [] [] [] [ B1 = RR != SAT_RR ? 0x20 : 0 ]
+    [] [] [] [ B2 = GG != SAT_GG ? 0x10 : 0 ]
+    [] [] [] [ B3 = BB != SAT_BB ? 0x8  : 0 ]
+    [] [A1 + A2 + A3] [A1 + A2 + A3] [A1 + A2 + A3]
+
+    IR1 = C_RR;
+    IR2 = C_GG;
+    IR3 = C_BB;
 
     RGB0 = RGB1
     RGB1 = RGB2
-    RGB2 = RGB
+    RGB2 = [CODE][BB][GG][RR]
 
-    SUM_FLAG
+    S330 = (A1 + A2 + A3 + B1 + B2 + B3) << 16
+
+    0x0000D54C: 0x00042042 'B ..' - srl        $a0, $a0, 1
+    0x0000D550: 0x48E40063 'c..H' - mtv        $a0, S033
+    0x0000D554: 0xDB9E0050 'P...' - lv.q       C720, 80($gp)        // RGB0 RGB1 RGB2 RES1
+    0x0000D558: 0x6DB38802 '...m' - vmax.t     C020, C200, R403
+    0x0000D55C: 0xD20C8801 '....' - vf2in.t    C010, C200, 12
+    0x0000D560: 0xD0048800 '....' - vsat0.t    C000, C200
+    0x0000D564: 0x6D138202 '...m' - vmin.t     C020, C020, C430
+    0x0000D568: 0xF7810066 'f...' - svr.q      C010, 100($gp)       // MAC1
+    0x0000D56C: 0x6C028805 '...l' - vcmp.t     NE, C200, C020
+    0x0000D570: 0xD20C8202 '....' - vf2in.t    C020, C020, 12
+    0x0000D574: 0xD21F8803 '....' - vf2in.t    C030, C200, 31
+    0x0000D578: 0xD2A6900F '....' - vcmovt.t   C330, C400, 6
+    0x0000D57C: 0x6C008805 '...l' - vcmp.t     NE, C200, C000
+    0x0000D580: 0xD0468F6F 'o.F.' - vfad.t     R313, C330
+    0x0000D584: 0xF7820026 '&...' - svr.q      C020, 36($gp)        // IR1
+    0x0000D588: 0xD006800F '....' - vzero.t    C330
+    0x0000D58C: 0xD2A6910F '....' - vcmovt.t   C330, C410, 6
+    0x0000D590: 0xD0468F8F '..F.' - vfad.q     C330, C330
+    0x0000D594: 0xD03C83FE '..<.' - vi2uc.q    S723, C030       // fixed
+    0x0000D598: 0xF79E0058 'X...' - svl.q      C720, 88($gp)        // RGB0
+    0x0000D59C: 0x03E00008 '....' - jr         $ra
+    0x0000D5A0: 0xD2700F0F '..p.' - vf2id.s    S330, S330, 16

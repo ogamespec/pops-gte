@@ -6,7 +6,7 @@ void (*psxCP2[64])() = {
     psxNULL , psxNULL , psxNULL , gteNCCS, gteCC  , psxNULL , gteNCS  , psxNULL, // 18
 
     gteNCT  , psxNULL , psxNULL , psxNULL, psxNULL, psxNULL , psxNULL , psxNULL, // 20
-    gteSQR  , gteDCPL , gteDPCT , psxNULL, psxNULL, gteAVSZ3, gteAVSZ4, psxNULL, // 28 
+    gteSQR  , gteDPCL , gteDPCT , psxNULL, psxNULL, gteAVSZ3, gteAVSZ4, psxNULL, // 28 
     gteRTPT , psxNULL , psxNULL , psxNULL, psxNULL, psxNULL , psxNULL , psxNULL, // 30
     psxNULL , psxNULL , psxNULL , psxNULL, psxNULL, gteGPF  , gteGPL  , gteNCCT  // 38
 };
@@ -22,6 +22,17 @@ GTEInstructions: (0x0002CBD8):
     0x00000F60 0x0000D4A8 0x0000E958 0x00001010 0x00001010 0x0000E5D0 0x0000E618 0x00001010
     0x0000E36C 0x00001010 0x00001010 0x00001010 0x00001010 0x00001010 0x00001010 0x00001010
     0x00001010 0x00001010 0x00001010 0x00001010 0x00001010 0x00000F8C 0x00000FB8 0x0000DAF0
+
+GTEInstructions: (0x0002CBD8):
+    ---   RTPS  ---   ---   ---   ---   NCLIP ---   
+    ---   ---   ---   ---   OP    ---   ---   ---   
+    DPCS  INTPL MVMVA NCDS  DPCL  ---   NCDT  ---   
+    ---   ---   ---   NCCS  CC    ---   NCS   ---   
+
+    NCT   ---   ---   ---   ---   ---   ---   ---   
+    SQR   CDP   DPCT  ---   ---   AVSZ3 AVSZ4 ---   
+    RTPT  ---   ---   ---   ---   ---   ---   ---   
+    ---   ---   ---   ---   ---   GPF   GPL   NCCT
 
 // sub_00000BDC
 ExecGTEInstruction ( op )
