@@ -37,3 +37,5 @@ I do not why, but DPCL and CDP are located in wrong places...
 
 Same mixed order also present in "clock table", thats why clock timing of CDP/DPCL is not match with Doomed gpu.txt
 
+
+Need to investigate on real hardware.
