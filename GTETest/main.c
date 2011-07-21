@@ -192,14 +192,14 @@ static int ExecuteInstr (void)
     ExitCriticalSection();
 
     WritebackGTERegs ();
-    StopRCnt (RCntCNT1);
-    SetRCnt (RCntCNT1, 0xffff, RCntMdNOINTR | RCntMdSC | RCntMdFR );
-    ResetRCnt (RCntCNT1);
-    StartRCnt (RCntCNT1);
-    before = GetRCnt (RCntCNT1);
+    StopRCnt (RCntCNT2);
+    SetRCnt (RCntCNT2, 0xffff, RCntMdNOINTR );
+    ResetRCnt (RCntCNT2);
+    StartRCnt (RCntCNT2);
+    before = GetRCnt (RCntCNT2);
     code ();
-    after = GetRCnt (RCntCNT1);
-    StopRCnt (RCntCNT1);
+    after = GetRCnt (RCntCNT2);
+    StopRCnt (RCntCNT2);
     DumpGTERegs ();
     return after - before;
 }
