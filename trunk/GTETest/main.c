@@ -193,7 +193,7 @@ static int ExecuteInstr (void)
 
     WritebackGTERegs ();
     StopRCnt (RCntCNT1);
-    SetRCnt (RCntCNT1, 0xffff, RCntMdNOINTR );
+    SetRCnt (RCntCNT1, 0xffff, RCntMdNOINTR | RCntMdSC | RCntMdFR );
     ResetRCnt (RCntCNT1);
     StartRCnt (RCntCNT1);
     before = GetRCnt (RCntCNT1);
