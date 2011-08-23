@@ -119,3 +119,15 @@ void gteAVSZ3() {
 
 <font color=red>*Pops has issue?*</font><br>
 Why Pops doesn't make overflow/underflow check of MAC0 calculation (FLAG`[`15`]` and FLAG`[`16`]`) ??? Need to check on real hardware.
+
+== Test on real hardware ==
+
+<img src="http://ogamespec.com/imgstore/whc4e53af0ab1598.jpg">
+
+Test on real hardware show, that overflow/underflow calculations are performed by GTE, so *Pops has bug in AVSZ3*.
+
+Also many emulators has flaw in AVSZ3, for example ePSXe 1.6.0 :
+<img src="http://ogamespec.com/imgstore/whc4e53afce3c12f.jpg">
+
+Pcsx-Reloaded has correct AVSZ3 :
+<img src="http://ogamespec.com/imgstore/whc4e53adc6b5578.jpg">
