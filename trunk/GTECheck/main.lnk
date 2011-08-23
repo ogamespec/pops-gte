@@ -1,0 +1,33 @@
+    org     $80010000
+
+text    group                           ; main text group
+bss     group   bss                     ; main data group
+
+
+    section .rdata,text         ; main sections
+    section .text,text
+    section .data,text
+    section .sdata,text
+    section .sbss,bss
+    section .bss,bss
+
+
+    inclib  "c:\psyq\lib\libapi.lib"
+    inclib  "c:\PsyQ\lib\libgpu.lib"
+    inclib  "c:\PsyQ\lib\libgs.lib"
+    inclib  "c:\PsyQ\lib\libgte.lib"
+    inclib  "c:\PsyQ\lib\libetc.lib"
+    inclib  "c:\PsyQ\lib\libcd.lib"
+    inclib  "c:\PsyQ\lib\libpress.lib"
+    inclib  "c:\PsyQ\lib\libc.lib"
+    inclib  "c:\PsyQ\lib\libmath.lib"
+    inclib  "c:\PsyQ\lib\libspu.lib"
+    inclib  "c:\PsyQ\lib\libsnd.lib"
+    inclib  "c:\PsyQ\lib\libsn.lib"
+
+    include main.obj
+    include gte2.obj
+    include gte.obj
+    
+    regs    pc=__SN_ENTRY_POINT     ; entry point
+
