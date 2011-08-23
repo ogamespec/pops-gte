@@ -33,9 +33,9 @@ Calculations:
 
 NCCS:
 
-    0x0000D9DC: 0xDB8800A0 '....' - lv.q       C200, 160($gp)
-    0x0000D9E0: 0xDB8900B0 '....' - lv.q       C210, 176($gp)
-    0x0000D9E4: 0xDB8A0000 '....' - lv.q       C220, 0($gp)
+    0x0000D9DC: 0xDB8800A0 '....' - lv.q       C200, 160($gp)       // L11L12
+    0x0000D9E0: 0xDB8900B0 '....' - lv.q       C210, 176($gp)       // L33 RBK
+    0x0000D9E4: 0xDB8A0000 '....' - lv.q       C220, 0($gp)         // VXY0
     0x0000D9E8: 0xD03B0880 '..;.' - vs2i.p     C000, C200
     0x0000D9EC: 0xD03B4881 '.H;.' - vs2i.p     C010, C202
     0x0000D9F0: 0xD03B0A84 '..;.' - vs2i.p     C100, C220
