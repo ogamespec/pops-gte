@@ -1001,7 +1001,7 @@ CD2 = Bit pattern of GTE instruction currently being executed.
 Register name: RES1<br>
 Access: Prohibited<br>
 
-<b>Register number: Control #24</b>
+<b>Register number: Data #24</b>
 
 Register name: MAC0<br>
 Access: R/W<br>
@@ -1015,7 +1015,7 @@ Fields:
 MAC0     (1.31.0)        Sum of products value #0
 }}}
 
-<b>Register number: Control #25</b>
+<b>Register number: Data #25</b>
 
 Register name: MAC1<br>
 Access: R/W<br>
@@ -1029,7 +1029,7 @@ Fields:
 MAC1     (1.31.0)        Sum of products value #1
 }}}
 
-<b>Register number: Control #26</b>
+<b>Register number: Data #26</b>
 
 Register name: MAC2<br>
 Access: R/W<br>
@@ -1043,7 +1043,7 @@ Fields:
 MAC2     (1.31.0)        Sum of products value #2
 }}}
 
-<b>Register number: Control #27</b>
+<b>Register number: Data #27</b>
 
 Register name: MAC3<br>
 Access: R/W<br>
@@ -1057,7 +1057,7 @@ Fields:
 MAC3     (1.31.0)        Sum of products value #3
 }}}
 
-<b>Register number: Control #28</b>
+<b>Register number: Data #28</b>
 
 Register name: IRGB<br>
 Access: W<br>
@@ -1078,7 +1078,7 @@ IR1 = The value which format-converted R to (1.11.4)<br>
 IR2 = The value which format-converted G to (1.11.4)<br>
 IR3 = The value which format-converted B to (1.11.4)<br>
 
-<b>Register number: Control #29</b>
+<b>Register number: Data #29</b>
 
 Register name: ORGB<br>
 Access: W<br>
@@ -1100,7 +1100,7 @@ OG = (IR2>>7)&0x1f;<br>
 OB = (IR3>>7)&0x1f;<br>
 The results obtained are then read.<br>
 
-<b>Register number: Control #30</b>
+<b>Register number: Data #30</b>
 
 Register name: LZCS<br>
 Access: W<br>
@@ -1116,7 +1116,7 @@ LZCS     (1.31.0)        LZC source data
 Internal operations:<br>
 See Data #31: LZCR.
 
-<b>Register number: Control #31</b>
+<b>Register number: Data #31</b>
 
 Register name: LZCR<br>
 Access: R<br>
