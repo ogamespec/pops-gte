@@ -2,7 +2,7 @@
 // Based on Pops hacking: http://code.google.com/p/pops-gte
 
 // UNR table.
-// Should be hardwired somewhere in CPU chip.
+// Must be hardwired somewhere in CPU chip.
 // If someone wish to decap PSX CPU I have bunch of them, contact me ogamespec@gmail.com, I'll send it free.
 static u8 unrt[] = {
     0xFF, 0xFD, 0xFB, 0xF9, 0xF7, 0xF5, 0xF3, 0xF1, 0xEF, 0xEE, 0xEC, 0xEA, 0xE8, 0xE6, 0xE4, 0xE3,
@@ -38,7 +38,7 @@ static inline int CLZ (u32 rs)
 // inputs are 0.16.0, returns 0.16.16 fixed-point
 static inline u32 DIVIDE(u16 n, u16 d) {
     // no need to check n >= 0, because it cannot be greater 0x7FFF (0x7FFF * 2 = 0xFFFE, but 0x8000 * 2 = 0x10000 = 0 already)
-	if (n < d * 2) {    
+    if (n < d * 2) {    
         int zeros = CLZ ( d ) - 14;
         u32 a3 = (d << zeros) >> 2;
         s32 t6 = unrt[(( a3 + 64) >> 7) - 256] + 257;
@@ -51,7 +51,7 @@ static inline u32 DIVIDE(u16 n, u16 d) {
         return res >> 32;
 
         // Don't ask me how does it work. Honestly, I don't understand it at all ^_^
-	}
+    }
 
-	return 0xffffffff;
+    return 0xffffffff;
 }
