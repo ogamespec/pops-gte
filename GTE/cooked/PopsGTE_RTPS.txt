@@ -209,7 +209,7 @@ loc_0000DF18:           ; Refs: 0x0000E0B4
         0x0000DFD0: 0x7DA4BDC4 '...}' - ins        $a0, $t5, 23, 1
         0x0000DFD4: 0x00005012 '.P..' - mflo       $t2
         0x0000DFD8: 0x000A5303 '.S..' - sra        $t2, $t2, 12
-        0x0000DFDC: 0x01475021 '!PG.' - addu       $t2, $t2, $a3
+        0x0000DFDC: 0x01475021 '!PG.' - addu       $t2, $t2, $a3	// SSZ result
         0x0000DFE0: 0x030A382B '+8..' - sltu       $a3, $t8, $t2
         0x0000DFE4: 0x000A6840 '@h..' - sll        $t5, $t2, 1
         0x0000DFE8: 0x018D682A '*h..' - slt        $t5, $t4, $t5
@@ -225,6 +225,11 @@ loc_0000DF18:           ; Refs: 0x0000E0B4
         t5 = OFY
         t7 = OFX >> 31
         t3 = min (Hi, 0x1FFFF)
+
+//	SZ3 = min (MAC3, 0xFFFF)
+//	shift = clz ( SZ3 ) - 14
+//	Acc = 0x80000000 + (H << shift) * reciprocalTable[SZ3 << shift];
+//	t3 = min ( HI, 0x1FFFF );
 
 
         0x0000DFF4: 0x0158582D '-XX.' - min        $t3, $t2, $t8
@@ -440,7 +445,7 @@ RTPS / RTPT:
     if ((gteMAC3 * 2) > gteH) {
         gteSZ3 = min (gteMAC3, 0xFFFF);
         int zeros = CountLeadingZeros (gteSZ3) - 14;
-        FDSZ = 0x80000000 + (gteH << zeros) * reciprocalTable[gteSZ3 << zeros];
+        FDSZ = 0x80000000 + (gteH << zeros) * *(u32 *)(reciprocalTable + gteSZ3 << zeros);
         FDSZ = min ( (FDSZ >> 32), 0x1FFFF );
     }
     else {
