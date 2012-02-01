@@ -25,14 +25,14 @@ static u8 unrt[] = {
 
 // Count leading zeros.
 // I know, there is more complicated algo, but meh... I'm lazy
-static inline int CLZ (u32 rs)
+static inline int CLZ (u16 rs)
 {
     u32 n, m;
-    for(n=0, m=1<<31; n<32; n++, m>>=1)
+    for(n=0, m=1<<15; n<16; n++, m>>=1)
     {
         if (rs & m) break;
     }
-    return n;
+    return 16 + n;
 }
 
 // inputs are 0.16.0, returns 0.16.16 fixed-point
