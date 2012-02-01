@@ -492,7 +492,7 @@ Bit  31                            16 15                             0
     |Not used                         |H                              |
      -----------------------------------------------------------------
 Fields:
-LB3     (0.16.0)        Screen position
+H     (0.16.0)        Screen position
 }}}
 
 <b>Register number: Control #27</b>
@@ -520,7 +520,7 @@ Bit  31                                                              0
     |DQB                                                              |
      -----------------------------------------------------------------
 Fields:
-OFX     (1.7.24)        Depth parameter B (offset)
+DQB     (1.7.24)        Depth parameter B (offset)
 }}}
 
 <b>Register number: Control #29</b>
