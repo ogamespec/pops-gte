@@ -32,7 +32,7 @@ It seems GTE also has hardwired 256-entry UNR table on chip:<br>
 
 (which is somewhat similar to `unrt[]` table from manual)
 
-During calculations those entries are extended to 32-bit 16.16 integers on the fly by GTE, but Pops generate additional 0x8000 16.16 reciprocals table, to speedup calculations.
+During calculations those entries are extended to 32-bit 16.16 integers on the fly by GTE, but Pops additionally generates 0x8000 16.16 reciprocals table, to speedup calculations.
 
 = Details =
 
