@@ -39,3 +39,5 @@ Same mixed order also present in "clock table", thats why clock timing of CDP/DP
 
 
 Need to investigate on real hardware.
+
+EDIT: Investigated. Pops is buggy shit.
