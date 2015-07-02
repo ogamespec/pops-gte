@@ -23,6 +23,9 @@ Overall progress:<br>
 
 <h1>News</h1>
 
+02 jul 2015:<br>
+Almost all standard cells are discovered and identified. GTE location is confirmed at bottom-left corner of chip.
+
 13 sep 2013:<br>
 CPU was delayered and imaged on 40x. Now we have to stitch 2900 image pieces (8.5 GB of data) and recover CPU Standard cells %) <br>
 <img src='http://wiki.psxdev.ru/images/4/4f/Cells.jpg' /><br>
