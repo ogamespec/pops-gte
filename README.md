@@ -16,9 +16,9 @@ Overall progress:<br>
 - Microscope bottom metal layer (M1) <b>DONE</b><br>
 - Trace both metal layers<br>
 - Delayer metal and microscope diffusion layer <b>DONE</b><br>
-- Trace diffusion <br>
+- Trace diffusion <b>DONE</b><br>
 - Find all combinations of standard cells <b>DONE</b><br>
-- Locate GTE<br>
+- Locate GTE <b>DONE</b><br>
 - Restore GTE logic circuit<br>
 
 <h1>News</h1>
