@@ -1,27 +1,28 @@
-# Overview #
+# Overview
 
-<img src='http://ogamespec.com/imgstore/whc4e032dbd75870.jpg'>
+![JPG](/imgstore/whc4e032dbd75870.jpg)
 
-Reverse engineering of <code>PlayStation</code> CPU GTE.<br>
-<br>
-<s>The aim of this project is full discovery how Pops emulating GTE and write own port for some of freeware Sony <code>PlayStation</code> emulators (e.g. Pcsx).</s> <b>DEPRECATED</b>
+Reverse engineering of `PlayStation` CPU GTE.
 
-Since Pops is buggy shit, new goal is: drop acid on PSX CPU, microscope it, find GTE, recover standard cells and study its logic layout.<br>
-<br>
-GTE was always kind of mystery for PSX emu authors, now we have a chance to look how it was made of silicon.<br>
-<br>
-Overall progress:<br>
-- Decap CPU <b>DONE</b><br>
-- Microscope top metal layer (M2) on 20x zoom <b>DONE</b><br>
-- Microscope bottom metal layer (M1) <b>DONE</b><br>
-- Trace both metal layers<br>
-- Delayer metal and microscope diffusion layer <b>DONE</b><br>
-- Trace diffusion <b>DONE</b><br>
-- Find all combinations of standard cells <b>DONE</b><br>
-- Locate GTE <b>DONE</b><br>
-- Restore GTE logic circuit<br>
+<s>
+The aim of this project is full discovery how Pops emulating GTE and write own port for some of freeware Sony `PlayStation` emulators (e.g. Pcsx).</s> **DEPRECATED**
 
-<h1>News</h1>
+Since Pops is buggy shit, new goal is: drop acid on PSX CPU, microscope it, find GTE, recover standard cells and study its logic layout.
+
+GTE was always kind of mystery for PSX emu authors, now we have a chance to look how it was made of silicon.
+
+Overall progress:
+- Decap CPU **DONE**
+- Microscope top metal layer (M2) on 20x zoom **DONE**
+- Microscope bottom metal layer (M1) **DONE**
+- Trace both metal layers
+- Delayer metal and microscope diffusion layer **DONE**
+- Trace diffusion **DONE**
+- Find all combinations of standard cells **DONE**
+- Locate GTE **DONE**
+- Restore GTE logic circuit
+
+## News
 
 02 jul 2015:<br>
 Almost all standard cells are discovered and identified. GTE location is confirmed at bottom-left corner of chip.
