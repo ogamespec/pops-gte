@@ -36,11 +36,15 @@ CPU was delayered and imaged on 40x. Now we have to stitch 2900 image pieces (8.
 Starting to stitch 850 pieces on 20x zoom.<br>
 <br>
 27 may 2013: Sony, squeeze your rolls :P Here we go!<br>
-<img src='http://ogamespec.com/imgstore/whc51a3124a21d97.jpg'> <br>
+
+![JPG](/imgstore/whc51a3124a21d97.jpg) 
+
+<br>
 Waves to <a href='http://zeptobars.ru'>http://zeptobars.ru</a> for high-resolution PSX CPU images.<br>
 <br>
 15 oct 2012: I captured PSX CPU die photo, wow :P<br>
-<img src='http://ogamespec.com/imgstore/whc51a31241062f2.jpg'>
+
+![PNG](/imgstore/whc51a31241062f2.png)
 
 1 feb 2012: Pwned GTE divider, used in RTPS/RTPT. See wiki. Also uploaded gte_divider.h in source tree.<br>
 <br>
